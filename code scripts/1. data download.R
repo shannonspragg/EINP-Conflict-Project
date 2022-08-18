@@ -13,63 +13,71 @@ options(
 )
 
 # Landcover:
-folder_url <- "https://drive.google.com/drive/u/0/folders/17dnk1EGflfjieLTm5FqlRpg0mTS7cGIN" # ag data
+folder_url <- "https://drive.google.com/drive/u/0/folders/17dnk1EGflfjieLTm5FqlRpg0mTS7cGIN" # lc data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/Landcover_Polygons_2010/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 # Waterbodies:
-folder_url <- "https://drive.google.com/drive/u/0/folders/13ZYA7j24didb0y3YAB4SBgp5vEK9aKzt" # ag data
+folder_url <- "https://drive.google.com/drive/u/0/folders/13ZYA7j24didb0y3YAB4SBgp5vEK9aKzt" # water data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/canada_waterbodies/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
 # Crown lands:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1RUkqeZwTx-6YUgvhw8bi0GviRCk1cahY" # ag data
+folder_url <- "https://drive.google.com/drive/u/0/folders/1RUkqeZwTx-6YUgvhw8bi0GviRCk1cahY" # crown reservations data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/crown_lands/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
 # Forest inventory:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1HGyXYmvq2H8P-f47hC3wqlRtTd_Zj1Dz" # ag data
+folder_url <- "https://drive.google.com/drive/u/0/folders/1HGyXYmvq2H8P-f47hC3wqlRtTd_Zj1Dz" # forest cover data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/forest_inventory.gdb/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/forest_inventory.gdb"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
 # gHM:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1KJ-szySEHTQiYPw7NqGfxHTvuxgTxCy7" # ag data
+folder_url <- "https://drive.google.com/drive/u/0/folders/1KJ-szySEHTQiYPw7NqGfxHTvuxgTxCy7" # human mod data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/gHMv1_300m_2017_static/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
 # protected areas:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1Y_1qqMKRPM_v_sReqCHD_p7aaZeVQ-Zp" # ag data
+folder_url <- "https://drive.google.com/drive/u/0/folders/1Y_1qqMKRPM_v_sReqCHD_p7aaZeVQ-Zp" # pa data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/protected_areas/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
 # wildfire perimiters:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1uSWFXLtxlAw_LpU06rJAp7skUq74zHK_" # ag data
+folder_url <- "https://drive.google.com/drive/u/0/folders/1uSWFXLtxlAw_LpU06rJAp7skUq74zHK_" # fire data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/wildfire_perimiters/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
+
+# regional boundaries:
+folder_url <- "https://drive.google.com/drive/u/0/folders/1MX3TmG_mr-bmJpZ7naE3KJG6taN_cRoq" # ab regions data
+folder <- drive_get(as_id(folder_url))
+gdrive_files <- drive_ls(folder)
+#have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
+lapply(gdrive_files$id, function(x) drive_download(as_id(x),
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
