@@ -4,7 +4,7 @@
 
 # Load Packages -------------------------------------------------------
 library(googledrive)
-
+library(tidyverse)
 
 # Load our Data with GoogleDrive: -----------------------------------------
 options(
@@ -56,7 +56,7 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
-# protected areas:
+# protected areas: not working with kmz file??
 folder_url <- "https://drive.google.com/drive/u/0/folders/1Y_1qqMKRPM_v_sReqCHD_p7aaZeVQ-Zp" # pa data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
