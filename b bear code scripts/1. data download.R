@@ -44,7 +44,7 @@ folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/forest_inventory.gdb"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/forest_inventory.gdb/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
 # gHM:
@@ -57,12 +57,19 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
 
 
 # protected areas: not working with kmz file??
-folder_url <- "https://drive.google.com/drive/u/0/folders/1Y_1qqMKRPM_v_sReqCHD_p7aaZeVQ-Zp" # pa data
+# folder_url <- "https://drive.google.com/drive/u/0/folders/1Y_1qqMKRPM_v_sReqCHD_p7aaZeVQ-Zp" # pa data
+# folder <- drive_get(as_id(folder_url))
+# gdrive_files <- drive_ls(folder)
+# #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
+# lapply(gdrive_files$id, function(x) drive_download(as_id(x),
+#                                                    path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+
+folder_url <- "https://drive.google.com/drive/u/0/folders/1KGY3mL4bpzJLHaB7HPtP9wiRF3LTUIy9" 
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
-                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+                                                   path = paste0(here::here("data/original/CPCAD-BDCAPC_Dec2020.gdb/ "), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
 # wildfire perimiters:
