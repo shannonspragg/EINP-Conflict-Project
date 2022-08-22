@@ -20,9 +20,11 @@ plot(recent_wildfires['FIRE_NUMBE'])
 # Crop to our Region --------------------------------------------------------
 north.sask.bound <- st_read("data/processed/north_saskatchewan_25km.shp")
 
-st_crs(recent_wildfires) == st_crs(north.sask.bound)
+n.sask.reproj<- st_transform(north.sask.bound, st_crs(recent_wildfires))
+
+st_crs(recent_wildfires) == st_crs(n.sask.reproj)
 st_make_valid(recent_wildfires)
-st_make_valid(north.sask.bound)
+st_make_valid(n.sask.reproj)
 
 n.sask.b.v <- vect(north.sask.bound)
 wildfires.v <- vect(recent_wildfires)
