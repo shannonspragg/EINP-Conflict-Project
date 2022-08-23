@@ -26,10 +26,15 @@ st_crs(recent_wildfires) == st_crs(parkland.reproj)
 st_make_valid(parkland.reproj)
 st_make_valid(recent_wildfires)
 
-parkland.fire.hist <- st_intersection(parkland.reproj, recent_wildfires) #need to figure out the issue with the self-intersection
+# Try this in terra:
+template.rast <- rast("data/processed/dist2pa_km_parkland.tif")
 
+parkland.v <- vect(parkland.reproj)
+wildfires.v <- vect(recent_wildfires)
 
-# parkland.b.v <- vect(parkland.reproj)
-# wildfires.v <- vect(recent_wildfires)
-# 
-# parkland.fires <- terra::crop(wildfires.v, n.sask.b.v)
+wildfires.crop <- crop(wildfires.v, template.rast)
+
+parkland.recent.wildfires.rast <- terra::rasterize(wildfires.crop, template.rast, field = "YEAR")
+
+terra::writeRaster(parkland.recent.wildfires.rast, "data/processed/parkland_fire_history.tif")
+

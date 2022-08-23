@@ -52,5 +52,5 @@ ab.pa.proj <- ab.PAs.fin %>%
   # Dist to PA raster:
 dist2pa <- terra::distance(temp.rast, ab.pa.proj)
 dist2pa.km <- measurements::conv_unit(dist2pa, "m", "km")
-writeRaster(dist2pa.km, "data/processed/dist2pa_km_n_sasck.tif", overwrite=TRUE)
+writeRaster(dist2pa.km, "data/processed/dist2pa_km_parkland.tif", overwrite=TRUE)
 

@@ -29,5 +29,14 @@ st_crs(ab.forest.inventory) == st_crs(parkland.reproj)
 st_make_valid(parkland.reproj)
 st_make_valid(ab.forest.inventory)
 
-parkland.forest.inventory <- st_intersection(parkland.reproj, ab.forest.inventory) #need to figure out the issue with the self-intersection
+# Try this in terra:
+template.rast <- rast("data/processed/dist2pa_km_parkland.tif")
 
+parkland.v <- vect(parkland.reproj)
+forest.inv.v <- vect(ab.forest.inventory)
+
+park.forest.crop <- crop(forest.inv.v, template.rast)
+
+parkland.forest.inv.rast <- terra::rasterize(park.forest.crop, template.rast, field = "DESCRIPTION")
+
+terra::writeRaster(parkland.forest.inv.rast, "data/processed/parkland_forest_inventory.tif")
