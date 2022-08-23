@@ -18,15 +18,18 @@ plot(recent_wildfires['FIRE_NUMBE'])
 
 
 # Crop to our Region --------------------------------------------------------
-north.sask.bound <- st_read("data/processed/north_saskatchewan_25km.shp")
+parkland.buf <- st_read("data/processed/parkland_county_10km.shp")
 
-n.sask.reproj<- st_transform(north.sask.bound, st_crs(recent_wildfires))
+parkland.reproj<- st_transform(parkland.buf, st_crs(recent_wildfires))
 
-st_crs(recent_wildfires) == st_crs(n.sask.reproj)
+st_crs(recent_wildfires) == st_crs(parkland.reproj)
+st_make_valid(parkland.reproj)
 st_make_valid(recent_wildfires)
-st_make_valid(n.sask.reproj)
 
-n.sask.b.v <- vect(north.sask.bound)
-wildfires.v <- vect(recent_wildfires)
+parkland.fire.hist <- st_intersection(parkland.reproj, recent_wildfires) #need to figure out the issue with the self-intersection
 
-ns.fires <- terra::crop(wildfires.v, n.sask.b.v)
+
+# parkland.b.v <- vect(parkland.reproj)
+# wildfires.v <- vect(recent_wildfires)
+# 
+# parkland.fires <- terra::crop(wildfires.v, n.sask.b.v)

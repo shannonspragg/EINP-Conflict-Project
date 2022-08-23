@@ -31,26 +31,18 @@ ab.PAs.fin <- filter(ab.PAs.iucn.filtered, areaha > 100)
 
 # create template raster --------------------------------------------------
 
-  # Bring in land use regions:
-ab.regions <- st_read("data/original/LUF Integrated Regional Plan Boundaries.shp") # NEED TO FIND A DIFFERENT ONE
-ab.crs <- st_crs
-n.sask <- ab.regions %>%
-  filter(., LUF_NAME == "North Saskatchewan")
+  # Bring in county boundary:
+parkland.cty <- st_read("data/original/CountyBoundary.shp") # NEED TO FIND A DIFFERENT ONE
 
-  # Project to Alberta 10-TM / NAD83:
-ab.landcover <- st_read("data/original/Lancover_Polygons_2010.shp")
-n.sask.proj <- st_transform(n.sask, st_crs(ab.landcover))
+parkland.buffer <- parkland.cty %>%
+  st_buffer(., 10000) 
 
-n.sask.bound <- n.sask.proj %>%
-  st_buffer(., 25000) 
+parkland.buf.v <- parkland.buffer %>% as(., "SpatVector")
 
-n.sask.bound.v <- n.sask.bound %>% as(., "SpatVector")
+st_write(parkland.buffer, "data/processed/parkland_county_10km.shp", append=FALSE)
 
-st_write(n.sask.proj, "data/processed/north_saskatchewan.shp", append= FALSE)
-st_write(n.sask.bound, "data/processed/north_saskatchewan_25km.shp", append=FALSE)
-
-temp.rast <- rast(res=c(1000,1000), ext=ext(n.sask.bound.v))
-crs(temp.rast) <- crs(n.sask.bound.v)
+temp.rast <- rast(res=c(1000,1000), ext=ext(parkland.buf.v))
+crs(temp.rast) <- crs(parkland.buf.v)
 values(temp.rast) <- rep(1, ncell(temp.rast))
 
 ab.pa.proj <- ab.PAs.fin %>% 
