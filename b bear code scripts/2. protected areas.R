@@ -49,8 +49,11 @@ ab.pa.proj <- ab.PAs.fin %>%
   st_transform(., crs=crs(temp.rast)) %>%
   as(., "SpatVector")
 
+parkland.pa.rast <- terra::rasterize(ab.pa.proj, temp.rast, field = "NAME_E")
+parkland.pa.crop <- terra::mask(parkland.pa.rast, parkland.v)
+
   # Dist to PA raster:
 dist2pa <- terra::distance(temp.rast, ab.pa.proj)
 dist2pa.km <- measurements::conv_unit(dist2pa, "m", "km")
 writeRaster(dist2pa.km, "data/processed/dist2pa_km_parkland.tif", overwrite=TRUE)
-
+writeRaster(parkland.pa.crop, "data/processed/parkland_protected_areas.tif", overwrite=TRUE)

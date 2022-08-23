@@ -35,6 +35,7 @@ wildfires.v <- vect(recent_wildfires)
 wildfires.crop <- crop(wildfires.v, template.rast)
 
 parkland.recent.wildfires.rast <- terra::rasterize(wildfires.crop, template.rast, field = "YEAR")
+parkland.fire.rast <- terra::mask(parkland.recent.wildfires.rast, parkland.v)
 
-terra::writeRaster(parkland.recent.wildfires.rast, "data/processed/parkland_fire_history.tif")
+terra::writeRaster(parkland.fire.rast, "data/processed/parkland_fire_history.tif", overwrite=TRUE)
 

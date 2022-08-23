@@ -35,5 +35,5 @@ parkland.v <- vect(parkland.reproj)
 
 parkland.ghm.rast <- terra::mask(parkland.ghm.crop, parkland.v)
 
-terra::writeRaster(parkland.ghm.rast, "data/processed/parkland_ghm.tif")
+terra::writeRaster(parkland.ghm.rast, "data/processed/parkland_ghm.tif", overwrite=TRUE)
 

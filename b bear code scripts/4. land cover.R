@@ -52,7 +52,8 @@ landcover.v <- vect(ab_landcover)
 park.landcover.crop <- crop(landcover.v, template.rast)
 
 parkland.landcover.rast <- terra::rasterize(park.landcover.crop, template.rast, field = "LC_DESCRIPTION")
+parkland.lc.rast <- terra::mask(parkland.landcover.rast, parkland.v)
 
-terra::writeRaster(parkland.landcover.rast, "data/processed/parkland_landcover.tif")
+terra::writeRaster(parkland.lc.rast, "data/processed/parkland_landcover.tif", overwrite=TRUE)
 
 

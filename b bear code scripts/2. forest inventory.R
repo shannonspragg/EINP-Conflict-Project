@@ -38,5 +38,6 @@ forest.inv.v <- vect(ab.forest.inventory)
 park.forest.crop <- crop(forest.inv.v, template.rast)
 
 parkland.forest.inv.rast <- terra::rasterize(park.forest.crop, template.rast, field = "DESCRIPTION")
+parkland.forest.inv.rast <- terra::mask(parkland.forest.inv.rast, parkland.v)
 
-terra::writeRaster(parkland.forest.inv.rast, "data/processed/parkland_forest_inventory.tif")
+terra::writeRaster(parkland.forest.inv.rast, "data/processed/parkland_forest_inventory.tif", overwrite=TRUE)
