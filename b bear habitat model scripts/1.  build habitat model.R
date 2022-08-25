@@ -41,6 +41,11 @@ wildfires.sc <- terra::scale(wildfires.rast)
 ndvi.sc <- terra::scale(ndvi.rast)
 shrubland.sc <- terra::scale(shrubland.rast)
 
+# ## the equivalent, computed in steps
+# m <- global(r, "mean")
+# rr <- r - m[,1]
+# rms <- global(rr, "rms")
+# ss <- rr / rms[,1]
 
 # Combine & Multiply by Coefficients: -------------------------------------
 
