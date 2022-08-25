@@ -27,3 +27,12 @@ parkland_protected_areas.tif.aux.xml
 parkland_crownlands.tif
 parkland_crownlands.tif.aux.xml
 parkland_ndvi.tif
+biosphere_50km.dbf
+biosphere_50km.prj
+biosphere_50km.shp
+biosphere_50km.shx
+biosphere_crownlands.tif
+biosphere_crownlands.tif.aux.xml
+biosphere_protected_areas.tif
+biosphere_protected_areas.tif.aux.xml
+dist2pa_km_biosphere.tif
