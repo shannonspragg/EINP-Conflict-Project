@@ -1,5 +1,5 @@
 
-# Download Data -----------------------------------------------------------
+# Download Data: Habitat Suitability -----------------------------------------------------------
 ### Here we download all of our "original" data
 
 # Load Packages -------------------------------------------------------
