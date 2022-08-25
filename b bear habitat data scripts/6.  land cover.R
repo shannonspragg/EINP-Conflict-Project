@@ -34,26 +34,35 @@ ab_landcover <- ab_landcover %>%
                      ab_landcover$LC_class == 230 ~ "Mixed Forest",
   ))
 
+# Subset out shrubland:
+shrubland <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Shrubland")
+
 # Crop to our Region --------------------------------------------------------
-parkland.buf <- st_read("data/processed/parkland_county_10km.shp")
+bhw.buf <- st_read("data/processed/biosphere_50km.shp") # Beaver Hills Watershed
 
-parkland.reproj<- st_transform(parkland.buf, st_crs(ab_landcover))
+bhw.reproj<- st_transform(bhw.buf, st_crs(ab_landcover))
 
-st_crs(ab_landcover) == st_crs(parkland.reproj)
+st_crs(ab_landcover) == st_crs(bhw.reproj)
 st_make_valid(parkland.reproj)
 st_make_valid(ab_landcover)
 
 # Try this in terra:
-template.rast <- rast("data/processed/dist2pa_km_parkland.tif")
+template.rast <- rast("data/processed/dist2pa_km_biosphere.tif")
 
-parkland.v <- vect(parkland.reproj)
+bhw.v <- vect(bhw.reproj)
 landcover.v <- vect(ab_landcover)
+shrubland.v <- vect(shrubland)
 
-park.landcover.crop <- crop(landcover.v, template.rast)
+bhw.landcover.crop <- crop(landcover.v, template.rast)
+bhw.shrub.crop <- crop(shrubland.v, template.rast)
 
-parkland.landcover.rast <- terra::rasterize(park.landcover.crop, template.rast, field = "LC_DESCRIPTION")
-parkland.lc.rast <- terra::mask(parkland.landcover.rast, parkland.v)
+bhw.landcover.rast <- terra::rasterize(park.landcover.crop, template.rast, field = "LC_DESCRIPTION")
+bhw.lc.rast <- terra::mask(parkland.landcover.rast, parkland.v)
 
-terra::writeRaster(parkland.lc.rast, "data/processed/parkland_landcover.tif", overwrite=TRUE)
+bhw.shrubland.rast <- terra::rasterize(bhw.shrub.crop, template.rast, field = "LC_DESCRIPTION")
+bhw.shrub.rast <- terra::mask(bhw.shrubland.rast, bhw.v)
+
+terra::writeRaster(bhw.lc.rast, "data/processed/bhw_landcover.tif", overwrite=TRUE)
+terra::writeRaster(bhw.shrub.rast, "data/processed/bhw_shrubland.tif", overwrite=TRUE)
 
 
