@@ -15,25 +15,24 @@ library(dplyr)
 gHM <- rast("data/original/gHMv1_300m_2017_static-0000000000-0000000000.tif")
 
 # Crop to our Region --------------------------------------------------------
-parkland.buf <- st_read("data/processed/parkland_county_10km.shp")
+bhw.buf <- st_read("data/processed/biosphere_50km.shp")
 
-parkland.reproj<- st_transform(parkland.buf, st_crs(ab_landcover))
+bhw.reproj<- st_transform(bhw.buf, st_crs(gHM))
 
-st_crs(ab_landcover) == st_crs(parkland.reproj)
-st_make_valid(parkland.reproj)
-st_make_valid(ab_landcover)
+st_crs(gHM) == st_crs(bhw.reproj)
 
 # Try this in terra:
-template.rast <- rast("data/processed/dist2pa_km_parkland.tif")
+template.rast <- rast("data/processed/dist2pa_km_biophys.tif")
 
 temp.rast <- project(gHM, template.rast)
 
-parkland.ghm.rsmple <- resample(gHM, template.rast)
-parkland.ghm.crop <- crop(parkland.ghm.rsmple, template.rast)
+bhw.ghm.rsmple <- resample(gHM, template.rast)
+bhw.ghm.crop <- crop(bhw.ghm.rsmple, template.rast)
 
-parkland.v <- vect(parkland.reproj)
+bhw.reproj<- st_transform(bhw.reproj, st_crs(bhw.ghm.crop))
+bhw.v <- vect(bhw.reproj) 
 
-parkland.ghm.rast <- terra::mask(parkland.ghm.crop, parkland.v)
+bhw.ghm.rast <- terra::mask(bhw.ghm.crop, bhw.v)
 
-terra::writeRaster(parkland.ghm.rast, "data/processed/parkland_ghm.tif", overwrite=TRUE)
+terra::writeRaster(bhw.ghm.rast, "data/processed/bhw_ghm.tif", overwrite=TRUE)
 
