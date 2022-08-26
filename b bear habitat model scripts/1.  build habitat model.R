@@ -1,8 +1,8 @@
 
 # Prep Covariate Rasters for HSI: -----------------------------------------
     # Here we bring in the covariates for our black bear HSI (following Loosen et al., 2018):
-    # land tenure (protected areas, crown lands, private lands), NDVI, shrubland, recently burned areas,
-    # and grizzly bear use (GBU) -- only if applicable
+    # land tenure (protected areas, crown lands, private lands), NDVI, shrubland, recently burned areas
+    # (not grizzly bear use (GBU) -- there aren't GB pops in our study area)
 
     # We need to scale all of the rasters, make them continuous surfaces (0 or 1), and ensure they are all at the desired resolution
 
