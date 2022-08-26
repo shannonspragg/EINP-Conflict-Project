@@ -38,7 +38,7 @@ bhw.firstnation.rast <- terra::mask(bhw.firstnation.rast, bhw.v)
 # Stack our public,  protected & native lands: ----------------------------
 
   # Load PA and crown rasters:
-bhw.pas <- rast("data/processed/biosphere_protected_areas.tif")
+bhw.pas <- rast("data/processed/biosphere_protected_areas.tif") #update to bhw
 
 bhw.crowns <- rast("data/processed/biosphere_crownlands.tif")
 
