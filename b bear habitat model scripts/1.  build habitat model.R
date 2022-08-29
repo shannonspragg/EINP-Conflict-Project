@@ -15,31 +15,44 @@ library(gdalUtilities)
 library(dplyr)
 
 # Bring in covariate data: -------------------------------------------------------------
+bhb.10km.boundary <- st_read("data/processed/bhb_10km.shp")
 
-crownland.rast <- rast("data/processed/bhw_crownlands.tif")
-private.land.rast <- rast("data/processed/bhw_privatelands.tif")
-wildfires.rast <- rast("data/processed/bhw_fire_history.tif")
-ndvi.rast <- rast("data/processed/bhw_ndvi.tif")
-shrubland.rast <- rast("data/processed/bhw_shrubland.tif")
+crownland.rast <- rast("data/processed/bhb_crownlands.tif")
+private.land.rast <- rast("data/processed/bhb_privatelands.tif")
+wildfires.rast <- rast("data/processed/bhb_fire_history.tif")
+ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
+shrubland.rast <- rast("data/processed/bhb_shrubland.tif")
 
-
+bhb.buf.vect <- vect(bhb.10km.boundary)
 # Check Rasters: ----------------------------------------------------------
-    # Desired resolution: 500m
+    # Desired resolution: 250m
 crownland.rast
 private.land.rast
 wildfires.rast
 ndvi.rast
 shrubland.rast
 
+plot(crownland.rast)
+plot(private.land.rast)
+plot(wildfires.rast)
+plot(ndvi.rast)
+plot(shrubland.rast)
 
+  # Disaggregate rasters:
+crownland <- disagg(crownland.rast, fact= 4)
+private.land <- disagg(private.land.rast, fact=4)
+wildfires <- disagg(wildfires.rast, fact=4)
+ndvi <- disagg(ndvi.rast, fact= 4)
+shrubland <- disagg(shrubland.rast, fact=4)
 
 # Scale Rasters: ----------------------------------------------------------
-
+  # This function scales by subtracting mean and dividing by 1 sd of the original data
+  # We need to know the mean and sd of each variable from the top RSF models for male & female black bears
 crownland.sc <- terra::scale(crownland.rast)
-privland.sc <- terra::scale(private.land.rast)
+privland.sc <- terra::scale(private.land)
 wildfires.sc <- terra::scale(wildfires.rast)
 ndvi.sc <- terra::scale(ndvi.rast)
-shrubland.sc <- terra::scale(shrubland.rast)
+shrubland.sc <- terra::scale(shrubland)
 
 # ## the equivalent, computed in steps
 # m <- global(r, "mean")
@@ -48,7 +61,7 @@ shrubland.sc <- terra::scale(shrubland.rast)
 # ss <- rr / rms[,1]
 
 # Combine & Multiply by Coefficients: -------------------------------------
-
+#  (x - mean) / sd = scaled coef. ; need to find x (actual coef) to multiply
   # Male Black Bears:
 crownland.pred.m <- crownland.sc * -0.75
 privland.pred.m <- privland.sc * -0.25

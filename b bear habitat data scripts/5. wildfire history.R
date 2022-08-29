@@ -35,7 +35,14 @@ wildfires.v <- vect(recent_wildfires)
 wildfires.crop <- crop(wildfires.v, template.rast)
 
 bhb.recent.wildfires.rast <- terra::rasterize(wildfires.crop, template.rast, field = "YEAR")
-bhb.fire.rast <- terra::mask(bhb.recent.wildfires.rast, bhb.v)
+
+# Make a continuous raster:
+bhb.recent.wildfires.rast[bhb.recent.wildfires.rast > 2000] <- 1
+bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
+
+recent.burns.r <- terra::mask(bhb.rast, bhb.recent.wildfires.rast, updatevalue=0)
+names(recent.burns.r)[names(recent.burns.r) == "OBJECTID"] <- "recent_wildfires"
+bhb.fire.rast <- terra::mask(recent.burns.r, bhb.v)
 
 terra::writeRaster(bhb.fire.rast, "data/processed/bhb_fire_history.tif", overwrite=TRUE)
 

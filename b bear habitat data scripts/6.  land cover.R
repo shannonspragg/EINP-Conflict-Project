@@ -60,10 +60,17 @@ bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field 
 bhb.lc.rast <- terra::mask(bhb.landcover.rast, bhb.v)
 
 bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_DESCRIPTION")
-bhb.shrub.rast <- terra::mask(bhb.shrubland.rast, bhb.v)
 
-bhb.shrub.rast[0] <- 1
-bhb.shrub.rast[bhb.shrub.rast == 0] <- 1
+# Make shrubland a continuous raster:
+bhb.shrubland.rast[0] <- 1
+bhb.shrubland.rast[bhb.shrubland.rast == 0] <- 1
+
+bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
+
+shrubland.r <- terra::mask(bhb.rast, bhb.shrubland.rast, updatevalue=0)
+names(shrubland.r)[names(shrubland.r) == "OBJECTID"] <- "shrubland"
+bhb.shrub.rast <- terra::mask(shrubland.r, bhb.v)
+
 
 terra::writeRaster(bhb.lc.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
 terra::writeRaster(bhb.shrub.rast, "data/processed/bhb_shrubland.tif", overwrite=TRUE)
