@@ -18,24 +18,24 @@ plot(recent_wildfires['FIRE_NUMBE'])
 
 
 # Crop to our Region --------------------------------------------------------
-parkland.buf <- st_read("data/processed/parkland_county_10km.shp")
+bhb.buf <- st_read("data/processed/bhb_10km.shp")
 
-parkland.reproj<- st_transform(parkland.buf, st_crs(recent_wildfires))
+bhb.reproj<- st_transform(bhb.buf, st_crs(recent_wildfires))
 
-st_crs(recent_wildfires) == st_crs(parkland.reproj)
-st_make_valid(parkland.reproj)
-st_make_valid(recent_wildfires)
+st_crs(recent_wildfires) == st_crs(bhb.reproj)
+st_is_valid(bhb.reproj)
+st_is_valid(recent_wildfires)
 
 # Try this in terra:
-template.rast <- rast("data/processed/dist2pa_km_parkland.tif")
+template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
-parkland.v <- vect(parkland.reproj)
+bhb.v <- vect(bhb.reproj)
 wildfires.v <- vect(recent_wildfires)
 
 wildfires.crop <- crop(wildfires.v, template.rast)
 
-parkland.recent.wildfires.rast <- terra::rasterize(wildfires.crop, template.rast, field = "YEAR")
-parkland.fire.rast <- terra::mask(parkland.recent.wildfires.rast, parkland.v)
+bhb.recent.wildfires.rast <- terra::rasterize(wildfires.crop, template.rast, field = "YEAR")
+bhb.fire.rast <- terra::mask(bhb.recent.wildfires.rast, bhb.v)
 
-terra::writeRaster(parkland.fire.rast, "data/processed/parkland_fire_history.tif", overwrite=TRUE)
+terra::writeRaster(bhb.fire.rast, "data/processed/bhb_fire_history.tif", overwrite=TRUE)
 

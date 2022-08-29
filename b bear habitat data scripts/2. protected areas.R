@@ -32,31 +32,28 @@ ab.PAs.fin <- filter(ab.PAs.iucn.filtered, areaha > 100)
 # create template raster --------------------------------------------------
 
   # Bring in county boundary:
-biosphere <- st_read("data/original/BHB_BOUNDARY.shp") # This will prob change to watershed
+bhb <- st_read("data/original/BHB_BOUNDARY.shp") # This will prob change to watershed
 
-bio.buffer <- biosphere %>%
-  st_buffer(., 50000) 
+bhb.buffer <- bhb %>%
+  st_buffer(., 10000) 
 
-bio.buf.25km <- biosphere %>%
-  st_buffer(., 25000)
+bhb.buf.v <- bhb.buffer %>% as(., "SpatVector")
 
-bio.buf.v <- bio.buffer %>% as(., "SpatVector")
+st_write(bhb.buffer, "data/processed/bhb_10km.shp", append=FALSE)
 
-st_write(bio.buffer, "data/processed/biosphere_50km.shp", append=FALSE)
-
-temp.rast <- rast(res=c(1000,1000), ext=ext(bio.buf.v))
-crs(temp.rast) <- crs(bio.buf.v) # UTM zone 12N for AB
+temp.rast <- rast(res=c(1000,1000), ext=ext(bhb.buf.v))
+crs(temp.rast) <- crs(bhb.buf.v) # UTM zone 12N for AB
 values(temp.rast) <- rep(1, ncell(temp.rast))
 
 ab.pa.proj <- ab.PAs.fin %>% 
   st_transform(., crs=crs(temp.rast)) %>%
   as(., "SpatVector")
 
-biosphere.pa.rast <- terra::rasterize(ab.pa.proj, temp.rast, field = "NAME_E")
-biosphere.pa.crop <- terra::mask(biosphere.pa.rast, bio.buf.v)
+bhb.pa.rast <- terra::rasterize(ab.pa.proj, temp.rast, field = "NAME_E")
+bhb.pa.crop <- terra::mask(bhb.pa.rast, bhb.buf.v)
 
   # Dist to PA raster:
 dist2pa <- terra::distance(temp.rast, ab.pa.proj)
 dist2pa.km <- measurements::conv_unit(dist2pa, "m", "km")
-writeRaster(dist2pa.km, "data/processed/dist2pa_km_biosphere.tif", overwrite=TRUE)
-writeRaster(biosphere.pa.crop, "data/processed/biosphere_protected_areas.tif", overwrite=TRUE)
+writeRaster(dist2pa.km, "data/processed/dist2pa_km_bhb.tif", overwrite=TRUE)
+writeRaster(biosphere.pa.crop, "data/processed/bhb_protected_areas.tif", overwrite=TRUE)

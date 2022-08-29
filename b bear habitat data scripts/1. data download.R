@@ -96,7 +96,7 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 
-# biosphere boundary:
+# BHB watershed boundary:
 folder_url <- "https://drive.google.com/drive/u/0/folders/1Tf0IsrzM-F9mMHC9DOqCpNt8NfY9sUMn" # bio boundary data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)

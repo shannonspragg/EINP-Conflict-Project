@@ -14,25 +14,26 @@ ab_crownlands <- st_read("data/original/Crown_Reservations_2018Dec.shp")
 
 
 # Crop to our Region --------------------------------------------------------
-bio.buf <- st_read("data/processed/biosphere_50km.shp")
+bhb.buf <- st_read("data/processed/bhb_10km.shp")
 
-# bio.reproj<- st_transform(bio.buf, st_crs(ab_crownlands))
-# 
-# st_crs(ab_crownlands) == st_crs(bio.reproj)
-# st_make_valid(bio.reproj)
-st_make_valid(ab_crownlands)
+crown.reproj<- st_transform(ab_crownlands, st_crs(bhb.buf))
+
+st_crs(crown.reproj) == st_crs(bhb.buf)
+
+st_is_valid(bhb.buf)
+st_is_valid(crown.reproj)
 
 # Try this in terra:
-template.rast <- rast("data/processed/dist2pa_km_biosphere.tif")
+template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
-bio.v <- vect(bio.buf)
-crownland.v <- vect(ab_crownlands)
+bhb.v <- vect(bhb.buf)
+crownland.v <- vect(crown.reproj)
 
-bio.crownland.crop <- crop(crownland.v, template.rast)
+bhb.crownland.crop <- crop(crownland.v, template.rast)
 
-bio.crownland.rast <- terra::rasterize(bio.crownland.crop, template.rast, field = "SUBTYPE")
-bio.crown.rast <- terra::mask(bio.crownland.rast, bio.v)
+bhb.crownland.rast <- terra::rasterize(bhb.crownland.crop, template.rast, field = "NAME")
+bhb.crown.rast <- terra::mask(bhb.crownland.rast, bhb.v)
 
-terra::writeRaster(bio.crown.rast, "data/processed/biosphere_crownlands.tif", overwrite=TRUE)
+terra::writeRaster(bhb.crown.rast, "data/processed/bhb_crownlands.tif", overwrite=TRUE)
 
 

@@ -38,31 +38,34 @@ ab_landcover <- ab_landcover %>%
 shrubland <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Shrubland")
 
 # Crop to our Region --------------------------------------------------------
-bhw.buf <- st_read("data/processed/biosphere_50km.shp") # Beaver Hills Watershed
+bhb.buf <- st_read("data/processed/bhb_10km.shp") # Beaver Hills Watershed
 
-bhw.reproj<- st_transform(bhw.buf, st_crs(ab_landcover))
+bhb.reproj<- st_transform(bhb.buf, st_crs(ab_landcover))
 
-st_crs(ab_landcover) == st_crs(bhw.reproj)
-st_make_valid(parkland.reproj)
-st_make_valid(ab_landcover)
+st_crs(ab_landcover) == st_crs(bhb.reproj)
+st_is_valid(bhw.reproj)
+st_is_valid(ab_landcover)
 
 # Try this in terra:
-template.rast <- rast("data/processed/dist2pa_km_biosphere.tif")
+template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
-bhw.v <- vect(bhw.reproj)
+bhb.v <- vect(bhb.reproj)
 landcover.v <- vect(ab_landcover)
 shrubland.v <- vect(shrubland)
 
-bhw.landcover.crop <- crop(landcover.v, template.rast)
-bhw.shrub.crop <- crop(shrubland.v, template.rast)
+bhb.landcover.crop <- crop(landcover.v, template.rast)
+bhb.shrub.crop <- crop(shrubland.v, template.rast)
 
-bhw.landcover.rast <- terra::rasterize(park.landcover.crop, template.rast, field = "LC_DESCRIPTION")
-bhw.lc.rast <- terra::mask(parkland.landcover.rast, parkland.v)
+bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
+bhb.lc.rast <- terra::mask(bhb.landcover.rast, bhb.v)
 
-bhw.shrubland.rast <- terra::rasterize(bhw.shrub.crop, template.rast, field = "LC_DESCRIPTION")
-bhw.shrub.rast <- terra::mask(bhw.shrubland.rast, bhw.v)
+bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_DESCRIPTION")
+bhb.shrub.rast <- terra::mask(bhb.shrubland.rast, bhb.v)
 
-terra::writeRaster(bhw.lc.rast, "data/processed/bhw_landcover.tif", overwrite=TRUE)
-terra::writeRaster(bhw.shrub.rast, "data/processed/bhw_shrubland.tif", overwrite=TRUE)
+bhb.shrub.rast[0] <- 1
+bhb.shrub.rast[bhb.shrub.rast == 0] <- 1
+
+terra::writeRaster(bhb.lc.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
+terra::writeRaster(bhb.shrub.rast, "data/processed/bhb_shrubland.tif", overwrite=TRUE)
 
 
