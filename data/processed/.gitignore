@@ -36,3 +36,17 @@ biosphere_crownlands.tif.aux.xml
 biosphere_protected_areas.tif
 biosphere_protected_areas.tif.aux.xml
 dist2pa_km_biosphere.tif
+bhb_10km.dbf
+bhb_10km.prj
+bhb_10km.shp
+bhb_10km.shx
+bhb_crownlands.tif
+bhb_crownlands.tif.aux.xml
+bhb_fire_history.tif
+bhb_landcover.tif
+bhb_landcover.tif.aux.xml
+bhb_ndvi.tif
+bhb_protected_areas.tif
+bhb_protected_areas.tif.aux.xml
+bhb_shrubland.tif
+dist2pa_km_bhb.tif
