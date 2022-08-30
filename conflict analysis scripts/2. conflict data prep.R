@@ -40,8 +40,28 @@ conflict.spdf<-SpatialPointsDataFrame(coords = xy,data = conflict.no.na,
                                    proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
 
 # Ensure this is a sf data frame:
-conflict.data.sf <- as(conflict.spdf, "sf")
+# conflict.data.sf <- as(conflict.spdf, "sf")
+conflict.data.sf <- st_as_sf(conflict.spdf)
 
 head(conflict.data.sf)
+str(conflict.data.sf)
 
+# Set projection:
+temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
+
+conflict.data.reproj <- conflict.data.sf %>% st_transform(., crs(temp.rast))
+str(conflict.data.reproj)
+conflict.data.reproj <- mutate(conflict.data.reproj, id = row_number())
+conflict.data.reproj <- conflict.data.reproj %>%           # Reorder data frame
+  dplyr::select("id", everything())
+conflict.data.reproj$id <- as.numeric(conflict.data.reproj$id)
+# Filter to only columns we need:
+
+conflict.dataset <- conflict.data.reproj %>% 
+  dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
+                                        'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'geometry'))
+
+
+
+st_write(conflict.dataset, "data/processed/conflict_dataframe.shp", append = FALSE)
 
