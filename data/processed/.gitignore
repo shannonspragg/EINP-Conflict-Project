@@ -56,3 +56,15 @@ conflict_dataframe.prj
 conflict_dataframe.shp
 conflict_dataframe.shx
 human_dens_crop.tif
+AB_CCS.dbf
+AB_CCS.prj
+AB_CCS.shp
+AB_CCS.shx
+animal_product_farming.dbf
+animal_product_farming.prj
+animal_product_farming.shp
+animal_product_farming.shx
+ground_crop_production.dbf
+ground_crop_production.prj
+ground_crop_production.shp
+ground_crop_production.shx
