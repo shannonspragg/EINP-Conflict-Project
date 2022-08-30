@@ -51,3 +51,8 @@ bhb_protected_areas.tif.aux.xml
 bhb_shrubland.tif
 dist2pa_km_bhb.tif
 bhb_privatelands.tif
+conflict_dataframe.dbf
+conflict_dataframe.prj
+conflict_dataframe.shp
+conflict_dataframe.shx
+human_dens_crop.tif
