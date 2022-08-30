@@ -15,6 +15,7 @@ farm.type <- read.csv("Data/original/farm type_32100403.csv")
 can.ccs.shp<- st_make_valid(st_read("Data/original/lccs000b16a_e.shp"))
 
 bhb.10km.boundary <- st_read("data/processed/bhb_10km.shp")
+temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
 # Filter CCS and Ag Files to AB Only ---------------------------------------------------
 # Make sf and filter down to only British Columbia for Census SubDivs (CCS):
@@ -94,4 +95,25 @@ ground.crop.sf$Farms_per_sq_km <- as.numeric(ground.crop.sf$Farms_per_sq_km)
 st_write(animal.prod.sf,"data/processed/animal_product_farming.shp", append = FALSE)
 
 st_write(ground.crop.sf, "data/processed/ground_crop_production.shp", append = FALSE) 
+
+# Rasterize Farm Data  ---------------------------------------
+## Here we make rasters for the farm type categories within our BHB watershed:
+
+# Make these spat vectors:
+animal.prod.sv <- vect(animal.prod.sf)
+ground.crop.sv <- vect(ground.crop.sf)
+
+animal.prod.crop <- crop(animal.prod.sv, temp.rast)
+ground.crop.crop <- crop(ground.crop.sv, temp.rast)
+
+# Rasterize our subset rasters:
+animal.prod.rast <- terra::rasterize(animal.prod.crop, temp.rast, field = "Farms_per_sq_km")
+ground.crop.rast <- terra::rasterize(ground.crop.crop, temp.rast, field = "Farms_per_sq_km")
+
+farm.density.combined <- animal.prod.rast + ground.crop.rast
+
+# Save these Farm Rasters:
+terra::writeRaster(animal.prod.rast, "data/processed/animal_production_density_raster.tif", overwrite=TRUE)
+terra::writeRaster(ground.crop.rast, "data/processed/ground_crop_density_raster.tif" , overwrite=TRUE)
+terra::writeRaster(farm.density.combined, "data/processed/combined_farm_density.tif" , overwrite=TRUE)
 
