@@ -68,3 +68,6 @@ ground_crop_production.dbf
 ground_crop_production.prj
 ground_crop_production.shp
 ground_crop_production.shx
+animal_production_density_raster.tif
+combined_farm_density.tif
+ground_crop_density_raster.tif
