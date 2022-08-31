@@ -72,6 +72,23 @@ sum(conflict.bhb.10k.buf$OCC_SPECIES == "BLACK BEAR") # still 142 b bear
 sum(conflict.bhb.10k.buf$OCC_SPECIES == "WOLF") # 14 wolf
 sum(conflict.bhb.10k.buf$OCC_SPECIES == "COUGAR") # still 212 cougar
 
+  # Let's try a 25km buffer:
+bhb.25km.buf <- st_buffer(bhb.10k.buf, 15000)
+
+conflict.bhb.25k.buf <- st_intersection(conflict.reproj, bhb.25km.buf) # This gives 6,107 total reports
+sum(conflict.bhb.25k.buf$OCC_SPECIES == "BLACK BEAR") # 256 b bear
+sum(conflict.bhb.25k.buf$OCC_SPECIES == "WOLF") # 35 wolf
+sum(conflict.bhb.25k.buf$OCC_SPECIES == "COUGAR") # 328 cougar
+
+  # What about a 50km buffer:
+bhb.50k.buf <- st_buffer(bhb.25km.buf, 25000)
+
+conflict.bhb.50k.buf <- st_intersection(conflict.reproj, bhb.50k.buf) # This gives 7,959 total reports
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 451 b bear
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "WOLF") # 45 wolf
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 439 cougar
+
+
 head(conflict.bhb.10k.buf)
 conflict.bhb <- conflict.bhb.10k.buf %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
