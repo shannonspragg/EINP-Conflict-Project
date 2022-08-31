@@ -1,6 +1,6 @@
 
 # Download Data: Conflict Analysis  -----------------------------------------------------------
-### Here we download all of our "original" data
+### Here we download any additional data needed for the conflict analysis
 
 # Load Packages -------------------------------------------------------
 library(googledrive)
@@ -51,3 +51,12 @@ gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+
+# Road Network:
+folder_url <- "https://drive.google.com/drive/u/0/folders/17HuuAcAdNvgmTwE-feWKhvQI2Yg97Ouh" # beaver hills watershed data
+folder <- drive_get(as_id(folder_url))
+gdrive_files <- drive_ls(folder)
+#have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
+lapply(gdrive_files$id, function(x) drive_download(as_id(x),
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+

@@ -67,5 +67,5 @@ plot(st_geometry(bhb.10k.buf))
 plot(st_geometry(all.conflict.pts.w.abs), add=TRUE)
 
 # Save as New Df: ---------------------------------------------------------
-st_write(all.conflict.pts.w.abs, "Data/processed/warp_pres.abs.shp", append=FALSE)
+st_write(all.conflict.pts.w.abs, "Data/processed/conflict_pres_abs_dataframe.shp", append=FALSE)
 
