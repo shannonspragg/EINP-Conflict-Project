@@ -13,6 +13,7 @@ library(units)
 # Bring in our Original Data --------------------------------------------
  
 conflicts <- read.csv("data/original/Beaver Hills Biosphere - all species.csv")
+bhb.10k.buf <- st_read("data/processed/bhb_10km.shp")
 
   # Add columns: Convert selected species to 1's and all others to 0's:
 conflict.data <- conflicts %>% 
@@ -61,7 +62,22 @@ conflict.dataset <- conflict.data.reproj %>%
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
                                         'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'geometry'))
 
+# Crop reports down to BHB watershed:
+st_crs(conflict.dataset) == st_crs(bhb.10k.buf) #FALSE
+conflict.reproj <- st_transform(conflict.dataset, st_crs(bhb.10k.buf))
+st_crs(conflict.reproj) == st_crs(bhb.10k.buf) #TRUE
+
+conflict.bhb.10k.buf <- st_intersection(conflict.reproj, bhb.10k.buf) # This gives 2,876 total reports
+sum(conflict.bhb.10k.buf$OCC_SPECIES == "BLACK BEAR") # still 142 b bear
+sum(conflict.bhb.10k.buf$OCC_SPECIES == "WOLF") # 14 wolf
+sum(conflict.bhb.10k.buf$OCC_SPECIES == "COUGAR") # still 212 cougar
+
+head(conflict.bhb.10k.buf)
+conflict.bhb <- conflict.bhb.10k.buf %>% 
+  dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
+                     'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'AREA', 'Area_sqkm', 'geometry'))
 
 
 st_write(conflict.dataset, "data/processed/conflict_dataframe.shp", append = FALSE)
+st_write(conflict.bhb, "data/processed/conflict_reports_bhb.shp", append = FALSE)
 
