@@ -77,3 +77,10 @@ conflict_reports_bhb.shp
 conflict_reports_bhb.shx
 bhb_ghm.tif
 dist2roads_km_bhb.tif
+bhb_alpine_mix.tif
+bhb_broadleaf_mix.tif
+bhb_conifer_mix.tif
+bhb_drainage_areas.tif
+bhb_drainage_areas.tif.aux.xml
+dist2drainage_km_bhb.tif
+terrain_ruggedness_bhb.tif
