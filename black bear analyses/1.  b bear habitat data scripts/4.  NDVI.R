@@ -14,7 +14,7 @@ library(dplyr)
 ndvi_can <- rast("data/original/AVHRRCOMP7d_2022.tif")
 
 # Crop to our Region --------------------------------------------------------
-bhb.buf <- st_read("data/processed/bhb_10km.shp")
+bhb.buf <- st_read("data/processed/bhb_50km.shp")
 
 bhb.reproj<- st_transform(bhb.buf, st_crs(ndvi_can))
 

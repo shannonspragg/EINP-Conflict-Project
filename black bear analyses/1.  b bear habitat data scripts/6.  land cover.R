@@ -44,19 +44,19 @@ water <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Water")
 
 
 # Crop to our Region --------------------------------------------------------
-bhb.buf <- st_read("data/processed/bhb_10km.shp") # Beaver Hills Watershed
+bhb.buf <- st_read("data/processed/bhb_50km.shp") # Beaver Hills Watershed
 
-bhb.reproj<- st_transform(bhb.buf, st_crs(ab_landcover))
+#bhb.reproj<- st_transform(bhb.buf, st_crs(ab_landcover))
 
-st_crs(ab_landcover) == st_crs(bhb.reproj)
+#st_crs(ab_landcover) == st_crs(bhb.reproj)
 st_is_valid(bhw.reproj)
 st_is_valid(ab_landcover)
 
 # Try this in terra:
 template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
-bhb.v <- vect(bhb.reproj)
-landcover.v <- vect(ab_landcover)
+bhb.v <- vect(bhb.buf)
+#landcover.v <- vect(ab_landcover)
 shrubland.v <- vect(shrubland)
 grassland.v <- vect(grassland)
 conifer.v <- vect(conifer.mix)
@@ -64,7 +64,7 @@ broadleaf.v <- vect(broadleaf)
 alpinemix.v <- vect(alpine.mixed)
 water.v <- vect(water)
 
-bhb.landcover.crop <- crop(landcover.v, template.rast)
+#bhb.landcover.crop <- crop(landcover.v, template.rast)
 bhb.shrub.crop <- crop(shrubland.v, template.rast)
 bhb.grass.crop <- crop(grassland.v, template.rast)
 bhb.conifer.crop <- crop(conifer.v, template.rast)
@@ -72,7 +72,7 @@ bhb.broadleaf.crop <- crop(broadleaf.v, template.rast)
 bhb.alpine.crop <- crop(alpinemix.v, template.rast)
 bhb.water.crop <- crop(water.v, template.rast)
 
-bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
+#bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.grassland.rast <- terra::rasterize(bhb.grass.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.conifer.rast <- terra::rasterize(bhb.conifer.crop, template.rast, field = "LC_DESCRIPTION")

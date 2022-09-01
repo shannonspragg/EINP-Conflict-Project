@@ -14,22 +14,22 @@ library(gdalUtilities)
 historic_wildfires <- st_read("data/original/WildfirePerimeters1931to2021v2.shp")
 
 recent_wildfires <- historic_wildfires %>% filter(historic_wildfires$YEAR >= 2003) # Filter to last 20 years
-plot(recent_wildfires['FIRE_NUMBE'])
+#plot(recent_wildfires['FIRE_NUMBE'])
 
 
 # Crop to our Region --------------------------------------------------------
-bhb.buf <- st_read("data/processed/bhb_10km.shp")
+bhb.buf <- st_read("data/processed/bhb_50km.shp")
 
-bhb.reproj<- st_transform(bhb.buf, st_crs(recent_wildfires))
+#bhb.reproj<- st_transform(bhb.buf, st_crs(recent_wildfires))
 
-st_crs(recent_wildfires) == st_crs(bhb.reproj)
+#st_crs(recent_wildfires) == st_crs(bhb.reproj)
 st_is_valid(bhb.reproj)
 st_is_valid(recent_wildfires)
 
 # Try this in terra:
 template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
-bhb.v <- vect(bhb.reproj)
+bhb.v <- vect(bhb.buf)
 wildfires.v <- vect(recent_wildfires)
 
 wildfires.crop <- crop(wildfires.v, template.rast)

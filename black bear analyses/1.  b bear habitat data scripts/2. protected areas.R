@@ -28,21 +28,22 @@ ab.PAs.iucn.filtered$areaha <- as.numeric(ab.PAs.iucn.filtered$areaha)
 # Filter by PA's larger than 100 ha:
 ab.PAs.fin <- filter(ab.PAs.iucn.filtered, areaha > 100) 
 
-
+st_write(ab.PAs.fin, "data/processed/alberta_protected_areas.shp")
 # create template raster --------------------------------------------------
 
   # Bring in county boundary:
 bhb <- st_read("data/original/BHB_BOUNDARY.shp") # This will prob change to watershed
 
-bhb.buffer <- bhb %>%
-  st_buffer(., 10000) 
+bhb.buffer <- bhb %>%  # buffer by 50km
+  st_buffer(., 50000) 
 
 bhb.buf.v <- bhb.buffer %>% as(., "SpatVector")
+bhb.buf.v <- vect(bhb.buffer)
 
-st_write(bhb.buffer, "data/processed/bhb_10km.shp", append=FALSE)
+st_write(bhb.buffer, "data/processed/bhb_50km.shp", append=FALSE)
 
-temp.rast <- rast(res=c(1000,1000), ext=ext(bhb.buf.v))
-crs(temp.rast) <- crs(bhb.buf.v) # UTM zone 12N for AB
+temp.rast <- rast(res=c(250,250), ext=ext(bhb.buf.v))
+crs(temp.rast) <- "epsg:32612" # UTM zone 12N for AB
 values(temp.rast) <- rep(1, ncell(temp.rast))
 
 ab.pa.proj <- ab.PAs.fin %>% 
@@ -56,4 +57,4 @@ bhb.pa.crop <- terra::mask(bhb.pa.rast, bhb.buf.v)
 dist2pa <- terra::distance(temp.rast, ab.pa.proj)
 dist2pa.km <- measurements::conv_unit(dist2pa, "m", "km")
 writeRaster(dist2pa.km, "data/processed/dist2pa_km_bhb.tif", overwrite=TRUE)
-writeRaster(biosphere.pa.crop, "data/processed/bhb_protected_areas.tif", overwrite=TRUE)
+writeRaster(bhb.pa.crop, "data/processed/bhb_protected_areas.tif", overwrite=TRUE)

@@ -14,7 +14,7 @@ ab_crownlands <- st_read("data/original/Crown_Reservations_2018Dec.shp")
 
 
 # Crop to our Region --------------------------------------------------------
-bhb.buf <- st_read("data/processed/bhb_10km.shp")
+bhb.buf <- st_read("data/processed/bhb_50km.shp")
 
 crown.reproj<- st_transform(ab_crownlands, st_crs(bhb.buf))
 
