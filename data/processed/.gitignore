@@ -84,3 +84,11 @@ bhb_drainage_areas.tif
 bhb_drainage_areas.tif.aux.xml
 dist2drainage_km_bhb.tif
 terrain_ruggedness_bhb.tif
+alberta_protected_areas.dbf
+alberta_protected_areas.prj
+alberta_protected_areas.shp
+alberta_protected_areas.shx
+bhb_50km.dbf
+bhb_50km.prj
+bhb_50km.shp
+bhb_50km.shx
