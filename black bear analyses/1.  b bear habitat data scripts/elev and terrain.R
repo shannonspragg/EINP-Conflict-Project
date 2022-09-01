@@ -21,6 +21,7 @@ elev.bhb.raster <- raster(elev.bhb.crop)
 slope.bhb <- raster::terrain(elev.bhb.raster, opt = "slope", unit='degrees')
 aspect.bhb <- raster::terrain(elev.bhb.raster, opt = "aspect", unit='degrees')
 
+
 # Code aspect into categories: flat, N, NE, E, SE, S, SW, W, NW;
 
 aspect.flat <- (aspect.bhb == -1)
@@ -49,9 +50,14 @@ levels(r) <- rat
 
 
 # Prep terrain ruggedness: --------------------------------------------
-rough <- terrain(elev.can.crop, v="TRI")
+rough <- terrain(elev.bhb.crop, v="TRI")
 rough.max <-  global(rough, "max", na.rm=TRUE)[1,]
 rough.min <-  global(rough, "min", na.rm=TRUE)[1,]
 rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
-rough.proj <- project(rough.rescale, bhs)
+rough.proj <- project(rough.rescale, temp.rast)
+
+writeRaster(rough.proj, "data/processed/terrain_ruggedness_bhb.tif", overwrite=TRUE)
+writeRaster(slope.bhb, "data/processed/slope_bhb.tif", overwrite=TRUE)
+writeRaster(elev.bhb.crop, "data/processed/elevation_bhb.tif", overwrite=TRUE)
+
 
