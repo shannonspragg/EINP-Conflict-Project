@@ -15,13 +15,22 @@ library(gdalUtilities)
 library(dplyr)
 
 # Bring in covariate data: -------------------------------------------------------------
-bhb.10km.boundary <- st_read("data/processed/bhb_10km.shp")
+bhb.50km.boundary <- st_read("data/processed/bhb_10km.shp")
 
-crownland.rast <- rast("data/processed/bhb_crownlands.tif")
+# model 1 Beckman et al., 2015:
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
-wildfires.rast <- rast("data/processed/bhb_fire_history.tif")
-ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
-shrubland.rast <- rast("data/processed/bhb_shrubland.tif")
+elevation <- rast("data/processed/elevation_bhb.tif")
+dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
+pop.dens <- rast("data/processed/human_dens_crop.tif")
+road.dens <- rast("data/processed/bhb_road_density.tif")
+evergreen.forest <- rast("data/processed/evergreen_sum_500m.tif")
+
+# model 2, Loosen et al., 2018
+# crownland.rast <- rast("data/processed/bhb_crownlands.tif")
+# private.land.rast <- rast("data/processed/bhb_privatelands.tif")
+# wildfires.rast <- rast("data/processed/bhb_fire_history.tif")
+# ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
+# shrubland.rast <- rast("data/processed/bhb_shrubland.tif")
 
 bhb.buf.vect <- vect(bhb.10km.boundary)
 # Check Rasters: ----------------------------------------------------------
