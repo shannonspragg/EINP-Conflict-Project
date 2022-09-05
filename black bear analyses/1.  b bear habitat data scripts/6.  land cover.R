@@ -128,14 +128,14 @@ dist2drainage <- terra::distance(template.rast, bhb.water.crop)
 dist2drainage.km <- measurements::conv_unit(dist2drainage, "m", "km")
 
 # Extract Confifer forest within 500m:
-library(exactextractr)
-
-e <- exact_extract(bhb.conifer.rast, bhb.buf)
-
-( confier.sum <- lapply(e, function(x) { length(which(x$value %in% c(1))) / nrow(x) } ) )
-
-bhb.buf$conifer.sum <- unlist(conifer.sum)
-plot( bhb.buf["conifer.sum"] ) 
+# library(exactextractr)
+# 
+# e <- exact_extract(bhb.conifer.rast, bhb.buf)
+# 
+# ( confier.sum <- lapply(e, function(x) { length(which(x$value %in% c(1))) / nrow(x) } ) )
+# 
+# bhb.buf$conifer.sum <- unlist(conifer.sum)
+# plot( bhb.buf["conifer.sum"] ) 
 
 ############# OR THIS
 #extract raster cell count (sum) within each polygon area (poly)

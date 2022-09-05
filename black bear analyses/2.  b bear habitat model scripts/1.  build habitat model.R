@@ -22,7 +22,8 @@ private.land.rast <- rast("data/processed/bhb_privatelands.tif")
 elevation <- rast("data/processed/elevation_bhb.tif")
 dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
 pop.dens <- rast("data/processed/human_dens_crop.tif")
-road.dens <- rast("data/processed/bhb_road_density.tif")
+road.dens.4km <- rast("data/processed/bhb_road_density_4km.tif")
+road.dens.500m <- rast("data/processed/bhb_road_density_500m.tif")
 evergreen.forest <- rast("data/processed/evergreen_sum_500m.tif")
 
 # model 2, Loosen et al., 2018
@@ -35,11 +36,21 @@ evergreen.forest <- rast("data/processed/evergreen_sum_500m.tif")
 bhb.buf.vect <- vect(bhb.10km.boundary)
 # Check Rasters: ----------------------------------------------------------
     # Desired resolution: 250m
-crownland.rast
 private.land.rast
-wildfires.rast
-ndvi.rast
-shrubland.rast
+elevation
+dist2roads
+pop.dens
+road.dens
+evergreen.forest
+
+pop.road.dens <- pop.dens * road.dens.500m
+pop.road.dens
+
+# crownland.rast
+# private.land.rast
+# wildfires.rast
+# ndvi.rast
+# shrubland.rast
 
 plot(crownland.rast)
 plot(private.land.rast)
@@ -47,23 +58,23 @@ plot(wildfires.rast)
 plot(ndvi.rast)
 plot(shrubland.rast)
 
-  # Disaggregate rasters:
-crownland <- disagg(crownland.rast, fact= 4)
-private.land <- disagg(private.land.rast, fact=4)
-wildfires <- disagg(wildfires.rast, fact=4)
-ndvi <- disagg(ndvi.rast, fact= 4)
-shrubland <- disagg(shrubland.rast, fact=4)
+#   # Disaggregate rasters:
+# crownland <- disagg(crownland.rast, fact= 4)
+# private.land <- disagg(private.land.rast, fact=4)
+# wildfires <- disagg(wildfires.rast, fact=4)
+# ndvi <- disagg(ndvi.rast, fact= 4)
+# shrubland <- disagg(shrubland.rast, fact=4)
 
 # Scale Rasters: ----------------------------------------------------------
   # This function scales by subtracting mean and dividing by 1 sd of the original data
   # We need to know the mean and sd of each variable from the top RSF models for male & female black bears
-crownland.sc <- terra::scale(crownland.rast)
-privland.sc <- terra::scale(private.land)
-wildfires.sc <- terra::scale(wildfires.rast)
-ndvi.sc <- terra::scale(ndvi.rast)
-shrubland.sc <- terra::scale(shrubland)
-
-# ## the equivalent, computed in steps
+# crownland.sc <- terra::scale(crownland.rast)
+# privland.sc <- terra::scale(private.land)
+# wildfires.sc <- terra::scale(wildfires.rast)
+# ndvi.sc <- terra::scale(ndvi.rast)
+# shrubland.sc <- terra::scale(shrubland)
+# 
+# # ## the equivalent, computed in steps
 # m <- global(r, "mean")
 # rr <- r - m[,1]
 # rms <- global(rr, "rms")
@@ -71,38 +82,62 @@ shrubland.sc <- terra::scale(shrubland)
 
 # Combine & Multiply by Coefficients: -------------------------------------
 #  (x - mean) / sd = scaled coef. ; need to find x (actual coef) to multiply
-  # Male Black Bears:
-crownland.pred.m <- crownland.sc * -0.75
-privland.pred.m <- privland.sc * -0.25
-wildfires.pred.m <- wildfires.sc * -0.70
-ndvi.pred.m <- ndvi.sc * 0.20
-shrubland.pred.m <- shrubland.sc * 0.0
 
-# Female Black Bears:
-crownland.pred.f <- crownland.sc * -1.20
-privland.pred.f <- privland.sc * -0.25
-wildfires.pred.f <- wildfires.sc * -0.10
-ndvi.pred.f <- ndvi.sc * 0.10
-shrubland.pred.f <- shrubland.sc * 0.05
+# Beckmen et al., 2015:
+private.land.pred <- private.land.rast * −1.8454
+elevation.pred <- elevation * −0.8350
+dist2roads.pred <- dist2roads * 1.5425
+pop.road.dens.pred <- pop.road.dens * −71.8514
+road.dens.4km.pred <- road.dens.4km * −0.4614
+evergreen.forest.pred <- evergreen.forest * 1.7716
+
+
+
+# Loosen et al., 2018:
+  # Male Black Bears:
+# crownland.pred.m <- crownland.sc * -0.75
+# privland.pred.m <- privland.sc * -0.25
+# wildfires.pred.m <- wildfires.sc * -0.70
+# ndvi.pred.m <- ndvi.sc * 0.20
+# shrubland.pred.m <- shrubland.sc * 0.0
+# 
+# # Female Black Bears:
+# crownland.pred.f <- crownland.sc * -1.20
+# privland.pred.f <- privland.sc * -0.25
+# wildfires.pred.f <- wildfires.sc * -0.10
+# ndvi.pred.f <- ndvi.sc * 0.10
+# shrubland.pred.f <- shrubland.sc * 0.05
 
 
 # Stack Precictor Rasters -------------------------------------------------
 
-male.habitat.stack <- c(crownland.pred.m, privland.pred.m, wildfires.pred.m, ndvi.pred.m, shrubland.pred.m)
+# model 1:
+bear.hab.stack <- c(private.land.pred, elevation.pred, dist2roads.pred, pop.road.dens.pred, road.dens.4km.pred, evergreen.forest.pred )
 
-female.habitat.stack <- c(crownland.pred.f, privland.pred.f, wildfires.pred.f, ndvi.pred.f, shrubland.pred.f)
 
+# model 2: Loosen et al., 2018:
+# male.habitat.stack <- c(crownland.pred.m, privland.pred.m, wildfires.pred.m, ndvi.pred.m, shrubland.pred.m)
+# 
+# female.habitat.stack <- c(crownland.pred.f, privland.pred.f, wildfires.pred.f, ndvi.pred.f, shrubland.pred.f)
+# 
 
 # Convert to Probability Scale (IF NEEDED): -------------------------------
 
-linpred.rast.m <- sum(male.habitat.stack, na.rm=TRUE)
-habitat.prob.rast.m <- (exp(linpred.rast.m))/(1 + exp(linpred.rast.m))
+# Model 1:
 
-linpred.rast.f <- sum(female.habitat.stack, na.rm=TRUE)
-habitat.prob.rast.f <- (exp(linpred.rast.f))/(1 + exp(linpred.rast.f))
+linpred.rast <- sum(bear.hab.stack, na.rm=TRUE)
+habitat.prob.rast <- (exp(linpred.rast))/(1 + exp(linpred.rast))
+plot(habitat.prob.rast)
 
-plot(habitat.prob.rast.m)
-plot(habitat.prob.rast.f)
+# Model 2:
+# linpred.rast.m <- sum(male.habitat.stack, na.rm=TRUE)
+# habitat.prob.rast.m <- (exp(linpred.rast.m))/(1 + exp(linpred.rast.m))
+# 
+# linpred.rast.f <- sum(female.habitat.stack, na.rm=TRUE)
+# habitat.prob.rast.f <- (exp(linpred.rast.f))/(1 + exp(linpred.rast.f))
+# 
+# plot(habitat.prob.rast.m)
+# plot(habitat.prob.rast.f)
 
 writeRaster(habitat.prob.rast.m, "data/processed/male_bbear_habitat_suitability.tif") # for 50km buf of beaver hills watershed
 writeRaster(habitat.prob.rast.f, "data/processed/female_bbear_habitat_suitability.tif") # (crop to watershed after Omniscape)

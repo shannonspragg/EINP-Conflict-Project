@@ -42,9 +42,9 @@ temp.raster <- raster(temp.rast)
 roads.crop <- st_crop(ab.roads.reproj, c(xmin=295652.2, xmax=439902.2, ymin=5846234, ymax=6010984))
 road.density <- rasterize(roads.crop, temp.raster, fun='count', background=0)
 
-road.dens.sqkm <- road.density / raster::area(road.density)
-road.dens.sq <- expanse(road.density, unit="km")
+road.dens.sqkm <- road.density / raster::area(road.density) # road density at 1km
+road.dens.4km <- aggregate(road.density, 16) # make this a 4km resolution?
 
 writeRaster(dist2roads.km, "data/processed/dist2roads_km_bhb.tif", overwrite=TRUE)
-#writeRaster(bhb.roads.crop, "data/processed/bhb_roads.tif", overwrite=TRUE)
+writeRaster(bhb.roads.crop, "data/processed/bhb_roads.tif", overwrite=TRUE)
 

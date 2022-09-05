@@ -48,6 +48,8 @@ biophys_resistance <- (1+biophys_fuzsum)^10
 writeRaster(biophys_resistance, "Data/processed/biophys_resist.tif")
 
 
+
+
 # Add prob conflict for biophys + social surface --------------------------
 
 prob.bear.conf <- rast("Data/processed/prob_conflict_bears_bhw.tif")
