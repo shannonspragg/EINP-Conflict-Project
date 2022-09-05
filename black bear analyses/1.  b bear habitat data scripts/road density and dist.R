@@ -27,20 +27,23 @@ dist2roads <- terra::distance(temp.rast, ab.roads.v)
 dist2roads.km <- measurements::conv_unit(dist2roads, "m", "km")
 
 # Road density at 4km raster:
-bhb.roads <- intersect(ab.roads.reproj, bhb.bound)
-bhb.road.v <- vect(bhb.roads)
-
-bhb.roads.crop$length <- perim(bhb.road.v) / 4000 #km
-road.dens <- tapply(bhb.roads.crop$length, bhb.roads.crop$RB_UID, sum)
-
-road.dens.rast <- rast(road.dens)
-bhb.roads.crop[as.integer(names(bhb.roads.crop))] <- as.vector(road.dens)
+# bhb.roads <- intersect(ab.roads.reproj, bhb.bound)
+# bhb.road.v <- vect(bhb.roads)
+# 
+# bhb.roads.crop$length <- perim(bhb.road.v) / 4000 #km
+# road.dens <- tapply(bhb.roads.crop$length, bhb.roads.crop$RB_UID, sum)
+# 
+# road.dens.rast <- rast(road.dens)
+# bhb.roads.crop[as.integer(names(bhb.roads.crop))] <- as.vector(road.dens)
 
 # OR THIS:
 temp.raster <- raster(temp.rast)
 
-road.density <- rasterize(ab.roads.reproj, temp.raster, fun='count', background=0)
+roads.crop <- st_crop(ab.roads.reproj, c(xmin=295652.2, xmax=439902.2, ymin=5846234, ymax=6010984))
+road.density <- rasterize(roads.crop, temp.raster, fun='count', background=0)
 
+road.dens.sqkm <- road.density / raster::area(road.density)
+road.dens.sq <- expanse(road.density, unit="km")
 
 writeRaster(dist2roads.km, "data/processed/dist2roads_km_bhb.tif", overwrite=TRUE)
 #writeRaster(bhb.roads.crop, "data/processed/bhb_roads.tif", overwrite=TRUE)
