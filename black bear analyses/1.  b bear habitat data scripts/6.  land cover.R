@@ -107,6 +107,9 @@ conifer.r <- terra::mask(bhb.rast, bhb.conifer.rast, updatevalue=0)
 names(conifer.r)[names(conifer.r) == "OBJECTID"] <- "coninfer mix"
 bhb.conifer.rast <- terra::mask(conifer.r, bhb.v)
 
+  # Make Evergreen forest at 500m:
+evergreen.500m <- aggregate(bhb.conifer.rast, 2) #This gives us a "buffer" zone of edge forest at the new resolution
+
 # Make broadleaf a continuous raster:
 bhb.broadleaf.rast[0] <- 1
 bhb.broadleaf.rast[bhb.broadleaf.rast == 0] <- 1
@@ -127,21 +130,6 @@ bhb.alpinemix.rast <- terra::mask(alpine.r, bhb.v)
 dist2drainage <- terra::distance(template.rast, bhb.water.crop)
 dist2drainage.km <- measurements::conv_unit(dist2drainage, "m", "km")
 
-# Extract Confifer forest within 500m:
-# library(exactextractr)
-# 
-# e <- exact_extract(bhb.conifer.rast, bhb.buf)
-# 
-# ( confier.sum <- lapply(e, function(x) { length(which(x$value %in% c(1))) / nrow(x) } ) )
-# 
-# bhb.buf$conifer.sum <- unlist(conifer.sum)
-# plot( bhb.buf["conifer.sum"] ) 
-
-############# OR THIS
-#extract raster cell count (sum) within each polygon area (poly)
-
-  ex <- extract(bhb.confier.rast, bhb.buf, fun=sum, na.rm=TRUE, df=TRUE)
-
 
 # Save rasters
 #terra::writeRaster(bhb.landcover.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
@@ -152,4 +140,4 @@ terra::writeRaster(bhb.broadleaf.rast, "data/processed/bhb_broadleaf_mix.tif", o
 terra::writeRaster(bhb.alpinemix.rast, "data/processed/bhb_alpine_mix.tif", overwrite=TRUE)
 writeRaster(dist2drainage.km, "data/processed/dist2drainage_km_bhb.tif", overwrite=TRUE)
 writeRaster(bhb.water.rast, "data/processed/bhb_drainage_areas.tif", overwrite=TRUE)
-
+writeRaster(evergreen.500m, "data/processed/bhb_evergreen_500m.tif", overwrite = TRUE)
