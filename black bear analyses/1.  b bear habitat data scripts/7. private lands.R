@@ -16,7 +16,7 @@ ab_firstnations <- st_read("data/original/AL_TA_AB_2_146_CONFIRMED_eng.shp")
 
 
 # Crop to our Region --------------------------------------------------------
-bhb.buf <- st_read("data/processed/bhb_10km.shp") # change to bhw
+bhb.buf <- st_read("data/processed/bhb_50km.shp") # change to bhw
 
 firstnation.reproj<- st_transform(ab_firstnations, st_crs(bhb.buf))
 
@@ -54,10 +54,14 @@ bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
 land.tenure.rsmpl <- terra::resample(land.tenure.stack, bhb.rast)
 # land.tenure.stack[land.tenure.stack > -1] <- 1 # make our public, native, and protected lands 1
 
+
+
+
 # Make private lands from the inverse of our other land tenures
-private.lands <- terra::mask(bhb.rast, land.tenure.rsmpl, updatevalue=100)
+private.lands <- terra::mask(land.tenure.rsmpl, bhb.rast, updatevalue=150)
 private.lands[private.lands == 1] <- 0
 private.lands[private.lands == 100] <- 1
+
 
 private.lands.rast <- terra::mask(private.lands, bhb.v)
 names(private.lands.rast)[names(private.lands.rast) == "OBJECTID"] <- "private_lands"

@@ -78,7 +78,7 @@ bhb.grassland.rast <- terra::rasterize(bhb.grass.crop, template.rast, field = "L
 bhb.conifer.rast <- terra::rasterize(bhb.conifer.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.broadleaf.rast <- terra::rasterize(bhb.broadleaf.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.alpinemix.rast <- terra::rasterize(bhb.alpine.crop, template.rast, field = "LC_DESCRIPTION")
-# bhb.water.rast <- terra::rasterize(bhb.water.crop, template.rast, field = "LC_DESCRIPTION")
+#bhb.water.rast <- terra::rasterize(bhb.water.crop, template.rast, field = "LC_DESCRIPTION")
 
 
 # Make shrubland a continuous raster:
@@ -127,9 +127,24 @@ bhb.alpinemix.rast <- terra::mask(alpine.r, bhb.v)
 dist2drainage <- terra::distance(template.rast, bhb.water.crop)
 dist2drainage.km <- measurements::conv_unit(dist2drainage, "m", "km")
 
+# Extract Confifer forest within 500m:
+library(exactextractr)
+
+e <- exact_extract(bhb.conifer.rast, bhb.buf)
+
+( confier.sum <- lapply(e, function(x) { length(which(x$value %in% c(1))) / nrow(x) } ) )
+
+bhb.buf$conifer.sum <- unlist(conifer.sum)
+plot( bhb.buf["conifer.sum"] ) 
+
+############# OR THIS
+#extract raster cell count (sum) within each polygon area (poly)
+
+  ex <- extract(bhb.confier.rast, bhb.buf, fun=sum, na.rm=TRUE, df=TRUE)
+
 
 # Save rasters
-terra::writeRaster(bhb.landcover.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
+#terra::writeRaster(bhb.landcover.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
 terra::writeRaster(bhb.shrub.rast, "data/processed/bhb_shrubland.tif", overwrite=TRUE)
 terra::writeRaster(bhb.grassland.rast, "data/processed/bhb_grassland.tif", overwrite=TRUE)
 terra::writeRaster(bhb.conifer.rast, "data/processed/bhb_conifer_mix.tif", overwrite=TRUE)
