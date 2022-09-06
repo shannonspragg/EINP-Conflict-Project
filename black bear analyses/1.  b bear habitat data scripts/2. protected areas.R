@@ -42,7 +42,7 @@ bhb.buf.v <- vect(bhb.buffer)
 
 st_write(bhb.buffer, "data/processed/bhb_50km.shp", append=FALSE)
 
-temp.rast <- rast(res=c(250,250), ext=ext(bhb.buf.v))
+temp.rast <- rast(res=c(30,30), ext=ext(bhb.buf.v)) # Let's do a 30x30 res to match land cover
 crs(temp.rast) <- "epsg:32612" # UTM zone 12N for AB
 values(temp.rast) <- rep(1, ncell(temp.rast))
 
@@ -50,11 +50,12 @@ ab.pa.proj <- ab.PAs.fin %>%
   st_transform(., crs=crs(temp.rast)) %>%
   as(., "SpatVector")
 
-bhb.pa.rast <- terra::rasterize(ab.pa.proj, temp.rast, field = "NAME_E")
-bhb.pa.crop <- terra::mask(bhb.pa.rast, bhb.buf.v)
+bhb.pa.rast <- terra::rasterize(ab.pa.proj, temp.rast, field = "NAME_E") 
+bhb.pa.crop <- terra::mask(bhb.pa.rast, bhb.buf.v) # we want the uncropped one for our model
 
   # Dist to PA raster:
 dist2pa <- terra::distance(temp.rast, ab.pa.proj)
 dist2pa.km <- measurements::conv_unit(dist2pa, "m", "km")
 writeRaster(dist2pa.km, "data/processed/dist2pa_km_bhb.tif", overwrite=TRUE)
-writeRaster(bhb.pa.crop, "data/processed/bhb_protected_areas.tif", overwrite=TRUE)
+writeRaster(bhb.pa.rast, "data/processed/bhb_protected_areas.tif", overwrite=TRUE)
+writeRaster(temp.rast, "data/processed/bhb_50km_template_rast.tif", overwrite=TRUE)

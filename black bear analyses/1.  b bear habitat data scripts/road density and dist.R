@@ -53,6 +53,10 @@ road.dens.500m <- disaggregate(road.density.1km, 2) # make this a 4km resolution
 # road.dens.4sqkm <- road.dens.4km / raster::area(road.dens.4km) # road density 1km
 # road.dens.500sqkm <- road.dens.500m / raster::area(road.dens.500m) # road density 1km
 
+# check for NA's:
+
+
+
 writeRaster(road.dens.4km, "data/processed/bhb_road_density_4km.tif", overwrite=TRUE)
 writeRaster(road.dens.500m, "data/processed/bhb_road_density_500m.tif", overwrite=TRUE)
 writeRaster(dist2roads.km, "data/processed/dist2roads_km_bhb.tif", overwrite=TRUE)

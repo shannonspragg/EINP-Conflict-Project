@@ -63,7 +63,7 @@ private.lands[private.lands == 1] <- 0
 private.lands[private.lands == 100] <- 1
 
 
-private.lands.rast <- terra::mask(private.lands, bhb.v)
+#private.lands.rast <- terra::mask(private.lands, bhb.v)
 names(private.lands.rast)[names(private.lands.rast) == "OBJECTID"] <- "private_lands"
 
 terra::writeRaster(private.lands.rast, "data/processed/bhb_privatelands.tif", overwrite=TRUE)

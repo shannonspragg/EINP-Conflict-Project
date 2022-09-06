@@ -130,6 +130,8 @@ bhb.alpinemix.rast <- terra::mask(alpine.r, bhb.v)
 dist2drainage <- terra::distance(template.rast, bhb.water.crop)
 dist2drainage.km <- measurements::conv_unit(dist2drainage, "m", "km")
 
+# CHECK FOR NA'S:
+
 
 # Save rasters
 #terra::writeRaster(bhb.landcover.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
