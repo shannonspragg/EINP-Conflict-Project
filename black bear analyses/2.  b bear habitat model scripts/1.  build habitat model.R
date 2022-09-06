@@ -21,10 +21,10 @@ bhb.50km.boundary <- st_read("data/processed/bhb_10km.shp")
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
 elevation <- rast("data/processed/elevation_bhb.tif")
 dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
-pop.dens <- rast("data/processed/human_dens_crop.tif")
+pop.dens <- rast("data/processed/human_dens_bhb.tif")
 road.dens.4km <- rast("data/processed/bhb_road_density_4km.tif")
 road.dens.500m <- rast("data/processed/bhb_road_density_500m.tif")
-evergreen.forest <- rast("data/processed/evergreen_sum_500m.tif")
+evergreen.forest <- rast("data/processed/bhb_evergreen_500m.tif")
 
 # model 2, Loosen et al., 2018
 # crownland.rast <- rast("data/processed/bhb_crownlands.tif")
@@ -33,18 +33,29 @@ evergreen.forest <- rast("data/processed/evergreen_sum_500m.tif")
 # ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
 # shrubland.rast <- rast("data/processed/bhb_shrubland.tif")
 
-bhb.buf.vect <- vect(bhb.10km.boundary)
+bhb.buf.vect <- vect(bhb.50km.boundary)
 # Check Rasters: ----------------------------------------------------------
-    # Desired resolution: 250m
+    # Desired resolution: 250m --> NEED TO PICK RESOLUTION AND FIX EXTENTS!!!
 private.land.rast
 elevation
 dist2roads
 pop.dens
-road.dens
+road.dens.4km # these extents are off..
+road.dens.500m
 evergreen.forest
 
-pop.road.dens <- pop.dens * road.dens.500m
+road.dens.4km.rsmpl <- project(road.dens.4km, temp.rast)
+
+road.dens.500.rsmpl <- project(road.dens.500m, temp.rast)
+pop.dens.rsmpl <- resample(pop.dens, temp.rast)
+pop.road.dens <- pop.dens.rsmpl * road.dens.500.rsmpl
 pop.road.dens
+
+private.land.rsmpl <- resample(private.land.rast, temp.rast)
+private.land.rsmpl
+dist2roads.rsmpl <- resample(dist2roads, temp.rast)
+
+evergreen.rsmpl <- resample(evergreen.forest, temp.rast) # VHECK IF THIS IS CORRECT
 
 # crownland.rast
 # private.land.rast
@@ -84,13 +95,19 @@ plot(shrubland.rast)
 #  (x - mean) / sd = scaled coef. ; need to find x (actual coef) to multiply
 
 # Beckmen et al., 2015:
-private.land.pred <- private.land.rast * −1.8454
-elevation.pred <- elevation * −0.8350
-dist2roads.pred <- dist2roads * 1.5425
-pop.road.dens.pred <- pop.road.dens * −71.8514
-road.dens.4km.pred <- road.dens.4km * −0.4614
-evergreen.forest.pred <- evergreen.forest * 1.7716
+private.land.pred <- -1.8454 * private.land.rsmpl
+elevation.pred <- elevation * (-0.8350)
+dist2roads.pred <- dist2roads.rsmpl * (1.5425)
+pop.road.dens.pred <- pop.road.dens * (-71.8514)
+road.dens.4km.pred <- road.dens.4km.rsmpl * (-0.4614)
+evergreen.forest.pred <- evergreen.rsmpl * (1.7716)
 
+private.land.pred
+elevation.pred
+dist2roads.pred
+pop.road.dens.pred
+road.dens.4km.pred
+evergreen.forest.pred
 
 
 # Loosen et al., 2018:
@@ -125,7 +142,7 @@ bear.hab.stack <- c(private.land.pred, elevation.pred, dist2roads.pred, pop.road
 
 # Model 1:
 
-linpred.rast <- sum(bear.hab.stack, na.rm=TRUE)
+linpred.rast <- sum(bear.hab.stack)#, na.rm=TRUE)
 habitat.prob.rast <- (exp(linpred.rast))/(1 + exp(linpred.rast))
 plot(habitat.prob.rast)
 

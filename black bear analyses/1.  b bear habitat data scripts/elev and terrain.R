@@ -12,6 +12,7 @@ library(raster)
 bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 bhb.bound.v <- vect(bhb.50km.boundary)
+temp.raster <- raster("data/processed/dist2pa_km_bhb.tif")
 
 # Prep elevation data: ----------------------------------------------------
 elev.can <- rast(raster::getData('alt', country = 'CAN'))
@@ -21,6 +22,8 @@ elev.bhb.raster <- raster(elev.bhb.crop)
 slope.bhb <- raster::terrain(elev.bhb.raster, opt = "slope", unit='degrees')
 #aspect.bhb <- raster::terrain(elev.bhb.raster, opt = "aspect", unit='degrees')
 
+elev.rsmpl <- raster::projectRaster(elev.bhb.raster, temp.raster)
+slope.rsmpl <- raster::projectRaster(slope.bhb, temp.raster)
 
 # Code aspect into categories: flat, N, NE, E, SE, S, SW, W, NW;
 # 
@@ -57,7 +60,7 @@ rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
 rough.proj <- project(rough.rescale, temp.rast)
 
 writeRaster(rough.proj, "data/processed/terrain_ruggedness_bhb.tif", overwrite=TRUE)
-writeRaster(slope.bhb, "data/processed/slope_bhb.tif", overwrite=TRUE)
-writeRaster(elev.bhb.crop, "data/processed/elevation_bhb.tif", overwrite=TRUE)
+writeRaster(slope.rsmpl, "data/processed/slope_bhb.tif", overwrite=TRUE)
+writeRaster(elev.rsmpl, "data/processed/elevation_bhb.tif", overwrite=TRUE)
 
 
