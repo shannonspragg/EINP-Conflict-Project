@@ -57,8 +57,8 @@ road.dens.500m <- disaggregate(road.density.1km, 2) # make this a 4km resolution
 table(is.na(road.dens.4km[])) #FALSE, no NA's
 table(is.na(road.dens.500m[])) #FALSE, no NA's
 
-road.dens.4km.rast <- rast(road.dens.4km)
-road.dens.4km.crop <- crop(road.dens.4km.rast, temp.rast)
+# road.dens.4km.rast <- rast(road.dens.4km)
+# road.dens.4km.crop <- crop(road.dens.4km.rast, temp.rast)
 
 writeRaster(road.density.1km, "data/processed/bhb_road_density_1km.tif", overwrite=TRUE)
 writeRaster(road.dens.4km, "data/processed/bhb_road_density_4km.tif", overwrite=TRUE)
