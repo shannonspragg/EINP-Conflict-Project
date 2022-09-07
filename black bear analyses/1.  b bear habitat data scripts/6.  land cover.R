@@ -10,6 +10,7 @@ library(rgdal)
 library(terra)
 library(gdalUtilities)
 library(dplyr)
+library(raster)
 
 # Load Land cover data -------------------------------------------------------------
 
@@ -42,9 +43,8 @@ broadleaf <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Broadleaf F
 alpine.mixed <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Mixed Forest")
 water <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Water")
 # Subset forest, alpine, shrub, grassland for generalist species resistance:
-generalist_habitat <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Shrubland", ab_landcover$LC_DESCRIPTION == "Grassland",
-                                              ab_landcover$LC_DESCRIPTION == "Mixed Forest", ab_landcover$LC_DESCRIPTION == "Coniferous Forest",
-                                              ab_landcover$LC_DESCRIPTION == "Broadleaf Forest")
+generalist_habitat <- dplyr::filter(ab_landcover, LC_DESCRIPTION == "Shrubland" | LC_DESCRIPTION == "Grassland" | LC_DESCRIPTION == "Coniferous Forest"
+                                    | LC_DESCRIPTION == "Broadleaf Forest" | LC_DESCRIPTION == "Mixed Forest")
 
 # Crop to our Region --------------------------------------------------------
 bhb.buf <- st_read("data/processed/bhb_50km.shp") # Beaver Hills Watershed
@@ -66,7 +66,7 @@ conifer.v <- vect(conifer.mix)
 broadleaf.v <- vect(broadleaf)
 alpinemix.v <- vect(alpine.mixed)
 water.v <- vect(water)
-generalist.v vect(generalist_habitat)
+generalist.v <- vect(generalist_habitat)
 
 #bhb.landcover.crop <- crop(landcover.v, template.rast)
 bhb.shrub.crop <- crop(shrubland.v, template.rast)
@@ -134,13 +134,13 @@ dist2drainage.km <- measurements::conv_unit(dist2drainage, "m", "km")
 
 
 # Make generalist a continuous raster:
-bhb.generalist.rast[bhb.generalist.rast == 210] <- 1
+bhb.generalist.rast[bhb.generalist.rast >= 50] <- 1
 bhb.generalist.raster <- raster(bhb.generalist.rast)
 bhb.generalist.raster[is.na(bhb.generalist.raster[])] <- 0 
 
 
 # CHECK FOR NA'S:
-
+table(is.na(bhb.generalist.raster[])) # FALSE
 
 # Save rasters
 #terra::writeRaster(bhb.landcover.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
