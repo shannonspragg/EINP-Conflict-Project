@@ -7,6 +7,7 @@ library(rgdal)
 library(terra)
 library(gdalUtilities)
 library(dplyr)
+library(raster)
 
 # Load Land cover data -------------------------------------------------------------
 

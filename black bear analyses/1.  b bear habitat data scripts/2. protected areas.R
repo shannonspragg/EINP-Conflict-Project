@@ -29,6 +29,7 @@ ab.PAs.iucn.filtered$areaha <- as.numeric(ab.PAs.iucn.filtered$areaha)
 ab.PAs.fin <- filter(ab.PAs.iucn.filtered, areaha > 100) 
 
 st_write(ab.PAs.fin, "data/processed/alberta_protected_areas.shp")
+#ab.PAs.fin <- st_read("data/processed/alberta_protected_areas.shp")
 # create template raster --------------------------------------------------
 
   # Bring in county boundary:
@@ -42,7 +43,7 @@ bhb.buf.v <- vect(bhb.buffer)
 
 st_write(bhb.buffer, "data/processed/bhb_50km.shp", append=FALSE)
 
-temp.rast <- rast(res=c(30,30), ext=ext(bhb.buf.v)) # Let's do a 30x30 res to match land cover
+temp.rast <- rast(res=c(250,250), ext=ext(bhb.buf.v)) # Let's do a 250x250 res for computational purposes
 crs(temp.rast) <- "epsg:32612" # UTM zone 12N for AB
 values(temp.rast) <- rep(1, ncell(temp.rast))
 

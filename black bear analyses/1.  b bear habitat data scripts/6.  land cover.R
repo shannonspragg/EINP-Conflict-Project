@@ -113,7 +113,7 @@ bhb.conifer.raster[is.na(bhb.conifer.raster[])] <- 0
 # bhb.conifer.rast <- terra::mask(conifer.r, bhb.v)
 
   # Make Evergreen forest at 500m:
-evergreen.500m <- aggregate(bhb.conifer.raster, 17) #This gives us a "buffer" zone of edge forest at the new resolution
+evergreen.500m <- aggregate(bhb.conifer.raster, 2) #This gives us a "buffer" zone of edge forest at the new resolution
 
 # Make broadleaf a continuous raster:
 bhb.broadleaf.rast[0] <- 1
