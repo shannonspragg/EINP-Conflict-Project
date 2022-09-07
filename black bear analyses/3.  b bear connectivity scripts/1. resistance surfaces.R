@@ -11,17 +11,18 @@ library(tidyverse)
 
 
 # Load Data: --------------------------------------------------------------
-bhs <- rast("data/processed/male_bbear_habitat_suitability.tif")
+bhs <- rast("data/processed/bear_habitat_suitability.tif")
+temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 ghm1 <- rast("data/original/gHMv1_300m_2017_static-0000000000-0000000000.tif") 
 # ghm2 <- rast("/Users/mattwilliamson/Google Drive/My Drive/SpaSES Lab/Shared Data Sets/Wildlife Survey/data/original/rasters/gHMv1_300m_2017_static-0000046592-0000000000.tif")
 
 
-ghm1.crp <- project(ghm1, bhs) # crop to bhw buffer
+ghm1.crp <- project(ghm1, temp.rast) # crop to bhw buffer
 # ghm2.crp <- project(ghm2, bhs)
 # ghm.mos <- mosaic(ghm1.crp, ghm2.crp, fun="max")
 ghm.conv <- ghm1.crp/65536
 
-bhw.bound <- st_read("Data/original/bhw_boundary.shp") %>% # MAKE SURE FILE IS UPDATED
+bhb.bound <- st_read("Data/original/bhb_boundary.shp") %>% # MAKE SURE FILE IS UPDATED
   st_buffer(., 500000) %>% st_transform(., crs=crs(bhs)) %>% 
   as(., "SpatVector")
 elev.can <- rast(raster::getData('alt', country = 'CAN'))
@@ -47,6 +48,10 @@ writeRaster(biophys_fuzsum,"Data/processed/biophys_fuzsum.tif" )
 biophys_resistance <- (1+biophys_fuzsum)^10
 writeRaster(biophys_resistance, "Data/processed/biophys_resist.tif")
 
+
+# Generalist focal species biophysical resistance -------------------------
+    # Prep model for "generalist" biophysical resistance. Combine land cover of alpine, forest, grassland, shrubland
+    # as ideal habitat and then apply a resistance penalty to all other cover types (x conductance values by .5 for all pixels outside ideal veg type)
 
 
 
