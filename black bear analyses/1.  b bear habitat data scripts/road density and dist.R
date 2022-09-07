@@ -34,7 +34,7 @@ crs(template.rast.1km) <- "epsg:32612" # UTM zone 12N for AB
 values(template.rast.1km) <- rep(1, ncell(template.rast.1km))
 temp.raster.1km <- raster(template.rast.1km)
 
-roads.crop <- st_crop(ab.roads.reproj, c(xmin=295652.2, xmax=439832.2, ymin=5846234, ymax=6011054))
+roads.crop <- st_crop(ab.roads.reproj, c(xmin=295652.2, xmax=439902.2, ymin=5846234, ymax=6010984))
 road.density.1km <- rasterize(roads.crop, temp.raster.1km, fun='count', background=0)
 # 
 # e <- extent(295652.2, 439832.2, 5846234, 6011054)
