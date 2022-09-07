@@ -34,14 +34,17 @@ ab_landcover <- ab_landcover %>%
                      ab_landcover$LC_class == 230 ~ "Mixed Forest", # alpine mixed forest
   ))
 
-# Subset out shrubland:
+# Subset out shrubland and other types:
 shrubland <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Shrubland")
 grassland <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Grassland")
 conifer.mix <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Coniferous Forest")
 broadleaf <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Broadleaf Forest")
 alpine.mixed <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Mixed Forest")
 water <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Water")
-
+# Subset forest, alpine, shrub, grassland for generalist species resistance:
+generalist_habitat <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Shrubland", ab_landcover$LC_DESCRIPTION == "Grassland",
+                                              ab_landcover$LC_DESCRIPTION == "Mixed Forest", ab_landcover$LC_DESCRIPTION == "Coniferous Forest",
+                                              ab_landcover$LC_DESCRIPTION == "Broadleaf Forest")
 
 # Crop to our Region --------------------------------------------------------
 bhb.buf <- st_read("data/processed/bhb_50km.shp") # Beaver Hills Watershed
@@ -63,6 +66,7 @@ conifer.v <- vect(conifer.mix)
 broadleaf.v <- vect(broadleaf)
 alpinemix.v <- vect(alpine.mixed)
 water.v <- vect(water)
+generalist.v vect(generalist_habitat)
 
 #bhb.landcover.crop <- crop(landcover.v, template.rast)
 bhb.shrub.crop <- crop(shrubland.v, template.rast)
@@ -71,6 +75,7 @@ bhb.conifer.crop <- crop(conifer.v, template.rast)
 bhb.broadleaf.crop <- crop(broadleaf.v, template.rast)
 bhb.alpine.crop <- crop(alpinemix.v, template.rast)
 bhb.water.crop <- crop(water.v, template.rast)
+bhb.generalist.crop <- crop(generalist.v, template.rast)
 
 #bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_DESCRIPTION")
@@ -79,7 +84,7 @@ bhb.conifer.rast <- terra::rasterize(bhb.conifer.crop, template.rast, field = "L
 bhb.broadleaf.rast <- terra::rasterize(bhb.broadleaf.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.alpinemix.rast <- terra::rasterize(bhb.alpine.crop, template.rast, field = "LC_DESCRIPTION")
 #bhb.water.rast <- terra::rasterize(bhb.water.crop, template.rast, field = "LC_DESCRIPTION")
-
+bhb.generalist.rast <- terra::rasterize(bhb.generalist.crop, template.rast, field = "LC_class")
 
 # Make shrubland a continuous raster:
 bhb.shrubland.rast[0] <- 1
@@ -104,14 +109,6 @@ bhb.conifer.rast[bhb.conifer.rast == 210] <- 1
 bhb.conifer.raster <- raster(bhb.conifer.rast)
 bhb.conifer.raster[is.na(bhb.conifer.raster[])] <- 0 
 
-
-# bhb.conifer.rast[0] <- 1
-# bhb.conifer.rast[bhb.conifer.rast == 0] <- 1
-# 
-# conifer.r <- terra::mask(bhb.rast, bhb.conifer.rast, updatevalue=0)
-# names(conifer.r)[names(conifer.r) == "OBJECTID"] <- "coninfer mix"
-# bhb.conifer.rast <- terra::mask(conifer.r, bhb.v)
-
   # Make Evergreen forest at 500m:
 evergreen.500m <- aggregate(bhb.conifer.raster, 2) #This gives us a "buffer" zone of edge forest at the new resolution
 
@@ -135,6 +132,13 @@ bhb.alpinemix.rast <- terra::mask(alpine.r, bhb.v)
 dist2drainage <- terra::distance(template.rast, bhb.water.crop)
 dist2drainage.km <- measurements::conv_unit(dist2drainage, "m", "km")
 
+
+# Make generalist a continuous raster:
+bhb.generalist.rast[bhb.generalist.rast == 210] <- 1
+bhb.generalist.raster <- raster(bhb.generalist.rast)
+bhb.generalist.raster[is.na(bhb.generalist.raster[])] <- 0 
+
+
 # CHECK FOR NA'S:
 
 
@@ -148,3 +152,4 @@ terra::writeRaster(bhb.alpinemix.rast, "data/processed/bhb_alpine_mix.tif", over
 writeRaster(dist2drainage.km, "data/processed/dist2drainage_km_bhb.tif", overwrite=TRUE)
 writeRaster(bhb.water.rast, "data/processed/bhb_drainage_areas.tif", overwrite=TRUE)
 writeRaster(evergreen.500m, "data/processed/bhb_evergreen_500m.tif", overwrite = TRUE)
+writeRaster(bhb.generalist.raster, "data/processed/bhb_generalist_lc.tif", overwrite = TRUE)
