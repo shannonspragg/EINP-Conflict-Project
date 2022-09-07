@@ -35,7 +35,7 @@ evergreen.forest <- rast("data/processed/bhb_evergreen_500m.tif")
 
 bhb.buf.vect <- vect(bhb.50km.boundary)
 # Check Rasters: ----------------------------------------------------------
-    # Desired resolution: 250m --> NEED TO PICK RESOLUTION AND FIX EXTENTS!!!
+    # Desired resolution: 30m 
 private.land.rast
 elevation
 dist2roads
@@ -44,18 +44,33 @@ road.dens.4km # these extents are off..
 road.dens.500m
 evergreen.forest
 
-road.dens.4km.rsmpl <- project(road.dens.4km, temp.rast)
+# Crop our rasters to the BHB buffer shape:
+bhb.50km.v <- vect(bhb.50km.boundary)
 
-road.dens.500.rsmpl <- project(road.dens.500m, temp.rast)
-pop.dens.rsmpl <- resample(pop.dens, temp.rast)
-pop.road.dens <- pop.dens.rsmpl * road.dens.500.rsmpl
+private.land.bhb <- terra::mask(private.land.rast, bhb.50km.v)
+elevation.bhb <- terra::mask(elevation, bhb.50km.v)
+dist2roads.bhb <- terra::mask(dist2roads, bhb.50km.v)
+pop.dens.bhb <- terra::mask(pop.dens, bhb.50km.v)
+road.dens.4km.bhb <- terra::mask(road.dens.4km, bhb.50km.v)
+road.dens.500m.bhb <- terra::mask(road.dens.500m, bhb.50km.v)
+evergreen.bhb <- terra::mask(evergreen.forest, bhb.50km.v)
+
+pop.road.dens <- pop.dens.bhb * road.dens.500m.bhb
 pop.road.dens
 
-private.land.rsmpl <- resample(private.land.rast, temp.rast)
-private.land.rsmpl
-dist2roads.rsmpl <- resample(dist2roads, temp.rast)
 
-evergreen.rsmpl <- resample(evergreen.forest, temp.rast) # VHECK IF THIS IS CORRECT
+# road.dens.4km.rsmpl <- project(road.dens.4km, temp.rast)
+# 
+# road.dens.500.rsmpl <- project(road.dens.500m, temp.rast)
+# pop.dens.rsmpl <- resample(pop.dens, temp.rast)
+# pop.road.dens <- pop.dens.rsmpl * road.dens.500.rsmpl
+# pop.road.dens
+# 
+# private.land.rsmpl <- resample(private.land.rast, temp.rast)
+# private.land.rsmpl
+# dist2roads.rsmpl <- resample(dist2roads, temp.rast)
+# 
+# evergreen.rsmpl <- resample(evergreen.forest, temp.rast) # VHECK IF THIS IS CORRECT
 
 # crownland.rast
 # private.land.rast

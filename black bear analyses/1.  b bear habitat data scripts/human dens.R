@@ -19,12 +19,14 @@ temp.rast <- rast(("data/processed/dist2pa_km_bhb.tif"))
 bhb.buf.vect <- vect(bhb.50km.boundary)
 
 bhb.buf.reproj <- project(bhb.buf.vect, world.hum.dens)
-world.dens.crop <- crop(world.hum.dens, bhb.buf.reproj)
+#world.dens.crop <- crop(world.hum.dens, bhb.buf.reproj)
 
-world.dens.resampl <- resample(world.dens.crop, temp.rast)
+world.dens.resampl <- resample(world.hum.dens, temp.rast)
 
 # CHECK FOR NA'S:
+hum.dens.raster <- raster(world.dens.resampl)
+hum.dens.raster[is.na(hum.dens.raster[])] <- 0 
 
 
-writeRaster(world.dens.crop, "data/processed/human_dens_crop.tif", overwrite=TRUE)
-writeRaster(world.dens.resampl, "data/processed/human_dens_bhb.tif", overwrite=TRUE)
+#writeRaster(world.dens.crop, "data/processed/human_dens_crop.tif", overwrite=TRUE)
+writeRaster(hum.dens.raster, "data/processed/human_dens_bhb.tif", overwrite=TRUE)

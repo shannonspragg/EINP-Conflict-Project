@@ -34,14 +34,18 @@ bhb.crownland.crop <- crop(crownland.v, template.rast)
 bhb.crownland.rast <- terra::rasterize(bhb.crownland.crop, template.rast, field = "PASITES_ID")
 
   # Make a continuous raster:
-bhb.crownland.rast[bhb.crownland.rast > 470] <- 1
-bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
+bhb.crownland.rast[bhb.crownland.rast > 41] <- 1
 
-crown.lands.r <- terra::mask(bhb.rast, bhb.crownland.rast, updatevalue=0)
-names(crown.lands.r)[names(crown.lands.r) == "OBJECTID"] <- "crownland"
-bhb.crown.rast <- terra::mask(crown.lands.r, bhb.v)
+bhb.crown.raster <- raster(bhb.crownland.rast)
+bhb.crown.raster[is.na(bhb.crown.raster[])] <- 0 
+
+# bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
+# 
+# crown.lands.r <- terra::mask(bhb.rast, bhb.crownland.rast, updatevalue=0)
+# names(crown.lands.r)[names(crown.lands.r) == "OBJECTID"] <- "crownland"
+# bhb.crown.rast <- terra::mask(crown.lands.r, bhb.v)
 
 
-terra::writeRaster(bhb.crown.rast, "data/processed/bhb_crownlands.tif", overwrite=TRUE)
+terra::writeRaster(bhb.crown.raster, "data/processed/bhb_crownlands.tif", overwrite=TRUE)
 
 

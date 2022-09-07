@@ -75,7 +75,7 @@ bhb.water.crop <- crop(water.v, template.rast)
 #bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.grassland.rast <- terra::rasterize(bhb.grass.crop, template.rast, field = "LC_DESCRIPTION")
-bhb.conifer.rast <- terra::rasterize(bhb.conifer.crop, template.rast, field = "LC_DESCRIPTION")
+bhb.conifer.rast <- terra::rasterize(bhb.conifer.crop, template.rast, field = "LC_class")
 bhb.broadleaf.rast <- terra::rasterize(bhb.broadleaf.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.alpinemix.rast <- terra::rasterize(bhb.alpine.crop, template.rast, field = "LC_DESCRIPTION")
 #bhb.water.rast <- terra::rasterize(bhb.water.crop, template.rast, field = "LC_DESCRIPTION")
@@ -100,15 +100,20 @@ names(grassland.r)[names(grassland.r) == "OBJECTID"] <- "grassland"
 bhb.grassland.rast <- terra::mask(grassland.r, bhb.v)
 
 # Make conifer a continuous raster:
-bhb.conifer.rast[0] <- 1
-bhb.conifer.rast[bhb.conifer.rast == 0] <- 1
+bhb.conifer.rast[bhb.conifer.rast == 210] <- 1
+bhb.conifer.raster <- raster(bhb.conifer.rast)
+bhb.conifer.raster[is.na(bhb.conifer.raster[])] <- 0 
 
-conifer.r <- terra::mask(bhb.rast, bhb.conifer.rast, updatevalue=0)
-names(conifer.r)[names(conifer.r) == "OBJECTID"] <- "coninfer mix"
-bhb.conifer.rast <- terra::mask(conifer.r, bhb.v)
+
+# bhb.conifer.rast[0] <- 1
+# bhb.conifer.rast[bhb.conifer.rast == 0] <- 1
+# 
+# conifer.r <- terra::mask(bhb.rast, bhb.conifer.rast, updatevalue=0)
+# names(conifer.r)[names(conifer.r) == "OBJECTID"] <- "coninfer mix"
+# bhb.conifer.rast <- terra::mask(conifer.r, bhb.v)
 
   # Make Evergreen forest at 500m:
-evergreen.500m <- aggregate(bhb.conifer.rast, 2) #This gives us a "buffer" zone of edge forest at the new resolution
+evergreen.500m <- aggregate(bhb.conifer.raster, 17) #This gives us a "buffer" zone of edge forest at the new resolution
 
 # Make broadleaf a continuous raster:
 bhb.broadleaf.rast[0] <- 1

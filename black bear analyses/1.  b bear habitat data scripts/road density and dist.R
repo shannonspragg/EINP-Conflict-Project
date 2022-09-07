@@ -13,7 +13,7 @@ library(raster)
 ab.roads <- st_read("data/original/grnf048r10a_e.shp")
 bhb.bound <- st_read("data/processed/bhb_50km.shp")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
-
+temp.raster <- rast("data/processed/bhb_50km_template_rast.tif")
 ab.roads.reproj <- st_transform(ab.roads, st_crs(bhb.bound))
 
 # Make Roads Raster -------------------------------------------------------
@@ -26,22 +26,22 @@ bhb.roads.crop <- terra::crop(ab.roads.v, temp.rast)
 dist2roads <- terra::distance(temp.rast, ab.roads.v)
 dist2roads.km <- measurements::conv_unit(dist2roads, "m", "km")
 
-# Road density at 4km raster:
-# bhb.roads <- intersect(ab.roads.reproj, bhb.bound)
-# bhb.road.v <- vect(bhb.roads)
-# 
-# bhb.roads.crop$length <- perim(bhb.road.v) / 4000 #km
-# road.dens <- tapply(bhb.roads.crop$length, bhb.roads.crop$RB_UID, sum)
-# 
-# road.dens.rast <- rast(road.dens)
-# bhb.roads.crop[as.integer(names(bhb.roads.crop))] <- as.vector(road.dens)
-
 # OR THIS:
-temp.raster <- raster(temp.rast)
-temp.raster <- aggregate(temp.raster, 4) # make this 1km
+# temp.raster <- raster(temp.rast)
+# temp.raster <- aggregate(temp.raster, 33.34) # make this 1km
+template.rast.1km <- rast(res=c(1000,1000), ext=ext(temp.raster)) # Let's do a 30x30 res to match land cover
+crs(template.rast.1km) <- "epsg:32612" # UTM zone 12N for AB
+values(template.rast.1km) <- rep(1, ncell(template.rast.1km))
+temp.raster.1km <- raster(template.rast.1km)
 
-roads.crop <- st_crop(ab.roads.reproj, c(xmin=295652.2, xmax=439902.2, ymin=5846234, ymax=6010984))
-road.density.1km <- rasterize(roads.crop, temp.raster, fun='count', background=0)
+roads.crop <- st_crop(ab.roads.reproj, c(xmin=295652.2, xmax=439832.2, ymin=5846234, ymax=6011054))
+road.density.1km <- rasterize(roads.crop, temp.raster.1km, fun='count', background=0)
+# 
+# e <- extent(295652.2, 439832.2, 5846234, 6011054)
+# 
+# road.density.1 <- crop(road.density.1km, e)
+#   #setExtent(road.density.1km, e, keepres=TRUE)
+
 
 # road.density.rsmpl <- resample(road.density.1km, temp.raster) # correct the extent
 # road.dens.1km <- aggregate(road.density.rsmpl, 4)
@@ -54,7 +54,11 @@ road.dens.500m <- disaggregate(road.density.1km, 2) # make this a 4km resolution
 # road.dens.500sqkm <- road.dens.500m / raster::area(road.dens.500m) # road density 1km
 
 # check for NA's:
+table(is.na(road.dens.4km[])) #FALSE, no NA's
+table(is.na(road.dens.500m[])) #FALSE, no NA's
 
+road.dens.4km.rast <- rast(road.dens.4km)
+road.dens.4km.crop <- crop(road.dens.4km.rast, temp.rast)
 
 
 writeRaster(road.dens.4km, "data/processed/bhb_road_density_4km.tif", overwrite=TRUE)
