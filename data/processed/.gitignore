@@ -102,3 +102,7 @@ human_dens_bhb.tif
 bhb_50km_template_rast.tif
 bhb_road_density_1km.tif
 bhb_road_density_1km.tif.aux.xml
+agnostic_biophys_fuzsum.tif
+agnostic_biophys_fuzsum_bhb.tif
+agnostic_biophys_resist.tif
+agnostic_biophys_resist_bhb.tif
