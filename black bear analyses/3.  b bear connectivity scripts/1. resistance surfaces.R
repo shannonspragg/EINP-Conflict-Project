@@ -14,6 +14,7 @@ library(tidyverse)
 bhs <- rast("data/processed/bear_habitat_suitability.tif")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 ghm1 <- rast("data/original/gHMv1_300m_2017_static-0000000000-0000000000.tif") 
+bhb.buf <- st_read("data/processed/bhb_50km.shp")
 # ghm2 <- rast("/Users/mattwilliamson/Google Drive/My Drive/SpaSES Lab/Shared Data Sets/Wildlife Survey/data/original/rasters/gHMv1_300m_2017_static-0000046592-0000000000.tif")
 
 
@@ -22,12 +23,13 @@ ghm1.crp <- project(ghm1, temp.rast) # crop to bhw buffer
 # ghm.mos <- mosaic(ghm1.crp, ghm2.crp, fun="max")
 ghm.conv <- ghm1.crp/65536
 
-bhb.bound <- st_read("Data/original/bhb_boundary.shp") %>% # MAKE SURE FILE IS UPDATED
-  st_buffer(., 500000) %>% st_transform(., crs=crs(bhs)) %>% 
+bhb.bound <- st_read("Data/original/BHB_BOUNDARY.shp") %>% # MAKE SURE FILE IS UPDATED
+  st_buffer(., 500000) %>% st_transform(., crs=crs(temp.rast)) %>% 
   as(., "SpatVector")
+bhb.buf.v <- vect(bhb.buf)
 elev.can <- rast(raster::getData('alt', country = 'CAN'))
 # elev.us <- rast(raster::getData('alt', country = 'USA')[[1]])
-elev.can.crop <- crop(elev.can, project(bhw.bound, elev.can)) #crop to bhw
+elev.can.crop <- crop(elev.can, project(bhb.bound, elev.can)) #crop to bhw
 # elev.us.crop <- crop(elev.us, project(ona.bound, elev.us))
 # elev.mos <- mosaic(elev.can.crop, elev.us.crop, fun="mean")
 
@@ -35,7 +37,7 @@ rough <- terrain(elev.can.crop, v="TRI")
 rough.max <-  global(rough, "max", na.rm=TRUE)[1,]
 rough.min <-  global(rough, "min", na.rm=TRUE)[1,]
 rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
-rough.proj <- project(rough.rescale, bhs)
+rough.proj <- project(rough.rescale, temp.rast)
 
 fuzzysum2 <- function(r1, r2) {
   rc1.1m <- (1-r1)
@@ -44,9 +46,11 @@ fuzzysum2 <- function(r1, r2) {
 }
 # Add together our biophys attributes: gHM and roughness
 biophys_fuzsum <- fuzzysum2(ghm.conv, rough.proj)
-writeRaster(biophys_fuzsum,"Data/processed/biophys_fuzsum.tif" )
-biophys_resistance <- (1+biophys_fuzsum)^10
-writeRaster(biophys_resistance, "Data/processed/biophys_resist.tif")
+writeRaster(biophys_fuzsum,"Data/processed/agnostic_biophys_fuzsum_bhb.tif" )
+agno_biophys_resistance <- (1+biophys_fuzsum)^10
+agno_bio_resist_crop <- mask(agno_biophys_resistance, bhb.buf.v)
+writeRaster(agno_biophys_resistance, "Data/processed/agnostic_biophys_resist.tif")
+writeRaster(agno_bio_resist_crop, "Data/processed/agnostic_biophys_resist_bhb.tif", overwrite=TRUE) #trip tp bhb outline
 
 
 # Generalist focal species biophysical resistance -------------------------
