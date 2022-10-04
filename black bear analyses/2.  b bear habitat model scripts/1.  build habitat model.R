@@ -15,27 +15,29 @@ library(gdalUtilities)
 library(dplyr)
 
 # Bring in covariate data: -------------------------------------------------------------
-bhb.50km.boundary <- st_read("data/processed/bhb_10km.shp")
+bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
 
 # model 1 Beckman et al., 2015:
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
 elevation <- rast("data/processed/elevation_bhb.tif")
+slope <- rast("data/processed/slope_bhb.tif")
+roads <- rast("data/processed/bhb_roads.tif")
 dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
 pop.dens <- rast("data/processed/human_dens_bhb.tif")
-road.dens.4km <- rast("data/processed/bhb_road_density_4km.tif")
-road.dens.500m <- rast("data/processed/bhb_road_density_500m.tif")
-evergreen.forest <- rast("data/processed/bhb_evergreen_500m.tif")
+shrubland <- rast("data/processed/bhb_shrubland.tif")
+grassland <- rast("data/processed/bhb_grassland.tif")
+coniferous.forest <- rast("data/processed/bhb_conifer_mix.tif")
+broadleaf.forest <- rast("data/processed/bhb_broadleaf_mix.tif")
+alpine.mixed.forest <- rast("data/processed/bhb_alpine_mix.tif")
+waterways <- rast("data/processed/bhb_water_areas.tif")
+dist2water <- rast("data/processed/dist2drainage_km_bhb.tif")
+human.development <- rast("data/processed/bhw_ghm.tif")
+ag.land <- rast("data/processed/bhb_agriculture.tif")
 
-# model 2, Loosen et al., 2018
-# crownland.rast <- rast("data/processed/bhb_crownlands.tif")
-# private.land.rast <- rast("data/processed/bhb_privatelands.tif")
-# wildfires.rast <- rast("data/processed/bhb_fire_history.tif")
-# ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
-# shrubland.rast <- rast("data/processed/bhb_shrubland.tif")
 
 bhb.buf.vect <- vect(bhb.50km.boundary)
 # Check Rasters: ----------------------------------------------------------
-    # Desired resolution: 30m 
+    # Desired resolution: 240x240m 
 private.land.rast
 elevation
 dist2roads
@@ -44,39 +46,25 @@ road.dens.4km # these extents are off..
 road.dens.500m
 evergreen.forest
 
+roads[roads == 10003] <- 1
+roads[roads == 10002] <- 0
+
+
 # Crop our rasters to the BHB buffer shape:
 bhb.50km.v <- vect(bhb.50km.boundary)
 
-private.land.bhb <- terra::mask(private.land.rast, bhb.50km.v)
-elevation.bhb <- terra::mask(elevation, bhb.50km.v)
-dist2roads.bhb <- terra::mask(dist2roads, bhb.50km.v)
-pop.dens.bhb <- terra::mask(pop.dens, bhb.50km.v)
-road.dens.4km.bhb <- terra::mask(road.dens.4km, bhb.50km.v)
-road.dens.500m.bhb <- terra::mask(road.dens.500m, bhb.50km.v)
-evergreen.bhb <- terra::mask(evergreen.forest, bhb.50km.v)
-
-pop.road.dens <- pop.dens.bhb * road.dens.500m.bhb
-pop.road.dens
-
-
-# road.dens.4km.rsmpl <- project(road.dens.4km, temp.rast)
+# private.land.bhb <- terra::mask(private.land.rast, bhb.50km.v)
+# elevation.bhb <- terra::mask(elevation, bhb.50km.v)
+# dist2roads.bhb <- terra::mask(dist2roads, bhb.50km.v)
+# pop.dens.bhb <- terra::mask(pop.dens, bhb.50km.v)
+# road.dens.4km.bhb <- terra::mask(road.dens.4km, bhb.50km.v)
+# road.dens.500m.bhb <- terra::mask(road.dens.500m, bhb.50km.v)
+# evergreen.bhb <- terra::mask(evergreen.forest, bhb.50km.v)
 # 
-# road.dens.500.rsmpl <- project(road.dens.500m, temp.rast)
-# pop.dens.rsmpl <- resample(pop.dens, temp.rast)
-# pop.road.dens <- pop.dens.rsmpl * road.dens.500.rsmpl
+# pop.road.dens <- pop.dens.bhb * road.dens.500m.bhb
 # pop.road.dens
-# 
-# private.land.rsmpl <- resample(private.land.rast, temp.rast)
-# private.land.rsmpl
-# dist2roads.rsmpl <- resample(dist2roads, temp.rast)
-# 
-# evergreen.rsmpl <- resample(evergreen.forest, temp.rast) # VHECK IF THIS IS CORRECT
 
-# crownland.rast
-# private.land.rast
-# wildfires.rast
-# ndvi.rast
-# shrubland.rast
+
 
 plot(crownland.rast)
 plot(private.land.rast)
