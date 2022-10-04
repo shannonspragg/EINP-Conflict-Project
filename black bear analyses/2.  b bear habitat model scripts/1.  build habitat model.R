@@ -40,18 +40,26 @@ bhb.buf.vect <- vect(bhb.50km.boundary)
     # Desired resolution: 240x240m 
 private.land.rast
 elevation
+slope
+roads
 dist2roads
 pop.dens
-road.dens.4km # these extents are off..
-road.dens.500m
-evergreen.forest
+shrubland
+grassland
+coniferous.forest
+broadleaf.forest
+alpine.mixed.forest
+waterways
+dist2water
+human.development
+ag.land
 
 roads[roads == 10003] <- 1
 roads[roads == 10002] <- 0
 
 
 # Crop our rasters to the BHB buffer shape:
-bhb.50km.v <- vect(bhb.50km.boundary)
+#bhb.50km.v <- vect(bhb.50km.boundary)
 
 # private.land.bhb <- terra::mask(private.land.rast, bhb.50km.v)
 # elevation.bhb <- terra::mask(elevation, bhb.50km.v)
@@ -65,87 +73,45 @@ bhb.50km.v <- vect(bhb.50km.boundary)
 # pop.road.dens
 
 
+# Multiply Rasters by Coefficients: ----------------------------------------------------------
+  # Multiplying these variables by coefficients determined from our literature review of bear habitat predoctors
 
-plot(crownland.rast)
-plot(private.land.rast)
-plot(wildfires.rast)
-plot(ndvi.rast)
-plot(shrubland.rast)
+private.land.pred <- -1.8454 * private.land.rast
+elevation.pred <- -0.5012 * elevation 
+slope.pred <- -0.2058 * slope
+roads.pred <- -0.75 * roads
+dist2roads.pred <- 1.5425 * dist2roads
+pop.dens.pred <- -1 * pop.dens
+shrubland.pred <- -0.35 * shrubland
+grassland.pred <- -1.81 * grassland
+coniferous.forest.pred <- 1.389 * coniferous.forest
+broadleaf.forest.pred <- 2.101 * broadleaf.forest
+alpine.mixed.forest.pred <- 2.323 * alpine.mixed.forest
+waterways.pred <- -0.5489 * waterways
+dist2water.pred <- -0.0995 * dist2water
+human.development.pred <- -5.898 * human.development
+ag.land.pred <- -3.303 * ag.land
 
-#   # Disaggregate rasters:
-# crownland <- disagg(crownland.rast, fact= 4)
-# private.land <- disagg(private.land.rast, fact=4)
-# wildfires <- disagg(wildfires.rast, fact=4)
-# ndvi <- disagg(ndvi.rast, fact= 4)
-# shrubland <- disagg(shrubland.rast, fact=4)
-
-# Scale Rasters: ----------------------------------------------------------
-  # This function scales by subtracting mean and dividing by 1 sd of the original data
-  # We need to know the mean and sd of each variable from the top RSF models for male & female black bears
-# crownland.sc <- terra::scale(crownland.rast)
-# privland.sc <- terra::scale(private.land)
-# wildfires.sc <- terra::scale(wildfires.rast)
-# ndvi.sc <- terra::scale(ndvi.rast)
-# shrubland.sc <- terra::scale(shrubland)
-# 
-# # ## the equivalent, computed in steps
-# m <- global(r, "mean")
-# rr <- r - m[,1]
-# rms <- global(rr, "rms")
-# ss <- rr / rms[,1]
-
-# Combine & Multiply by Coefficients: -------------------------------------
-#  (x - mean) / sd = scaled coef. ; need to find x (actual coef) to multiply
-
-# Beckmen et al., 2015:
-private.land.pred <- -1.8454 * private.land.rsmpl
-elevation.pred <- elevation * (-0.8350)
-dist2roads.pred <- dist2roads.rsmpl * (1.5425)
-pop.road.dens.pred <- pop.road.dens * (-71.8514)
-road.dens.4km.pred <- road.dens.4km.rsmpl * (-0.4614)
-evergreen.forest.pred <- evergreen.rsmpl * (1.7716)
-
-private.land.pred
-elevation.pred
-dist2roads.pred
-pop.road.dens.pred
-road.dens.4km.pred
-evergreen.forest.pred
-
-
-# Loosen et al., 2018:
-  # Male Black Bears:
-# crownland.pred.m <- crownland.sc * -0.75
-# privland.pred.m <- privland.sc * -0.25
-# wildfires.pred.m <- wildfires.sc * -0.70
-# ndvi.pred.m <- ndvi.sc * 0.20
-# shrubland.pred.m <- shrubland.sc * 0.0
-# 
-# # Female Black Bears:
-# crownland.pred.f <- crownland.sc * -1.20
-# privland.pred.f <- privland.sc * -0.25
-# wildfires.pred.f <- wildfires.sc * -0.10
-# ndvi.pred.f <- ndvi.sc * 0.10
-# shrubland.pred.f <- shrubland.sc * 0.05
-
+# NOTE: need to try scaling these.. the high numbers are throwing things off
 
 # Stack Precictor Rasters -------------------------------------------------
 
 # model 1:
-bear.hab.stack <- c(private.land.pred, elevation.pred, dist2roads.pred, pop.road.dens.pred, road.dens.4km.pred, evergreen.forest.pred )
+bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, roads.pred, dist2roads.pred, shrubland.pred, 
+                    grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, waterways.pred,
+                    dist2water.pred, human.development.pred, ag.land.pred)
 
-
-# model 2: Loosen et al., 2018:
-# male.habitat.stack <- c(crownland.pred.m, privland.pred.m, wildfires.pred.m, ndvi.pred.m, shrubland.pred.m)
-# 
-# female.habitat.stack <- c(crownland.pred.f, privland.pred.f, wildfires.pred.f, ndvi.pred.f, shrubland.pred.f)
-# 
+# testing with lower values:
+bh.1 <- c(shrubland.pred, grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, waterways.pred)
+bh.r <- sum(bh.1)
+bh.prob.rast <- (exp(bh.r))/(1 + exp(bh.r))
+plot(bh.prob.rast) # want something like this as the result!
 
 # Convert to Probability Scale (IF NEEDED): -------------------------------
 
 # Model 1:
-
-linpred.rast <- sum(bear.hab.stack)#, na.rm=TRUE)
+bear.hab.rast <- sum(bear.hab.stack)
+linpred.rast <- sum(bear.hab.stack, na.rm=TRUE)
 habitat.prob.rast <- (exp(linpred.rast))/(1 + exp(linpred.rast))
 plot(habitat.prob.rast)
 
