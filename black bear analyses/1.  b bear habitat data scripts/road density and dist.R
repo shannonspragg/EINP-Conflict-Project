@@ -60,9 +60,9 @@ table(is.na(road.dens.500m[])) #FALSE, no NA's
 # road.dens.4km.rast <- rast(road.dens.4km)
 # road.dens.4km.crop <- crop(road.dens.4km.rast, temp.rast)
 
-writeRaster(road.density.1km, "data/processed/bhb_road_density_1km.tif", overwrite=TRUE)
-writeRaster(road.dens.4km, "data/processed/bhb_road_density_4km.tif", overwrite=TRUE)
-writeRaster(road.dens.500m, "data/processed/bhb_road_density_500m.tif", overwrite=TRUE)
+# writeRaster(road.density.1km, "data/processed/bhb_road_density_1km.tif", overwrite=TRUE)
+# writeRaster(road.dens.4km, "data/processed/bhb_road_density_4km.tif", overwrite=TRUE)
+# writeRaster(road.dens.500m, "data/processed/bhb_road_density_500m.tif", overwrite=TRUE)
 writeRaster(dist2roads.km, "data/processed/dist2roads_km_bhb.tif", overwrite=TRUE)
 #writeRaster(bhb.roads.crop, "data/processed/bhb_roads.tif", overwrite=TRUE)
 
