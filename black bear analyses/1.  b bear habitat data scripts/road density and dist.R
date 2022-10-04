@@ -26,6 +26,14 @@ bhb.roads.crop <- terra::crop(ab.roads.v, temp.rast)
 dist2roads <- terra::distance(temp.rast, ab.roads.v)
 dist2roads.km <- measurements::conv_unit(dist2roads, "m", "km")
 
+# Roads raster:
+bhb.roads <- terra::rasterize(bhb.roads.crop, temp.rast, field = "RB_UID")
+bhb.roads[bhb.roads <= 10002] <- 1
+bhb.roads.raster <- raster(bhb.roads)
+bhb.roads.raster[is.na(bhb.roads.raster[])] <- 0 
+
+
+
 # OR THIS:
 # temp.raster <- raster(temp.rast)
 # temp.raster <- aggregate(temp.raster, 33.34) # make this 1km
@@ -64,5 +72,5 @@ table(is.na(road.dens.500m[])) #FALSE, no NA's
 # writeRaster(road.dens.4km, "data/processed/bhb_road_density_4km.tif", overwrite=TRUE)
 # writeRaster(road.dens.500m, "data/processed/bhb_road_density_500m.tif", overwrite=TRUE)
 writeRaster(dist2roads.km, "data/processed/dist2roads_km_bhb.tif", overwrite=TRUE)
-#writeRaster(bhb.roads.crop, "data/processed/bhb_roads.tif", overwrite=TRUE)
+writeRaster(bhb.roads.raster, "data/processed/bhb_roads.tif", overwrite=TRUE)
 

@@ -167,7 +167,7 @@ terra::writeRaster(bhb.conifer.raster, "data/processed/bhb_conifer_mix.tif", ove
 terra::writeRaster(bhb.broadleaf.raster, "data/processed/bhb_broadleaf_mix.tif", overwrite=TRUE)
 terra::writeRaster(bhb.alpinemix.raster, "data/processed/bhb_alpine_mix.tif", overwrite=TRUE)
 writeRaster(dist2drainage.km, "data/processed/dist2drainage_km_bhb.tif", overwrite=TRUE)
-writeRaster(bhb.water.raster, "data/processed/bhb_drainage_areas.tif", overwrite=TRUE)
+writeRaster(bhb.water.raster, "data/processed/bhb_water_areas.tif", overwrite=TRUE)
 writeRaster(bhb.ag.raster, "data/processed/bhb_agriculture.tif", overwrite=TRUE)
 #writeRaster(evergreen.500m, "data/processed/bhb_evergreen_500m.tif", overwrite = TRUE)
 writeRaster(bhb.generalist.raster, "data/processed/bhb_generalist_lc.tif", overwrite = TRUE)

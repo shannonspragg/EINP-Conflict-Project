@@ -27,6 +27,7 @@ template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 temp.rast <- project(gHM, template.rast)
 
 bhw.ghm.rsmple <- resample(gHM, template.rast)
+bhw.ghm <- bhw.ghm.rsmple / 65536
 #bhw.ghm.crop <- crop(bhw.ghm.rsmple, template.rast)
 
 # bhw.reproj<- st_transform(bhw.reproj, st_crs(bhw.ghm.crop))
@@ -34,5 +35,5 @@ bhw.ghm.rsmple <- resample(gHM, template.rast)
 
 #bhw.ghm.rast <- terra::mask(bhw.ghm.crop, bhw.v)
 
-terra::writeRaster(bhw.ghm.rsmple, "data/processed/bhw_ghm.tif", overwrite=TRUE)
+terra::writeRaster(bhw.ghm, "data/processed/bhw_ghm.tif", overwrite=TRUE)
 
