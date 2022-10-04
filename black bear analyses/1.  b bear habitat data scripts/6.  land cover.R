@@ -42,6 +42,7 @@ conifer.mix <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Coniferou
 broadleaf <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Broadleaf Forest")
 alpine.mixed <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Mixed Forest")
 water <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Water")
+agriculture <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Agriculture")
 # Subset forest, alpine, shrub, grassland for generalist species resistance:
 generalist_habitat <- dplyr::filter(ab_landcover, LC_DESCRIPTION == "Shrubland" | LC_DESCRIPTION == "Grassland" | LC_DESCRIPTION == "Coniferous Forest"
                                     | LC_DESCRIPTION == "Broadleaf Forest" | LC_DESCRIPTION == "Mixed Forest")
@@ -66,6 +67,7 @@ conifer.v <- vect(conifer.mix)
 broadleaf.v <- vect(broadleaf)
 alpinemix.v <- vect(alpine.mixed)
 water.v <- vect(water)
+agriculture.v <- vect(agriculture)
 generalist.v <- vect(generalist_habitat)
 
 #bhb.landcover.crop <- crop(landcover.v, template.rast)
@@ -75,6 +77,7 @@ bhb.conifer.crop <- crop(conifer.v, template.rast)
 bhb.broadleaf.crop <- crop(broadleaf.v, template.rast)
 bhb.alpine.crop <- crop(alpinemix.v, template.rast)
 bhb.water.crop <- crop(water.v, template.rast)
+bhb.ag.crop <- crop(agriculture.v, template.rast)
 bhb.generalist.crop <- crop(generalist.v, template.rast)
 
 #bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
@@ -84,6 +87,7 @@ bhb.conifer.rast <- terra::rasterize(bhb.conifer.crop, template.rast, field = "L
 bhb.broadleaf.rast <- terra::rasterize(bhb.broadleaf.crop, template.rast, field = "LC_class")
 bhb.alpinemix.rast <- terra::rasterize(bhb.alpine.crop, template.rast, field = "LC_class")
 bhb.water.rast <- terra::rasterize(bhb.water.crop, template.rast, field = "LC_class")
+bhb.ag.rast <- terra::rasterize(bhb.ag.crop, template.rast, field = "LC_class")
 bhb.generalist.rast <- terra::rasterize(bhb.generalist.crop, template.rast, field = "LC_class")
 
 # Make shrubland a continuous raster:
@@ -141,6 +145,10 @@ bhb.water.raster[is.na(bhb.water.raster[])] <- 0
 
 names(bhb.water.raster)[names(bhb.water.raster) == "LC_class"] <- "water"
 
+# Make a agriculture raster:
+bhb.ag.rast[bhb.ag.rast == 120] <- 1
+bhb.ag.raster <- raster(bhb.ag.rast)
+bhb.ag.raster[is.na(bhb.ag.raster[])] <- 0 
 
 # Make generalist a continuous raster:
 bhb.generalist.rast[bhb.generalist.rast >= 50] <- 1
@@ -160,5 +168,6 @@ terra::writeRaster(bhb.broadleaf.raster, "data/processed/bhb_broadleaf_mix.tif",
 terra::writeRaster(bhb.alpinemix.raster, "data/processed/bhb_alpine_mix.tif", overwrite=TRUE)
 writeRaster(dist2drainage.km, "data/processed/dist2drainage_km_bhb.tif", overwrite=TRUE)
 writeRaster(bhb.water.raster, "data/processed/bhb_drainage_areas.tif", overwrite=TRUE)
+writeRaster(bhb.ag.raster, "data/processed/bhb_agriculture.tif", overwrite=TRUE)
 #writeRaster(evergreen.500m, "data/processed/bhb_evergreen_500m.tif", overwrite = TRUE)
 writeRaster(bhb.generalist.raster, "data/processed/bhb_generalist_lc.tif", overwrite = TRUE)

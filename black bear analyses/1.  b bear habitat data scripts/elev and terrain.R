@@ -22,8 +22,11 @@ elev.bhb.raster <- raster(elev.bhb.crop)
 slope.bhb <- raster::terrain(elev.bhb.raster, opt = "slope", unit='degrees')
 #aspect.bhb <- raster::terrain(elev.bhb.raster, opt = "aspect", unit='degrees')
 
-elev.rsmpl <- raster::projectRaster(elev.bhb.raster, temp.raster)
-slope.rsmpl <- raster::projectRaster(slope.bhb, temp.raster)
+elev.bhb.rast <- rast(elev.bhb.raster)
+slope.bhb.rast <- rast(slope.bhb)
+
+elev.rsmpl <- terra::resample(elev.bhb.rast, temp.rast)
+slope.rsmpl  <- terra::resample(slope.bhb.rast, temp.rast)
 
 # Code aspect into categories: flat, N, NE, E, SE, S, SW, W, NW;
 # 
