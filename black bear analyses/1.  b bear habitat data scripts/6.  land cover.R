@@ -31,7 +31,7 @@ ab_landcover <- ab_landcover %>%
                      ab_landcover$LC_class == 110 ~ "Grassland", # meadow / grassland
                      ab_landcover$LC_class == 120 ~ "Agriculture",
                      ab_landcover$LC_class == 210 ~ "Coniferous Forest", # conifer mixed forest
-                     ab_landcover$LC_class == 220 ~ "Broadleaf Forest", # birch and aspen
+                     ab_landcover$LC_class == 220 ~ "Broadleaf Forest", # birch, oak and aspen
                      ab_landcover$LC_class == 230 ~ "Mixed Forest", # alpine mixed forest
   ))
 
@@ -78,31 +78,35 @@ bhb.water.crop <- crop(water.v, template.rast)
 bhb.generalist.crop <- crop(generalist.v, template.rast)
 
 #bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
-bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_DESCRIPTION")
-bhb.grassland.rast <- terra::rasterize(bhb.grass.crop, template.rast, field = "LC_DESCRIPTION")
+bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_class")
+bhb.grassland.rast <- terra::rasterize(bhb.grass.crop, template.rast, field = "LC_class")
 bhb.conifer.rast <- terra::rasterize(bhb.conifer.crop, template.rast, field = "LC_class")
-bhb.broadleaf.rast <- terra::rasterize(bhb.broadleaf.crop, template.rast, field = "LC_DESCRIPTION")
-bhb.alpinemix.rast <- terra::rasterize(bhb.alpine.crop, template.rast, field = "LC_DESCRIPTION")
-#bhb.water.rast <- terra::rasterize(bhb.water.crop, template.rast, field = "LC_DESCRIPTION")
+bhb.broadleaf.rast <- terra::rasterize(bhb.broadleaf.crop, template.rast, field = "LC_class")
+bhb.alpinemix.rast <- terra::rasterize(bhb.alpine.crop, template.rast, field = "LC_class")
+bhb.water.rast <- terra::rasterize(bhb.water.crop, template.rast, field = "LC_class")
 bhb.generalist.rast <- terra::rasterize(bhb.generalist.crop, template.rast, field = "LC_class")
 
 # Make shrubland a continuous raster:
-bhb.shrubland.rast[0] <- 1
-bhb.shrubland.rast[bhb.shrubland.rast == 0] <- 1
+bhb.shrubland.rast[bhb.shrubland.rast == 50] <- 1
+bhb.shrubland.raster <- raster(bhb.shrubland.rast)
+bhb.shrubland.raster[is.na(bhb.shrubland.raster[])] <- 0 
 
-bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
-
-shrubland.r <- terra::mask(bhb.rast, bhb.shrubland.rast, updatevalue=0)
-names(shrubland.r)[names(shrubland.r) == "OBJECTID"] <- "shrubland"
-bhb.shrub.rast <- terra::mask(shrubland.r, bhb.v)
+# 
+# bhb.shrubland.rast[0] <- 1
+# bhb.shrubland.rast[bhb.shrubland.rast == 0] <- 1
+# 
+# bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
+# 
+# shrubland.r <- terra::mask(bhb.rast, bhb.shrubland.rast, updatevalue=0)
+names(bhb.shrubland.raster)[names(bhb.shrubland.raster) == "LC_class"] <- "shrubland"
+#bhb.shrub.rast <- terra::mask(shrubland.r, bhb.v)
 
 # Make grassland a continuous raster:
-bhb.grassland.rast[0] <- 1
-bhb.grassland.rast[bhb.grassland.rast == 0] <- 1
+bhb.grassland.rast[bhb.grassland.rast == 110] <- 1
+bhb.grassland.raster <- raster(bhb.grassland.rast)
+bhb.grassland.raster[is.na(bhb.grassland.raster[])] <- 0 
 
-grassland.r <- terra::mask(bhb.rast, bhb.grassland.rast, updatevalue=0)
-names(grassland.r)[names(grassland.r) == "OBJECTID"] <- "grassland"
-bhb.grassland.rast <- terra::mask(grassland.r, bhb.v)
+names(bhb.grassland.raster)[names(bhb.grassland.raster) == "LC_class"] <- "grassland"
 
 # Make conifer a continuous raster:
 bhb.conifer.rast[bhb.conifer.rast == 210] <- 1
@@ -110,27 +114,32 @@ bhb.conifer.raster <- raster(bhb.conifer.rast)
 bhb.conifer.raster[is.na(bhb.conifer.raster[])] <- 0 
 
   # Make Evergreen forest at 500m:
-evergreen.500m <- aggregate(bhb.conifer.raster, 2) #This gives us a "buffer" zone of edge forest at the new resolution
+#evergreen.500m <- aggregate(bhb.conifer.raster, 2) #This gives us a "buffer" zone of edge forest at the new resolution
 
 # Make broadleaf a continuous raster:
-bhb.broadleaf.rast[0] <- 1
-bhb.broadleaf.rast[bhb.broadleaf.rast == 0] <- 1
+bhb.broadleaf.rast[bhb.broadleaf.rast == 220] <- 1
+bhb.broadleaf.raster <- raster(bhb.broadleaf.rast)
+bhb.broadleaf.raster[is.na(bhb.broadleaf.raster[])] <- 0 
 
-broadleaf.r <- terra::mask(bhb.rast, bhb.broadleaf.rast, updatevalue=0)
-names(broadleaf.r)[names(broadleaf.r) == "OBJECTID"] <- "broadleaf forest"
-bhb.broadleaf.rast <- terra::mask(broadleaf.r, bhb.v)
+names(bhb.broadleaf.raster)[names(bhb.broadleaf.raster) == "LC_class"] <- "broadleaf_forest"
 
 # Make alpine mix a continuous raster:
-bhb.alpinemix.rast[0] <- 1
-bhb.alpinemix.rast[bhb.alpinemix.rast == 0] <- 1
+bhb.alpinemix.rast[bhb.alpinemix.rast == 230] <- 1
+bhb.alpinemix.raster <- raster(bhb.alpinemix.rast)
+bhb.alpinemix.raster[is.na(bhb.alpinemix.raster[])] <- 0 
 
-alpine.r <- terra::mask(bhb.rast, bhb.alpinemix.rast, updatevalue=0)
-names(alpine.r)[names(alpine.r) == "OBJECTID"] <- "coninfer mix"
-bhb.alpinemix.rast <- terra::mask(alpine.r, bhb.v)
+names(bhb.alpinemix.raster)[names(bhb.alpinemix.raster) == "LC_class"] <- "alpine_mixed_forest"
 
 # Make dist to drainage raster:
 dist2drainage <- terra::distance(template.rast, bhb.water.crop)
 dist2drainage.km <- measurements::conv_unit(dist2drainage, "m", "km")
+
+# Make a water / riparian raster:
+bhb.water.rast[bhb.water.rast == 20] <- 1
+bhb.water.raster <- raster(bhb.water.rast)
+bhb.water.raster[is.na(bhb.water.raster[])] <- 0 
+
+names(bhb.water.raster)[names(bhb.water.raster) == "LC_class"] <- "water"
 
 
 # Make generalist a continuous raster:
@@ -144,12 +153,12 @@ table(is.na(bhb.generalist.raster[])) # FALSE
 
 # Save rasters
 #terra::writeRaster(bhb.landcover.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
-terra::writeRaster(bhb.shrub.rast, "data/processed/bhb_shrubland.tif", overwrite=TRUE)
-terra::writeRaster(bhb.grassland.rast, "data/processed/bhb_grassland.tif", overwrite=TRUE)
-terra::writeRaster(bhb.conifer.rast, "data/processed/bhb_conifer_mix.tif", overwrite=TRUE)
-terra::writeRaster(bhb.broadleaf.rast, "data/processed/bhb_broadleaf_mix.tif", overwrite=TRUE)
-terra::writeRaster(bhb.alpinemix.rast, "data/processed/bhb_alpine_mix.tif", overwrite=TRUE)
+terra::writeRaster(bhb.shrubland.raster, "data/processed/bhb_shrubland.tif", overwrite=TRUE)
+terra::writeRaster(bhb.grassland.raster, "data/processed/bhb_grassland.tif", overwrite=TRUE)
+terra::writeRaster(bhb.conifer.raster, "data/processed/bhb_conifer_mix.tif", overwrite=TRUE)
+terra::writeRaster(bhb.broadleaf.raster, "data/processed/bhb_broadleaf_mix.tif", overwrite=TRUE)
+terra::writeRaster(bhb.alpinemix.raster, "data/processed/bhb_alpine_mix.tif", overwrite=TRUE)
 writeRaster(dist2drainage.km, "data/processed/dist2drainage_km_bhb.tif", overwrite=TRUE)
-writeRaster(bhb.water.rast, "data/processed/bhb_drainage_areas.tif", overwrite=TRUE)
-writeRaster(evergreen.500m, "data/processed/bhb_evergreen_500m.tif", overwrite = TRUE)
+writeRaster(bhb.water.raster, "data/processed/bhb_drainage_areas.tif", overwrite=TRUE)
+#writeRaster(evergreen.500m, "data/processed/bhb_evergreen_500m.tif", overwrite = TRUE)
 writeRaster(bhb.generalist.raster, "data/processed/bhb_generalist_lc.tif", overwrite = TRUE)
