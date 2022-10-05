@@ -26,13 +26,12 @@ template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 temp.rast <- project(ndvi_can, template.rast)
 
 bhb.ndvi.rsmple <- resample(ndvi_can, template.rast)
-bhb.ndvi.crop <- crop(bhb.ndvi.rsmple, template.rast)
 
 bhb.v <- vect(bhb.reproj)
 
-bhb.ndvi.rast <- terra::mask(bhb.ndvi.crop,bhb.v)
+#bhb.ndvi.rast <- terra::mask(bhb.ndvi.rsmple,bhb.v)
 
-bhb.ndvi.rast <- bhb.ndvi.rast["AVH_9"] #select for the one with 24 julian weeks (highest), see: https://open.canada.ca/data/en/dataset/44ced2fa-afcc-47bd-b46e-8596a25e446e/resource/d1ea0134-4636-4f03-b723-eb1f4304c01c?inner_span=True#additional-info
+bhb.ndvi.rast <- bhb.ndvi.rsmple["AVH_9"] #select for the one with 24 julian weeks (highest), see: https://open.canada.ca/data/en/dataset/44ced2fa-afcc-47bd-b46e-8596a25e446e/resource/d1ea0134-4636-4f03-b723-eb1f4304c01c?inner_span=True#additional-info
 
 terra::writeRaster(bhb.ndvi.rast, "data/processed/bhb_ndvi.tif", overwrite=TRUE)
 
