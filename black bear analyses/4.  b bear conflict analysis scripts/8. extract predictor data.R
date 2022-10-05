@@ -24,6 +24,7 @@ animal.prod.rast <- rast("data/processed/animal_production_density_raster.tif")
 ground.crop.rast <- rast("data/processed/ground_crop_density_raster.tif")
 ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
 ghm.rast <- rast("data/processed/bhb_ghm.tif")
+bhs <- rast("data/processed/bbear_habitat_suitability.tif")
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------
 # Here we buffer the WARP and pres-abs points by 5000m (5km) before extracting the attributes from the farm polygons
