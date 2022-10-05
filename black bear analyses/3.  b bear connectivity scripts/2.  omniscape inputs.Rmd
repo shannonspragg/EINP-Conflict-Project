@@ -14,9 +14,9 @@ Resistance input: agnostic_biophys_resist.tif
 
 .ini file format: we use a text editor to produce an .ini file with the information below:
 
-NOTE: Block size and radius must be selected. Typically, radius is roughly the home range of an individual in the species of interest. Block size must be an odd number, but is typically selected to be about 1/10 of the radius.
+NOTE: Block size and radius must be selected. Typically, radius is roughly the home range of an individual in the species of interest. Block size must be an odd number, but is typically selected to be about 1/10 of the radius (Phillips et al., 2021; McClure et al., 2016).
 
-Because male and female black bears have such different home range sizes, we will run 2 different models in omniscape, and will adjust the radius and block size for gender below.
+Because male and female black bears have such different home range sizes, we will run 2 different models in omniscape, and will adjust the radius and block size for gender below. Home range estimates taken from Karelus et al., 2016.
 
 ##MALE black bear .ini inputs:
 [Required]
