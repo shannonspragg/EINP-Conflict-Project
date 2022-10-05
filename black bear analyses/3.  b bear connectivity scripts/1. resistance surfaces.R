@@ -11,12 +11,10 @@ library(tidyverse)
 
 
 # Load Data: --------------------------------------------------------------
-bhs <- rast("data/processed/bear_habitat_suitability.tif")
+bhs <- rast("data/processed/bbear_habitat_suitability.tif")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 ghm1 <- rast("data/original/gHMv1_300m_2017_static-0000000000-0000000000.tif") 
 bhb.buf <- st_read("data/processed/bhb_50km.shp")
-# ghm2 <- rast("/Users/mattwilliamson/Google Drive/My Drive/SpaSES Lab/Shared Data Sets/Wildlife Survey/data/original/rasters/gHMv1_300m_2017_static-0000046592-0000000000.tif")
-
 
 ghm1.crp <- project(ghm1, temp.rast) # crop to bhw buffer
 # ghm2.crp <- project(ghm2, bhs)
@@ -28,10 +26,7 @@ bhb.bound <- st_read("Data/original/BHB_BOUNDARY.shp") %>% # MAKE SURE FILE IS U
   as(., "SpatVector")
 bhb.buf.v <- vect(bhb.buf)
 elev.can <- rast(raster::getData('alt', country = 'CAN'))
-# elev.us <- rast(raster::getData('alt', country = 'USA')[[1]])
 elev.can.crop <- crop(elev.can, project(bhb.bound, elev.can)) #crop to bhw
-# elev.us.crop <- crop(elev.us, project(ona.bound, elev.us))
-# elev.mos <- mosaic(elev.can.crop, elev.us.crop, fun="mean")
 
 rough <- terrain(elev.can.crop, v="TRI")
 rough.max <-  global(rough, "max", na.rm=TRUE)[1,]
@@ -47,10 +42,14 @@ fuzzysum2 <- function(r1, r2) {
 # Add together our biophys attributes: gHM and roughness
 biophys_fuzsum <- fuzzysum2(ghm.conv, rough.proj)
 writeRaster(biophys_fuzsum,"Data/processed/agnostic_biophys_fuzsum_bhb.tif" )
+
+# species agnostic resistance:
 agno_biophys_resistance <- (1+biophys_fuzsum)^10
-agno_bio_resist_crop <- mask(agno_biophys_resistance, bhb.buf.v)
-writeRaster(agno_biophys_resistance, "Data/processed/agnostic_biophys_resist.tif")
-writeRaster(agno_bio_resist_crop, "Data/processed/agnostic_biophys_resist_bhb.tif", overwrite=TRUE) #trip tp bhb outline
+
+
+#agno_bio_resist_crop <- mask(agno_biophys_resistance, bhb.buf.v)
+writeRaster(agno_biophys_resistance, "Data/processed/agnostic_biophys_resist.tif", overwrite=TRUE)
+#writeRaster(agno_bio_resist_crop, "Data/processed/agnostic_biophys_resist_bhb.tif", overwrite=TRUE) #trip tp bhb outline
 
 
 # Generalist focal species biophysical resistance -------------------------
