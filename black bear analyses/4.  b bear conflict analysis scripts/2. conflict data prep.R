@@ -90,6 +90,10 @@ sum(conflict.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 81 b bear
 sum(conflict.bhb.50k.buf$OCC_SPECIES == "WOLF") # 3 wolf
 sum(conflict.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 29 cougar
 
+conflict.conf.bhb <- conflict.bhb.50k.buf %>% 
+  dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
+                     'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'AREA', 'Area_sqkm', 'geometry'))
+
   # Let's try cropping the full dataset down to 50km buffer:
 conflict.dataset.filt <- conflict.data.filt %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
@@ -108,12 +112,12 @@ sum(conflict.f.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 406 cougar
 
 head(conflict.f.bhb.50k.buf)
   # Trim this down:
-conflict.bhb <- conflict.f.bhb.50k.buf %>% 
+conflict.f.bhb <- conflict.f.bhb.50k.buf %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
                      'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'AREA', 'Area_sqkm', 'geometry'))
 head(conflict.bhb) #7,877 observations
+head(conflict.conf.bhb) #787 observations
 
-
-#st_write(conflict.data.reproj, "data/processed/conflict_unfiltered_dataframe.shp", append = FALSE)
+st_write(conflict.conf.bhb, "data/processed/conflict_confirmed_dataframe.shp", append = FALSE)
 st_write(conflict.bhb, "data/processed/conflict_reports_bhb.shp", append = FALSE)
 
