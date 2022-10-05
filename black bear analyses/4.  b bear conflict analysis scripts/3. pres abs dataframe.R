@@ -10,17 +10,22 @@ library(terra)
 library(dismo)
 
 # Bring in Data: ----------------------------------------------------------
-bhb.10k.buf <- st_read("data/processed/bhb_10km.shp")
-conflict.all <-st_read("data/processed/conflict_reports_bhb.shp") 
-temp.rast <- rast("data/processed/bhb_ndvi.tif")
+bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
+#conflict.all <-st_read("data/processed/conflict_reports_bhb.shp") 
+conflict.conf <-st_read("data/processed/conflict_confirmed_dataframe.shp") 
+temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
+
+# Mask our temp rast to the bhb boundary:
+bhb.50km.v <- vect(bhb.50k.buf)
+temp.rast.bhb <- terra::mask(temp.rast, bhb.50km.v)
 
 # Plot our points and BHB watershed:
-plot(st_geometry(bhb.10k.buf))
-plot(st_geometry(conflict.all, add=TRUE)) #2876 reports
+plot(st_geometry(bhb.50k.buf))
+plot(st_geometry(conflict.conf, add=TRUE)) #787 reports
 
 # Generate Random Points for Pseudo-absences: -----------------------------
 set.seed(2345)
-p.abs.pts <- randomPoints(raster(temp.rast), 3000)
+p.abs.pts <- randomPoints(raster(temp.rast.bhb), 1400) # try double the conflict reports
 
 # Make this a data frame:
 abs.pts.df <- data.frame(p.abs.pts)
@@ -54,18 +59,18 @@ abs.pts.sf <- abs.pts.sf[ , c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,1)]
 # Restructure Data frame: --------------------------------------------------
 ## Here we add our presence points to our absences
 # Join our all species presence points with the absence points:
-st_crs(conflict.all) == st_crs(abs.pts.sf)
+st_crs(conflict.conf) == st_crs(abs.pts.sf)
 
-abs.pts.reproj <- st_transform(abs.pts.sf, st_crs(conflict.all))
-st_crs(abs.pts.reproj) == st_crs(conflict.all) # TRUE
+abs.pts.reproj <- st_transform(abs.pts.sf, st_crs(conflict.conf))
+st_crs(abs.pts.reproj) == st_crs(conflict.conf) # TRUE
 
-all.conflict.pts.w.abs <- rbind(conflict.all, abs.pts.reproj)
+conf.conflict.pts.w.abs <- rbind(conflict.conf, abs.pts.reproj)
 
 
 # Plot these to check:
-plot(st_geometry(bhb.10k.buf))
-plot(st_geometry(all.conflict.pts.w.abs), add=TRUE)
+plot(st_geometry(bhb.50k.buf))
+plot(st_geometry(conf.conflict.pts.w.abs), add=TRUE)
 
 # Save as New Df: ---------------------------------------------------------
-st_write(all.conflict.pts.w.abs, "Data/processed/conflict_pres_abs_dataframe.shp", append=FALSE)
+st_write(conf.conflict.pts.w.abs, "Data/processed/conflict_pres_abs_df.shp", append=FALSE)
 
