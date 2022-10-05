@@ -13,7 +13,7 @@ library(units)
 # Bring in our Original Data --------------------------------------------
  
 conflicts <- read.csv("data/original/Beaver Hills Biosphere - all species.csv")
-bhb.10k.buf <- st_read("data/processed/bhb_10km.shp")
+bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
 
   # Add columns: Convert selected species to 1's and all others to 0's:
 conflict.data <- conflicts %>% 
@@ -56,45 +56,64 @@ conflict.data.reproj <- mutate(conflict.data.reproj, id = row_number())
 conflict.data.reproj <- conflict.data.reproj %>%           # Reorder data frame
   dplyr::select("id", everything())
 conflict.data.reproj$id <- as.numeric(conflict.data.reproj$id)
+
+# Filter data to confirmed and probable occurances (let's see if this is enough):
+  # Just confirmed and probable:
+conflict.data.conf <- dplyr::filter(conflict.data.reproj, OCC_VALIDITY_INFORMATION == "CONFIRMED" | OCC_VALIDITY_INFORMATION == "PROBABLE")
+
+sum(conflict.data.conf$OCC_SPECIES == "BLACK BEAR") #  185 b bear
+sum(conflict.data.conf$OCC_SPECIES == "WOLF") # 21 wolf
+sum(conflict.data.conf$OCC_SPECIES == "COUGAR") # 39 cougar
+
+# Include confirmed, probable, and unknown (all but disproved):
+conflict.data.filt <- dplyr::filter(conflict.data.reproj, OCC_VALIDITY_INFORMATION == "CONFIRMED" | OCC_VALIDITY_INFORMATION == "PROBABLE"
+                                    | OCC_VALIDITY_INFORMATION == "CANNOT BE JUDGED" | OCC_VALIDITY_INFORMATION == "")
+
+sum(conflict.data.filt$OCC_SPECIES == "BLACK BEAR") #  911 b bear
+sum(conflict.data.filt$OCC_SPECIES == "WOLF") # 108 wolf
+sum(conflict.data.filt$OCC_SPECIES == "COUGAR") # 484 cougar
+
+
 # Filter to only columns we need:
 
-conflict.dataset <- conflict.data.reproj %>% 
+conflict.dataset.conf <- conflict.data.conf %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
                                         'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'geometry'))
 
 # Crop reports down to BHB watershed:
-st_crs(conflict.dataset) == st_crs(bhb.10k.buf) #FALSE
-conflict.reproj <- st_transform(conflict.dataset, st_crs(bhb.10k.buf))
-st_crs(conflict.reproj) == st_crs(bhb.10k.buf) #TRUE
+st_crs(conflict.dataset.conf) == st_crs(bhb.50k.buf) #FALSE
+conflict.reproj <- st_transform(conflict.dataset.conf, st_crs(bhb.50k.buf))
+st_crs(conflict.reproj) == st_crs(bhb.50k.buf) #TRUE
 
-conflict.bhb.10k.buf <- st_intersection(conflict.reproj, bhb.10k.buf) # This gives 2,876 total reports
-sum(conflict.bhb.10k.buf$OCC_SPECIES == "BLACK BEAR") # still 142 b bear
-sum(conflict.bhb.10k.buf$OCC_SPECIES == "WOLF") # 14 wolf
-sum(conflict.bhb.10k.buf$OCC_SPECIES == "COUGAR") # still 212 cougar
+conflict.bhb.50k.buf <- st_intersection(conflict.reproj, bhb.50k.buf) # This gives 787 total reports
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 81 b bear
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "WOLF") # 3 wolf
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 29 cougar
 
-  # Let's try a 25km buffer:
-bhb.25km.buf <- st_buffer(bhb.10k.buf, 15000)
+  # Let's try cropping the full dataset down to 50km buffer:
+conflict.dataset.filt <- conflict.data.filt %>% 
+  dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
+                     'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'geometry'))
 
-conflict.bhb.25k.buf <- st_intersection(conflict.reproj, bhb.25km.buf) # This gives 6,107 total reports
-sum(conflict.bhb.25k.buf$OCC_SPECIES == "BLACK BEAR") # 256 b bear
-sum(conflict.bhb.25k.buf$OCC_SPECIES == "WOLF") # 35 wolf
-sum(conflict.bhb.25k.buf$OCC_SPECIES == "COUGAR") # 328 cougar
+conflict.filt.reproj <- st_transform(conflict.dataset.filt, st_crs(bhb.50k.buf))
+st_crs(conflict.filt.reproj) == st_crs(bhb.50k.buf) #TRUE
 
-  # What about a 50km buffer:
-bhb.50k.buf <- st_buffer(bhb.25km.buf, 25000)
+conflict.f.bhb.50k.buf <- st_intersection(conflict.filt.reproj, bhb.50k.buf) # This gives 787 total reports
+sum(conflict.f.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 441 b bear
+sum(conflict.f.bhb.50k.buf$OCC_SPECIES == "WOLF") # 45 wolf
+sum(conflict.f.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 406 cougar
 
-conflict.bhb.50k.buf <- st_intersection(conflict.reproj, bhb.50k.buf) # This gives 7,959 total reports
-sum(conflict.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 451 b bear
-sum(conflict.bhb.50k.buf$OCC_SPECIES == "WOLF") # 45 wolf
-sum(conflict.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 439 cougar
+  # Note: I think we should use the dataset with just the "doubtful" and "confirmed not true" excluded, since there are many fields where
+  # validity was not filled in at all. This at least reduces some of the misreporting, but still keeps our sample size large
 
-
-head(conflict.bhb.10k.buf)
-conflict.bhb <- conflict.bhb.10k.buf %>% 
+head(conflict.f.bhb.50k.buf)
+  # Trim this down:
+conflict.bhb <- conflict.f.bhb.50k.buf %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
                      'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'AREA', 'Area_sqkm', 'geometry'))
+head(conflict.bhb) #7,877 observations
 
 
-st_write(conflict.dataset, "data/processed/conflict_dataframe.shp", append = FALSE)
+#st_write(conflict.data.reproj, "data/processed/conflict_unfiltered_dataframe.shp", append = FALSE)
 st_write(conflict.bhb, "data/processed/conflict_reports_bhb.shp", append = FALSE)
 
