@@ -28,6 +28,8 @@ slope.bhb.rast <- rast(slope.bhb)
 elev.rsmpl <- terra::resample(elev.bhb.rast, temp.rast)
 slope.rsmpl  <- terra::resample(slope.bhb.rast, temp.rast)
 
+elev.km <- measurements::conv_unit(elev.rsmpl, "m", "km")
+
 # Code aspect into categories: flat, N, NE, E, SE, S, SW, W, NW;
 # 
 # aspect.flat <- (aspect.bhb == -1)
@@ -70,5 +72,6 @@ rough.proj <- project(rough.rescale, temp.rast)
 writeRaster(rough.proj, "data/processed/terrain_ruggedness_bhb.tif", overwrite=TRUE)
 writeRaster(slope.rsmpl, "data/processed/slope_bhb.tif", overwrite=TRUE)
 writeRaster(elev.rsmpl, "data/processed/elevation_bhb.tif", overwrite=TRUE)
+writeRaster(elev.km, "data/processed/elevation_km_bhb.tif", overwrite=TRUE)
 
 
