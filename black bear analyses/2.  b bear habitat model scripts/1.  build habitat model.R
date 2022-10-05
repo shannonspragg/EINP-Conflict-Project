@@ -19,7 +19,7 @@ bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
 
 # model 1 Beckman et al., 2015:
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
-elevation <- rast("data/processed/elevation_bhb.tif")
+elevation <- rast("data/processed/elevation_km_bhb.tif")
 slope <- rast("data/processed/slope_bhb.tif")
 roads <- rast("data/processed/bhb_roads.tif")
 dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
@@ -41,9 +41,9 @@ bhb.buf.vect <- vect(bhb.50km.boundary)
 private.land.rast
 elevation
 slope
-roads
+roads # need to adjust this
 dist2roads
-pop.dens
+pop.dens # might leave this out if using ghm
 shrubland
 grassland
 coniferous.forest
@@ -54,8 +54,9 @@ dist2water
 human.development
 ag.land
 
-roads[roads == 10003] <- 1
-roads[roads == 10002] <- 0
+roads.adjust <- roads / 1
+
+# Adjust units of the rasters:
 
 
 # Crop our rasters to the BHB buffer shape:
@@ -79,7 +80,7 @@ roads[roads == 10002] <- 0
 private.land.pred <- -1.8454 * private.land.rast
 elevation.pred <- -0.5012 * elevation 
 slope.pred <- -0.2058 * slope
-roads.pred <- -0.75 * roads
+roads.pred <- -0.75 * roads.adjust
 dist2roads.pred <- 1.5425 * dist2roads
 pop.dens.pred <- -1 * pop.dens
 shrubland.pred <- -0.35 * shrubland
@@ -89,41 +90,43 @@ broadleaf.forest.pred <- 2.101 * broadleaf.forest
 alpine.mixed.forest.pred <- 2.323 * alpine.mixed.forest
 waterways.pred <- -0.5489 * waterways
 dist2water.pred <- -0.0995 * dist2water
-human.development.pred <- -5.898 * human.development
-ag.land.pred <- -3.303 * ag.land
+human.development.pred <- -3.898 * human.development
+ag.land.pred <- -2.303 * ag.land
 
-# NOTE: need to try scaling these.. the high numbers are throwing things off
 
 # Stack Precictor Rasters -------------------------------------------------
 
-# model 1:
-bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, roads.pred, dist2roads.pred, shrubland.pred, 
-                    grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, waterways.pred,
+# Model 1:
+bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, roads.pred, waterways.pred,
+                    grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
                     dist2water.pred, human.development.pred, ag.land.pred)
 
-# testing with lower values:
-bh.1 <- c(shrubland.pred, grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, waterways.pred)
-bh.r <- sum(bh.1)
-bh.prob.rast <- (exp(bh.r))/(1 + exp(bh.r))
-plot(bh.prob.rast) # want something like this as the result!
+# Model 2:
+bear.hab.mod.no.dist <- c(private.land.pred, elevation.pred, slope.pred, shrubland.pred, roads.pred, waterways.pred,
+                          grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
+                         human.development.pred, ag.land.pred)
+
 
 # Convert to Probability Scale (IF NEEDED): -------------------------------
 
 # Model 1:
-bear.hab.rast <- sum(bear.hab.stack)
-linpred.rast <- sum(bear.hab.stack, na.rm=TRUE)
-habitat.prob.rast <- (exp(linpred.rast))/(1 + exp(linpred.rast))
+bear.hab.rast <- sum(bear.hab.stack, na.rm=TRUE)
+habitat.prob.rast <- (exp(bear.hab.rast))/(1 + exp(bear.hab.rast))
 plot(habitat.prob.rast)
 
 # Model 2:
-# linpred.rast.m <- sum(male.habitat.stack, na.rm=TRUE)
-# habitat.prob.rast.m <- (exp(linpred.rast.m))/(1 + exp(linpred.rast.m))
-# 
-# linpred.rast.f <- sum(female.habitat.stack, na.rm=TRUE)
-# habitat.prob.rast.f <- (exp(linpred.rast.f))/(1 + exp(linpred.rast.f))
-# 
-# plot(habitat.prob.rast.m)
-# plot(habitat.prob.rast.f)
+bh.rast.2 <- sum(bear.hab.mod.no.dist, na.rm=TRUE)
+habitat.prob.rast.2 <- (exp(bh.rast.2))/(1 + exp(bh.rast.2))
+plot(habitat.prob.rast.2)
 
-writeRaster(habitat.prob.rast.m, "data/processed/male_bbear_habitat_suitability.tif") # for 50km buf of beaver hills watershed
-writeRaster(habitat.prob.rast.f, "data/processed/female_bbear_habitat_suitability.tif") # (crop to watershed after Omniscape)
+
+# Overlay our boundary line: ----------------------------------------------
+bhb.50km.v <- vect(bhb.50km.boundary)
+
+plot(habitat.prob.rast)
+plot(bhb.50km.v, add=TRUE)
+
+
+# Save habitat model(s): -----------------------------------------------------
+
+writeRaster(habitat.prob.rast, "data/processed/bbear_habitat_suitability.tif") # for 50km buf of beaver hills watershed
