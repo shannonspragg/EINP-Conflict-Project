@@ -114,3 +114,7 @@ bhb_roads.tif.aux.xml
 bhb_water_areas.tif
 bbear_habitat_suitability.tif
 elevation_km_bhb.tif
+conflict_unfiltered_dataframe.dbf
+conflict_unfiltered_dataframe.prj
+conflict_unfiltered_dataframe.shp
+conflict_unfiltered_dataframe.shx
