@@ -14,7 +14,7 @@ farm.type <- read.csv("Data/original/farm type_32100403.csv")
 
 can.ccs.shp<- st_make_valid(st_read("Data/original/lccs000b16a_e.shp"))
 
-bhb.10km.boundary <- st_read("data/processed/bhb_10km.shp")
+bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
 # Filter CCS and Ag Files to AB Only ---------------------------------------------------
@@ -52,9 +52,9 @@ farm.ccs.join <- ab.ccs %>%
 
 # Calculate densities for ag categories: ----------------------------------
 # Start by cropping the data down to SOI buffer:
-farm.ccs.sf <- st_transform(farm.ccs.join, st_crs(bhb.10km.boundary))
+farm.ccs.sf <- st_transform(farm.ccs.join, st_crs(bhb.50km.boundary))
 
-farm.ccs.bhb <- farm.ccs.sf[st_intersects(bhb.10km.boundary, farm.ccs.sf, sparse =  FALSE),]
+farm.ccs.bhb <- farm.ccs.sf[st_intersects(bhb.50km.boundary, farm.ccs.sf, sparse =  FALSE),]
 
 # Subset the data - separate total farms out of NAIC:
 farm.bhb.subset <- subset(farm.ccs.bhb, North.American.Industry.Classification.System..NAICS. != "Total number of farms")
