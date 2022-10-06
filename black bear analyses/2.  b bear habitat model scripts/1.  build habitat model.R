@@ -58,22 +58,6 @@ roads.adjust <- roads / 1
 
 # Adjust units of the rasters:
 
-
-# Crop our rasters to the BHB buffer shape:
-#bhb.50km.v <- vect(bhb.50km.boundary)
-
-# private.land.bhb <- terra::mask(private.land.rast, bhb.50km.v)
-# elevation.bhb <- terra::mask(elevation, bhb.50km.v)
-# dist2roads.bhb <- terra::mask(dist2roads, bhb.50km.v)
-# pop.dens.bhb <- terra::mask(pop.dens, bhb.50km.v)
-# road.dens.4km.bhb <- terra::mask(road.dens.4km, bhb.50km.v)
-# road.dens.500m.bhb <- terra::mask(road.dens.500m, bhb.50km.v)
-# evergreen.bhb <- terra::mask(evergreen.forest, bhb.50km.v)
-# 
-# pop.road.dens <- pop.dens.bhb * road.dens.500m.bhb
-# pop.road.dens
-
-
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
   # Multiplying these variables by coefficients determined from our literature review of bear habitat predoctors
 
