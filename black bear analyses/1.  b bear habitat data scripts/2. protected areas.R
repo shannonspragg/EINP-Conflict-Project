@@ -33,7 +33,7 @@ st_write(ab.PAs.fin, "data/processed/alberta_protected_areas.shp")
 # create template raster --------------------------------------------------
 
   # Bring in county boundary:
-bhb <- st_read("data/original/BHB_BOUNDARY.shp") # This will prob change to watershed
+bhb <- st_read("data/original/BHB_Subwatershed_Boundary.shp") # This will prob change to watershed
 
 bhb.buffer <- bhb %>%  # buffer by 50km
   st_buffer(., 50000) 
@@ -52,7 +52,7 @@ ab.pa.proj <- ab.PAs.fin %>%
   as(., "SpatVector")
 
 bhb.pa.rast <- terra::rasterize(ab.pa.proj, temp.rast, field = "NAME_E") 
-bhb.pa.crop <- terra::mask(bhb.pa.rast, bhb.buf.v) # we want the uncropped one for our model
+#bhb.pa.crop <- terra::mask(bhb.pa.rast, bhb.buf.v) # we want the uncropped one for our model
 
   # Dist to PA raster:
 dist2pa <- terra::distance(temp.rast, ab.pa.proj)

@@ -53,8 +53,8 @@ bhb.buf <- st_read("data/processed/bhb_50km.shp") # Beaver Hills Watershed
 #bhb.reproj<- st_transform(bhb.buf, st_crs(ab_landcover))
 
 #st_crs(ab_landcover) == st_crs(bhb.reproj)
-st_is_valid(bhw.reproj)
-st_is_valid(ab_landcover)
+# st_is_valid(bhw.reproj)
+# st_is_valid(ab_landcover)
 
 # Try this in terra:
 template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
@@ -117,8 +117,7 @@ bhb.conifer.rast[bhb.conifer.rast == 210] <- 1
 bhb.conifer.raster <- raster(bhb.conifer.rast)
 bhb.conifer.raster[is.na(bhb.conifer.raster[])] <- 0 
 
-  # Make Evergreen forest at 500m:
-#evergreen.500m <- aggregate(bhb.conifer.raster, 2) #This gives us a "buffer" zone of edge forest at the new resolution
+names(bhb.conifer.raster)[names(bhb.conifer.raster) == "LC_class"] <- "coniferous_forest"
 
 # Make broadleaf a continuous raster:
 bhb.broadleaf.rast[bhb.broadleaf.rast == 220] <- 1

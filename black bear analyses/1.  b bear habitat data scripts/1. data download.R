@@ -97,7 +97,7 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
 
 
 # BHB watershed boundary:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1Tf0IsrzM-F9mMHC9DOqCpNt8NfY9sUMn" # bio boundary data
+folder_url <- "https://drive.google.com/drive/u/0/folders/1KPP40pBp5vFG0NOyR-VA5nRWXX4F3k0m" # bbh watershed boundary data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
