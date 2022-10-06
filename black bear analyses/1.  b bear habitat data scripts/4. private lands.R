@@ -38,7 +38,7 @@ firstnat.proj <- firstnation.reproj %>%
 plot(firstnat.proj)
 plot(bhb.v, add=TRUE) # No First Nation reserves in the BHW
 
-# bhb.firstnation.rast <- terra::rasterize(firstnat.proj, template.rast, field = "NAME1")
+ bhb.firstnation.rast <- terra::rasterize(firstnat.proj, template.rast, field = "ACCURACY")
 # bhb.firstnation.rast <- terra::mask(bhb.firstnation.rast, bhb.v)
 
 # Stack our public,  protected & native lands: ----------------------------
@@ -49,26 +49,15 @@ bhb.pas <- rast("data/processed/bhb_protected_areas.tif") #update to bhw
 bhb.crowns <- rast("data/processed/bhb_crownlands.tif")
 
 # Stack these into one raster:
-land.tenure.stack <- terra::merge(bhb.pas, bhb.crowns) #Need these to be in categories somehow
+land.tenure.stack <- terra::merge(bhb.pas, bhb.crowns, bhb.firstnation.rast) #Need these to be in categories somehow
 
 land.tenure.stack[land.tenure.stack > 0] <- 1
- 
-#bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
-# land.tenure.rsmpl <- terra::resample(land.tenure.stack, bhb.rast)
-# land.tenure.stack[land.tenure.stack > -1] <- 1 # make our public, native, and protected lands 1
-
 
 land.tenure.stack[land.tenure.stack == 0] <- 50 # make these inverse
 land.tenure.stack[land.tenure.stack == 1] <- 0 
 land.tenure.stack[land.tenure.stack == 50] <- 1 
 
 private.lands.rast <- land.tenure.stack
-
-# Make private lands from the inverse of our other land tenures
-# private.lands <- terra::mask(land.tenure.stack, temp.r, updatevalue=150)
-# private.lands[private.lands == 1] <- 0
-# private.lands[private.lands == 100] <- 1
-
 
 #private.lands.rast <- terra::mask(private.lands, bhb.v)
 names(private.lands.rast)[names(private.lands.rast) == "NAME_E"] <- "private_lands"
