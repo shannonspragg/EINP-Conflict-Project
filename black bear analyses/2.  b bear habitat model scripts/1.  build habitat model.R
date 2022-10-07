@@ -55,11 +55,10 @@ human.development
 ag.land
 
 roads.adjust <- roads / 1
-
-# Adjust units of the rasters:
+writeRaster(roads.adjust, "data/processed/bhb_roads_adjusted.tif")
 
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
-  # Multiplying these variables by coefficients determined from our literature review of bear habitat predoctors
+  # Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
 
 private.land.pred <- -1.8454 * private.land.rast
 elevation.pred <- -0.5012 * elevation 
