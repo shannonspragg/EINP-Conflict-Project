@@ -108,6 +108,14 @@ names(ghm.bhb)[names(ghm.bhb) == "constant"] <- "human_modification"
 
 
 
+# Stack & plot together: --------------------------------------------------
+
+hab.variables <- c(private.land.bhw, elevation.bhw, slope.bhw, roads.bhw, dist2roads.bhw, pop.dens.bhw, shrubland.bhw, grassland.bhw,
+                   conifer.bhw, broadleaf.bhw, alpinemix.bhw, water.bhw, dist2water.bhw, ghm.bhw, ag.land.bhw)
+
+hab.variables
+plot(hab.variables)
+
 # Save these layers: ------------------------------------------------------
 
   # Variables with 50km buffer of BHW:
