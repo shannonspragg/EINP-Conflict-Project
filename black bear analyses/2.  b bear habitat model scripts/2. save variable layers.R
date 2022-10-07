@@ -15,7 +15,6 @@ library(dplyr)
 bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
 bhb.watershed <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 
-# model 1 Beckman et al., 2015:
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
 elevation <- rast("data/processed/elevation_km_bhb.tif")
 slope <- rast("data/processed/slope_bhb.tif")
@@ -77,40 +76,72 @@ ghm.bhw <- terra::mask(human.development, bhw.v)
 ag.land.bhw <- terra::mask(ag.land, bhw.v)
 
 
+# Check layer names: ------------------------------------------------------
+
+private.land.bhw
+elevation.bhw # adjust name
+slope.bhw
+roads.bhw # adjust name
+dist2roads.bhw # adjust name
+pop.dens.bhw
+shrubland.bhw
+grassland.bhw
+conifer.bhw
+broadleaf.bhw
+alpinemix.bhw
+water.bhw
+dist2water.bhw # adjust name
+ghm.bhw # adjust name
+ag.land.bhw
+
+names(elevation.bhw)[names(elevation.bhw) == "CAN_msk_alt"] <- "elevation_km"
+names(roads.bhw)[names(roads.bhw) == "category"] <- "roads"
+names(dist2roads.bhw)[names(dist2roads.bhw) == "lyr.1"] <- "dist_to_roads_km"
+names(dist2water.bhw)[names(dist2water.bhw) == "lyr.1"] <- "dist_to_water_km"
+names(ghm.bhw)[names(ghm.bhw) == "constant"] <- "human_modification"
+
+names(elevation.bhb)[names(elevation.bhb) == "CAN_msk_alt"] <- "elevation_km"
+names(roads.bhb)[names(roads.bhb) == "category"] <- "roads"
+names(dist2roads.bhb)[names(dist2roads.bhb) == "lyr.1"] <- "dist_to_roads_km"
+names(dist2water.bhb)[names(dist2water.bhb) == "lyr.1"] <- "dist_to_water_km"
+names(ghm.bhb)[names(ghm.bhb) == "constant"] <- "human_modification"
+
+
+
 # Save these layers: ------------------------------------------------------
 
   # Variables with 50km buffer of BHW:
-writeRaster(private.land.bhb, "data/processed/bhw_privateland_50km.tif")
-writeRaster(elevation.bhb, "data/processed/bhw_elevation_50km.tif")
-writeRaster(slope.bhb, "data/processed/bhw_slope_50km.tif")
-writeRaster(roads.bhb, "data/processed/bhw_roads_50km.tif")
-writeRaster(dist2roads.bhb, "data/processed/bhw_dist2roads_50km.tif")
-writeRaster(pop.dens.bhb, "data/processed/bhw_popdens_50km.tif")
-writeRaster(shrubland.bhb, "data/processed/bhw_shrubland_50km.tif")
-writeRaster(grassland.bhb, "data/processed/bhw_grassland_50km.tif")
-writeRaster(conifer.bhb, "data/processed/bhw_conifer_50km.tif")
-writeRaster(broadleaf.bhb, "data/processed/bhw_broadleaf_50km.tif")
-writeRaster(alpinemix.bhb, "data/processed/bhw_alpinemix_50km.tif")
-writeRaster(water.bhb, "data/processed/bhw_waterways_50km.tif")
-writeRaster(dist2water.bhb, "data/processed/bhw_dist2water_50km.tif")
-writeRaster(ghm.bhb, "data/processed/bhw_ghm_50km.tif")
-writeRaster(ag.land.bhb, "data/processed/bhw_agriculture_50km.tif")
+writeRaster(private.land.bhb, "data/processed/bhw_privateland_50km.tif", overwrite=TRUE)
+writeRaster(elevation.bhb, "data/processed/bhw_elevation_50km.tif", overwrite=TRUE)
+writeRaster(slope.bhb, "data/processed/bhw_slope_50km.tif", overwrite=TRUE)
+writeRaster(roads.bhb, "data/processed/bhw_roads_50km.tif", overwrite=TRUE)
+writeRaster(dist2roads.bhb, "data/processed/bhw_dist2roads_50km.tif", overwrite=TRUE)
+writeRaster(pop.dens.bhb, "data/processed/bhw_popdens_50km.tif", overwrite=TRUE)
+writeRaster(shrubland.bhb, "data/processed/bhw_shrubland_50km.tif", overwrite=TRUE)
+writeRaster(grassland.bhb, "data/processed/bhw_grassland_50km.tif", overwrite=TRUE)
+writeRaster(conifer.bhb, "data/processed/bhw_conifer_50km.tif", overwrite=TRUE)
+writeRaster(broadleaf.bhb, "data/processed/bhw_broadleaf_50km.tif", overwrite=TRUE)
+writeRaster(alpinemix.bhb, "data/processed/bhw_alpinemix_50km.tif", overwrite=TRUE)
+writeRaster(water.bhb, "data/processed/bhw_waterways_50km.tif", overwrite=TRUE)
+writeRaster(dist2water.bhb, "data/processed/bhw_dist2water_50km.tif", overwrite=TRUE)
+writeRaster(ghm.bhb, "data/processed/bhw_ghm_50km.tif", overwrite=TRUE)
+writeRaster(ag.land.bhb, "data/processed/bhw_agriculture_50km.tif", overwrite=TRUE)
 
 
 
   # Variables with BH watershed boundary:
-writeRaster(private.land.bhw, "data/processed/bhw_privateland.tif")
-writeRaster(elevation.bhw, "data/processed/bhw_elevation.tif")
-writeRaster(slope.bhw, "data/processed/bhw_slope.tif")
-writeRaster(roads.bhw, "data/processed/bhw_roads.tif")
-writeRaster(dist2roads.bhw, "data/processed/bhw_dist2roads.tif")
-writeRaster(pop.dens.bhw, "data/processed/bhw_popdens.tif")
-writeRaster(shrubland.bhw, "data/processed/bhw_shrubland.tif")
-writeRaster(grassland.bhw, "data/processed/bhw_grassland.tif")
-writeRaster(conifer.bhw, "data/processed/bhw_conifer.tif")
-writeRaster(broadleaf.bhw, "data/processed/bhw_broadleaf.tif")
-writeRaster(alpinemix.bhw, "data/processed/bhw_alpinemix.tif")
-writeRaster(water.bhw, "data/processed/bhw_waterways.tif")
-writeRaster(dist2water.bhw, "data/processed/bhw_dist2water.tif")
-writeRaster(ghm.bhw, "data/processed/bhw_human_mod.tif")
-writeRaster(ag.land.bhw, "data/processed/bhw_agriculture.tif")
+writeRaster(private.land.bhw, "data/processed/bhw_privateland.tif", overwrite=TRUE)
+writeRaster(elevation.bhw, "data/processed/bhw_elevation.tif", overwrite=TRUE)
+writeRaster(slope.bhw, "data/processed/bhw_slope.tif", overwrite=TRUE)
+writeRaster(roads.bhw, "data/processed/bhw_roads.tif", overwrite=TRUE)
+writeRaster(dist2roads.bhw, "data/processed/bhw_dist2roads.tif", overwrite=TRUE)
+writeRaster(pop.dens.bhw, "data/processed/bhw_popdens.tif", overwrite=TRUE)
+writeRaster(shrubland.bhw, "data/processed/bhw_shrubland.tif", overwrite=TRUE)
+writeRaster(grassland.bhw, "data/processed/bhw_grassland.tif", overwrite=TRUE)
+writeRaster(conifer.bhw, "data/processed/bhw_conifer.tif", overwrite=TRUE)
+writeRaster(broadleaf.bhw, "data/processed/bhw_broadleaf.tif", overwrite=TRUE)
+writeRaster(alpinemix.bhw, "data/processed/bhw_alpinemix.tif", overwrite=TRUE)
+writeRaster(water.bhw, "data/processed/bhw_waterways.tif", overwrite=TRUE)
+writeRaster(dist2water.bhw, "data/processed/bhw_dist2water.tif", overwrite=TRUE)
+writeRaster(ghm.bhw, "data/processed/bhw_human_mod.tif", overwrite=TRUE)
+writeRaster(ag.land.bhw, "data/processed/bhw_agriculture.tif", overwrite=TRUE)
