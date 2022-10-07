@@ -113,4 +113,4 @@ plot(bhb.50km.v, add=TRUE)
 
 # Save habitat model(s): -----------------------------------------------------
 
-writeRaster(habitat.prob.rast, "data/processed/bbear_habitat_suitability.tif") # for 50km buf of beaver hills watershed
+writeRaster(habitat.prob.rast, "data/processed/bbear_habitat_suitability.tif", overwrite=TRUE) # for 50km buf of beaver hills watershed

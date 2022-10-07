@@ -65,10 +65,6 @@ rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
 rough.proj <- project(rough.rescale, temp.rast)
 
 
-# CHECK FOR NA'S:
-
-
-
 writeRaster(rough.proj, "data/processed/terrain_ruggedness_bhb.tif", overwrite=TRUE)
 writeRaster(slope.rsmpl, "data/processed/slope_bhb.tif", overwrite=TRUE)
 writeRaster(elev.rsmpl, "data/processed/elevation_bhb.tif", overwrite=TRUE)
