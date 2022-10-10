@@ -34,7 +34,7 @@ waterways <- rast("data/processed/bhb_water_areas.tif")
 dist2water <- rast("data/processed/dist2drainage_km_bhb.tif")
 human.development <- rast("data/processed/bhw_ghm.tif")
 ag.land <- rast("data/processed/bhb_agriculture.tif")
-
+bh.lake <- rast("data/processed/beaverhills_lake.tif")
 
 bhb.buf.vect <- vect(bhb.50km.boundary)
 bhw.v <- vect(bhb.watershed)
@@ -56,6 +56,7 @@ waterways
 dist2water
 human.development
 ag.land
+bh.lake
 
 roads.adjust <- roads / 1
 writeRaster(roads.adjust, "data/processed/bhb_roads_adjusted.tif")
@@ -78,14 +79,14 @@ waterways.pred <- -0.5489 * waterways
 dist2water.pred <- -0.0995 * dist2water
 human.development.pred <- -3.898 * human.development
 ag.land.pred <- -2.303 * ag.land
-
+bh.lake.pred <- -3.0 * bh.lake
 
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
 bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, roads.pred, waterways.pred,
                     grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
-                    dist2water.pred, human.development.pred, ag.land.pred)
+                    dist2water.pred, human.development.pred, ag.land.pred, bh.lake.pred)
 
 # Model 2:
 bear.hab.mod.no.dist <- c(private.land.pred, elevation.pred, slope.pred, shrubland.pred, roads.pred, waterways.pred,
