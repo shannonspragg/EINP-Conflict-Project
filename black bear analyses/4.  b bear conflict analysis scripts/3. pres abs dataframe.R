@@ -25,7 +25,7 @@ plot(st_geometry(conflict.conf, add=TRUE)) #787 reports
 
 # Generate Random Points for Pseudo-absences: -----------------------------
 set.seed(2345)
-p.abs.pts <- randomPoints(raster(temp.rast.bhb), 1400) # try double the conflict reports
+p.abs.pts <- randomPoints(raster(temp.rast.bhb), 3000) # double the conflict reports was too much, trying 1.5x
 
 # Make this a data frame:
 abs.pts.df <- data.frame(p.abs.pts)
@@ -49,11 +49,10 @@ abs.pts.sf['OCC_VAL'] <- NA
 abs.pts.sf['bears'] <- 0
 abs.pts.sf['wolves'] <- 0
 abs.pts.sf['cougars'] <- 0  # so this shows as absences
-abs.pts.sf['AREA'] <- NA
-abs.pts.sf['Ar_sqkm'] <- NA
+abs.pts.sf['AREA_HA'] <- NA
 
 # Reorder the columns to match:
-abs.pts.sf <- abs.pts.sf[ , c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,1)]
+abs.pts.sf <- abs.pts.sf[ , c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1)]
 
 
 # Restructure Data frame: --------------------------------------------------
