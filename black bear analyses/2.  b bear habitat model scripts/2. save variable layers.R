@@ -31,22 +31,9 @@ waterways <- rast("data/processed/bhb_water_areas.tif")
 dist2water <- rast("data/processed/dist2drainage_km_bhb.tif")
 human.development <- rast("data/processed/bhw_ghm.tif")
 ag.land <- rast("data/processed/bhb_agriculture.tif")
-waterbodies <- st_read("data/original/waterbody_2.shp")
 
 bhb.50km.v <- vect(bhb.50km.boundary)
 bhw.v <- vect(bhb.watershed)
-#waterbodies.v <- vect(waterbodies)
-
-water.proj.v <- waterbodies %>% 
-  st_transform(., crs=crs(temp.rast)) %>%
-  as(., "SpatVector")
-waterbodies.rast <- terra::rasterize(water.proj.v, temp.rast, field = "name_en") 
-writeRaster(waterbodies.rast, "data/processed/bhb_waterbodies.tif")
-
-water.proj <- waterbodies %>% 
-  st_transform(., crs=crs(bhb.watershed))
-waterbhb <- st_intersection(water.proj, bhb.watershed)
-st_write(waterbhb, "data/processed/bhw_waterbodies.shp")
 
 # Mask layers to the BHW buffer and boundary line -------------------------
 
