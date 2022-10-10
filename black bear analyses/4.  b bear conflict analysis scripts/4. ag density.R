@@ -28,7 +28,7 @@ ab.ccs<-can.ccs.sf %>%
   st_make_valid()
 
 # Save this for later:
-st_write(ab.ccs, "Data/processed/AB_CCS.shp", append = FALSE)
+st_write(ab.ccs, "data/processed/AB_CCS.shp", append = FALSE)
 
 # Filter the Ag Files down to just AB districts: --------------------------
 farm.type.ab <- farm.type %>% filter(grepl("Alberta", farm.type$GEO)) 

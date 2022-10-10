@@ -41,7 +41,7 @@ fuzzysum2 <- function(r1, r2) {
 }
 # Add together our biophys attributes: gHM and roughness
 biophys_fuzsum <- fuzzysum2(ghm.conv, rough.proj)
-writeRaster(biophys_fuzsum,"Data/processed/agnostic_biophys_fuzsum_bhb.tif" )
+writeRaster(biophys_fuzsum,"Data/processed/agnostic_biophys_fuzsum_bhb.tif", overwrite=TRUE)
 
 # species agnostic resistance:
 agno_biophys_resistance <- (1+biophys_fuzsum)^10
