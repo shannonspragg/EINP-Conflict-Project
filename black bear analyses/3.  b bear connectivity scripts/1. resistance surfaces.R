@@ -15,6 +15,7 @@ bhs <- rast("data/processed/bbear_habitat_suitability.tif")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 ghm1 <- rast("data/original/gHMv1_300m_2017_static-0000000000-0000000000.tif") 
 bhb.buf <- st_read("data/processed/bhb_50km.shp")
+bh.lake <- rast("data/processed/beaverhills_lake.tif")
 
 ghm1.crp <- project(ghm1, temp.rast) # crop to bhw buffer
 # ghm2.crp <- project(ghm2, bhs)
@@ -34,6 +35,8 @@ rough.min <-  global(rough, "min", na.rm=TRUE)[1,]
 rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
 rough.proj <- project(rough.rescale, temp.rast)
 
+bh.lake[bh.lake == 1] <- 900 # increase this for resistance
+
 fuzzysum2 <- function(r1, r2) {
   rc1.1m <- (1-r1)
   rc2.1m <- (1-r2)
@@ -45,7 +48,7 @@ writeRaster(biophys_fuzsum,"Data/processed/agnostic_biophys_fuzsum_bhb.tif", ove
 
 # species agnostic resistance:
 agno_biophys_resistance <- (1+biophys_fuzsum)^10
-
+agno_bio_resist <- agno_biophys_resistance + bh.lake # add in the lake
 
 #agno_bio_resist_crop <- mask(agno_biophys_resistance, bhb.buf.v)
 writeRaster(agno_biophys_resistance, "Data/processed/agnostic_biophys_resist.tif", overwrite=TRUE)

@@ -79,7 +79,7 @@ waterways.pred <- -0.5489 * waterways
 dist2water.pred <- -0.0995 * dist2water
 human.development.pred <- -3.898 * human.development
 ag.land.pred <- -2.303 * ag.land
-bh.lake.pred <- -3.0 * bh.lake
+bh.lake.pred <- -6.0 * bh.lake
 
 # Stack Precictor Rasters -------------------------------------------------
 
