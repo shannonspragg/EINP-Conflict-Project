@@ -149,9 +149,6 @@ bhb.water.raster <- raster(bhb.water.r)
 
 wb.p <- wb.bhb %>%
   st_transform(., crs=crs(bhb.buf))
-# 
-# water.c <- st_intersection(water.p, wb.bhb)
-# water.all.v <- vect(water.c)
 wb.v <- vect(wb.p)
 bhb.wb.crop <- crop(wb.v, template.rast)
 
