@@ -65,15 +65,6 @@ sum(conflict.data.conf$OCC_SPECIES == "BLACK BEAR") #  185 b bear
 sum(conflict.data.conf$OCC_SPECIES == "WOLF") # 21 wolf
 sum(conflict.data.conf$OCC_SPECIES == "COUGAR") # 39 cougar
 
-# Include confirmed, probable, and unknown (all but disproved):
-conflict.data.filt <- dplyr::filter(conflict.data.reproj, OCC_VALIDITY_INFORMATION == "CONFIRMED" | OCC_VALIDITY_INFORMATION == "PROBABLE"
-                                    | OCC_VALIDITY_INFORMATION == "CANNOT BE JUDGED" | OCC_VALIDITY_INFORMATION == "")
-
-sum(conflict.data.filt$OCC_SPECIES == "BLACK BEAR") #  911 b bear
-sum(conflict.data.filt$OCC_SPECIES == "WOLF") # 108 wolf
-sum(conflict.data.filt$OCC_SPECIES == "COUGAR") # 484 cougar
-
-
 # Filter to only columns we need:
 
 conflict.dataset.conf <- conflict.data.conf %>% 
@@ -94,30 +85,56 @@ conflict.conf.bhb <- conflict.bhb.50k.buf %>%
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
                      'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'AREA_HA', 'geometry'))
 
-  # Let's try cropping the full dataset down to 50km buffer:
-conflict.dataset.filt <- conflict.data.filt %>% 
-  dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
-                     'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'geometry'))
-
-conflict.filt.reproj <- st_transform(conflict.dataset.filt, st_crs(bhb.50k.buf))
-st_crs(conflict.filt.reproj) == st_crs(bhb.50k.buf) #TRUE
-
-conflict.f.bhb.50k.buf <- st_intersection(conflict.filt.reproj, bhb.50k.buf) # This gives 787 total reports
-sum(conflict.f.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 441 b bear
-sum(conflict.f.bhb.50k.buf$OCC_SPECIES == "WOLF") # 45 wolf
-sum(conflict.f.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 406 cougar
-
-  # Note: I think we should use the dataset with just the "doubtful" and "confirmed not true" excluded, since there are many fields where
-  # validity was not filled in at all. This at least reduces some of the misreporting, but still keeps our sample size large
-
-head(conflict.f.bhb.50k.buf)
-  # Trim this down:
-conflict.f.bhb <- conflict.f.bhb.50k.buf %>% 
-  dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
-                     'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'AREA', 'Area_sqkm', 'geometry'))
-head(conflict.bhb) #7,877 observations
 head(conflict.conf.bhb) #2057 observations
 
-st_write(conflict.conf.bhb, "data/processed/conflict_confirmed_dataframe.shp", append = FALSE)
-st_write(conflict.bhb, "data/processed/conflict_reports_bhb.shp", append = FALSE)
+
+# Add in the 2 Collision Reports ------------------------------------------
+road.kills <- read_csv("data/original/AWW-exp-2022-10-04 black bear.csv")
+
+# Making Conflict Data a Spatial Dataframe 
+xy2<-road.kills[,c(14,13)]
+roadkill.spdf<-SpatialPointsDataFrame(coords = xy2,data = road.kills,
+                                      proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+
+# Ensure this is a sf data frame:
+# conflict.data.sf <- as(conflict.spdf, "sf")
+roadkill.data.sf <- st_as_sf(roadkill.spdf)
+
+roadkill.data.reproj <- roadkill.data.sf %>% st_transform(., crs(temp.rast))
+head(roadkill.data.reproj)
+roadkill.data.reproj <- mutate(roadkill.data.reproj, id = row_number())
+roadkill.data.reproj <- roadkill.data.reproj %>%           # Reorder data frame
+  dplyr::select("id", everything())
+roadkill.data.reproj$id <- as.numeric(roadkill.data.reproj$id)
+
+# Drop to columns we need:
+roadkill.filt <- roadkill.data.reproj %>% 
+  dplyr::select(., c('id','Record ID', 'Species', 'geometry'))
+names(roadkill.filt)[names(roadkill.filt) == 'Species'] <- 'OCC_SPECIES'
+names(roadkill.filt)[names(roadkill.filt) == 'Record ID'] <- 'OCC_FILE_NUMBER'
+
+# Add the missing columns:
+
+roadkill.filt['OCCURRENCE_TYPE_DESC'] <- NA
+roadkill.filt['ACTION_TYPE_DESCRIPTION'] <- NA
+roadkill.filt['OCC_CITY'] <- NA
+roadkill.filt['OCC_POSTAL_CODE'] <- NA
+roadkill.filt['OCC_WMU_CODE'] <- NA
+roadkill.filt['OCC_NUMBER_ANIMALS'] <- 1
+roadkill.filt['OCC_PRIMARY_ATTRACTANT'] <- "highway"
+roadkill.filt['OCC_VALIDITY_INFORMATION'] <- NA
+roadkill.filt['bears'] <- 1
+roadkill.filt['wolves'] <- 0
+roadkill.filt['cougars'] <- 0  
+roadkill.filt['AREA_HA'] <- NA
+
+# Reorder the columns to match:
+roadkills.sf <- roadkill.filt[ , c(1,2,5,6,7,8,9,3,10,11,12,13,14,15,16,4)]
+
+# Join our reports together:
+roadkill.reproj <- st_transform(roadkills.sf, st_crs(conflict.conf.bhb))
+conf.conflict.all <- rbind(conflict.conf.bhb, roadkill.reproj)
+
+
+st_write(conf.conflict.all, "data/processed/conflict_confirmed_dataframe.shp", append = FALSE)
 

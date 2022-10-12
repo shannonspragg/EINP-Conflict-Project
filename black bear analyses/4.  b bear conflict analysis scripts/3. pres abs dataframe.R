@@ -21,7 +21,7 @@ temp.rast.bhb <- terra::mask(temp.rast, bhb.50km.v)
 
 # Plot our points and BHB watershed:
 plot(st_geometry(bhb.50k.buf))
-plot(st_geometry(conflict.conf, add=TRUE)) #787 reports
+plot(st_geometry(conflict.conf, add=TRUE)) #2059 reports
 
 # Generate Random Points for Pseudo-absences: -----------------------------
 set.seed(2345)
