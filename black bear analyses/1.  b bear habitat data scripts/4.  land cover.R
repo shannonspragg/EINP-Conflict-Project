@@ -16,6 +16,7 @@ library(raster)
 
 ab_landcover <- st_read("data/original/Lancover_Polygons_2010.shp")
 wb <- raster("data/processed/bhb_50km_waterbodies.tif")
+wb.bhb <- st_read("data/original/waterbody_2.shp")
 
 # Add column with classification descriptions -----------------------------
   # Following: https://ftp-public.abmi.ca//GISData/LandCover/W2W2010/LandcoverMapABMIGuide2010v1.0.pdf
@@ -69,6 +70,7 @@ alpinemix.v <- vect(alpine.mixed)
 water.v <- vect(water)
 agriculture.v <- vect(agriculture)
 generalist.v <- vect(generalist_habitat)
+wb.v <- vect(wb.bhb)
 
 #bhb.landcover.crop <- crop(landcover.v, template.rast)
 bhb.shrub.crop <- crop(shrubland.v, template.rast)
@@ -143,10 +145,23 @@ bhb.water <- wb + bhb.water.raster
 bhb.water.r <- rast(bhb.water)
 bhb.water.r[bhb.water.r == 2] <- 1
 names(bhb.water.r)[names(bhb.water.r) == "layer"] <- "water"
+bhb.water.raster <- raster(bhb.water.r)
+
+wb.p <- wb.bhb %>%
+  st_transform(., crs=crs(bhb.buf))
+# 
+# water.c <- st_intersection(water.p, wb.bhb)
+# water.all.v <- vect(water.c)
+wb.v <- vect(wb.p)
+bhb.wb.crop <- crop(wb.v, template.rast)
 
 # Make dist to drainage raster:
-dist2drainage <- terra::distance(template.rast, bhb.water.r)
+dist2drainage <- terra::distance(template.rast, bhb.water.crop) 
 dist2drainage.km <- measurements::conv_unit(dist2drainage, "m", "km")
+
+# Make dist to waterbodies raster:
+dist2waterbodies <- terra::distance(template.rast, bhb.wb.crop) 
+dist2waterbodies.km <- measurements::conv_unit(dist2waterbodies, "m", "km")
 
 # Make a agriculture raster:
 bhb.ag.rast[bhb.ag.rast == 120] <- 1
@@ -170,6 +185,7 @@ terra::writeRaster(bhb.conifer.raster, "data/processed/bhb_conifer_mix.tif", ove
 terra::writeRaster(bhb.broadleaf.raster, "data/processed/bhb_broadleaf_mix.tif", overwrite=TRUE)
 terra::writeRaster(bhb.alpinemix.raster, "data/processed/bhb_alpine_mix.tif", overwrite=TRUE)
 writeRaster(dist2drainage.km, "data/processed/dist2drainage_km_bhb.tif", overwrite=TRUE)
+writeRaster(dist2waterbodies.km, "data/processed/dist2waterbodies_km_bhb.tif", overwrite=TRUE)
 writeRaster(bhb.water.r, "data/processed/bhb_water_areas.tif", overwrite=TRUE)
 writeRaster(bhb.ag.raster, "data/processed/bhb_agriculture.tif", overwrite=TRUE)
 #writeRaster(evergreen.500m, "data/processed/bhb_evergreen_500m.tif", overwrite = TRUE)
