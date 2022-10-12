@@ -32,6 +32,7 @@ broadleaf.forest <- rast("data/processed/bhb_broadleaf_mix.tif")
 alpine.mixed.forest <- rast("data/processed/bhb_alpine_mix.tif")
 waterways <- rast("data/processed/bhb_water_areas.tif")
 dist2water <- rast("data/processed/dist2drainage_km_bhb.tif")
+dist2wb <- rast("data/processed/dist2waterbodies_km_bhb.tif")
 human.development <- rast("data/processed/bhw_ghm.tif")
 ag.land <- rast("data/processed/bhb_agriculture.tif")
 bh.lake <- rast("data/processed/beaverhills_lake.tif")
@@ -54,6 +55,7 @@ broadleaf.forest
 alpine.mixed.forest
 waterways
 dist2water
+dist2wb
 human.development
 ag.land
 bh.lake
@@ -77,6 +79,7 @@ broadleaf.forest.pred <- 2.101 * broadleaf.forest
 alpine.mixed.forest.pred <- 2.323 * alpine.mixed.forest
 waterways.pred <- -0.5489 * waterways
 dist2water.pred <- -0.0995 * dist2water
+dist2wb.pred <- -0.0995 * dist2wb
 human.development.pred <- -3.898 * human.development
 ag.land.pred <- -2.303 * ag.land
 bh.lake.pred <- -6.0 * bh.lake
@@ -86,7 +89,7 @@ bh.lake.pred <- -6.0 * bh.lake
 # Model 1:
 bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, roads.pred, waterways.pred,
                     grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
-                    dist2water.pred, human.development.pred, ag.land.pred, bh.lake.pred)
+                    dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred)
 
 # Model 2:
 bear.hab.mod.no.dist <- c(private.land.pred, elevation.pred, slope.pred, shrubland.pred, roads.pred, waterways.pred,
