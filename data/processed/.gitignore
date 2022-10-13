@@ -191,3 +191,7 @@ bhw_protected_areas.tif
 bhw_protected_areas.tif.aux.xml
 bhw_protected_areas_50km.tif
 bhw_protected_areas_50km.tif.aux.xml
+conflict_conf_iem_dataframe.dbf
+conflict_conf_iem_dataframe.prj
+conflict_conf_iem_dataframe.shp
+conflict_conf_iem_dataframe.shx
