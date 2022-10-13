@@ -12,7 +12,7 @@ library(dismo)
 # Bring in Data: ----------------------------------------------------------
 bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
 #conflict.all <-st_read("data/processed/conflict_reports_bhb.shp") 
-conflict.conf <-st_read("data/processed/conflict_confirmed_dataframe.shp") 
+conflict.conf <-st_read("data/processed/conflict_conf_iem_dataframe.shp") 
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
 # Mask our temp rast to the bhb boundary:
@@ -21,7 +21,7 @@ temp.rast.bhb <- terra::mask(temp.rast, bhb.50km.v)
 
 # Plot our points and BHB watershed:
 plot(st_geometry(bhb.50k.buf))
-plot(st_geometry(conflict.conf, add=TRUE)) #2059 reports
+plot(st_geometry(conflict.conf, add=TRUE)) #2099 reports
 
 # Generate Random Points for Pseudo-absences: -----------------------------
 set.seed(2345)
@@ -46,13 +46,15 @@ abs.pts.sf['OCC_SPE'] <- NA
 abs.pts.sf['OCC_NUM'] <- 0
 abs.pts.sf['OCC_PRI'] <- NA
 abs.pts.sf['OCC_VAL'] <- NA
+abs.pts.sf['OCC_OCC'] <- NA
+abs.pts.sf['SITE_NA'] <- NA
 abs.pts.sf['bears'] <- 0
 abs.pts.sf['wolves'] <- 0
 abs.pts.sf['cougars'] <- 0  # so this shows as absences
 abs.pts.sf['AREA_HA'] <- NA
 
 # Reorder the columns to match:
-abs.pts.sf <- abs.pts.sf[ , c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1)]
+abs.pts.sf <- abs.pts.sf[ , c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,1)]
 
 
 # Restructure Data frame: --------------------------------------------------

@@ -14,7 +14,7 @@ library(terra)
 # Bring in Data: ----------------------------------------------------------
 
 # Conflict Data:
-conflict.conf.df <- st_read("data/processed/conflict_confirmed_dataframe.shp")
+conflict.conf.df <- st_read("data/processed/conflict_conf_iem_dataframe.shp")
 pres.abs.df <- st_read("data/processed/conflict_pres_abs_df.shp")
 
 # Predictor Rasters:
