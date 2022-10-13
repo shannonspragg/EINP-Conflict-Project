@@ -69,7 +69,7 @@ sum(conflict.data.conf$OCC_SPECIES == "COUGAR") # 39 cougar
 
 conflict.dataset.conf <- conflict.data.conf %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
-                                        'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'geometry'))
+                                        'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'geometry', 'OCC_OCCURRENCE_TMST', 'SITE_NAME'))
 
 # Crop reports down to BHB watershed:
 st_crs(conflict.dataset.conf) == st_crs(bhb.50k.buf) #FALSE
@@ -77,13 +77,14 @@ conflict.reproj <- st_transform(conflict.dataset.conf, st_crs(bhb.50k.buf))
 st_crs(conflict.reproj) == st_crs(bhb.50k.buf) #TRUE
 
 conflict.bhb.50k.buf <- st_intersection(conflict.reproj, bhb.50k.buf) # This gives 2057 total reports
+#conflict.bhb.50km <- conflict.bhb.50k.buf %>%  distinct() #test for duplicates
 sum(conflict.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 298 b bear
 sum(conflict.bhb.50k.buf$OCC_SPECIES == "WOLF") # 28 wolf
 sum(conflict.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 70 cougar
 
 conflict.conf.bhb <- conflict.bhb.50k.buf %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
-                     'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'AREA_HA', 'geometry'))
+                     'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION',  'OCC_OCCURRENCE_TMST', 'SITE_NAME', 'bears', 'wolves', 'cougars', 'AREA_HA', 'geometry'))
 
 head(conflict.conf.bhb) #2057 observations
 
@@ -123,13 +124,15 @@ roadkill.filt['OCC_WMU_CODE'] <- NA
 roadkill.filt['OCC_NUMBER_ANIMALS'] <- 1
 roadkill.filt['OCC_PRIMARY_ATTRACTANT'] <- "highway"
 roadkill.filt['OCC_VALIDITY_INFORMATION'] <- NA
+roadkill.filt['OCC_OCCURRENCE_TMST'] <- NA
+roadkill.filt['SITE_NAME'] <- "HIGHWAY 16"
 roadkill.filt['bears'] <- 1
 roadkill.filt['wolves'] <- 0
 roadkill.filt['cougars'] <- 0  
 roadkill.filt['AREA_HA'] <- NA
 
 # Reorder the columns to match:
-roadkills.sf <- roadkill.filt[ , c(1,2,5,6,7,8,9,3,10,11,12,13,14,15,16,4)]
+roadkills.sf <- roadkill.filt[ , c(1,2,5,6,7,8,9,3,10,11,12,13,14,15,16,17,18,4)]
 
 # Join our reports together:
 roadkill.reproj <- st_transform(roadkills.sf, st_crs(conflict.conf.bhb))
