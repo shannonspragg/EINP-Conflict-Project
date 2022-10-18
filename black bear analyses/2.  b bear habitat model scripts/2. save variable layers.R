@@ -34,6 +34,7 @@ human.development <- rast("data/processed/bhw_ghm.tif")
 ag.land <- rast("data/processed/bhb_agriculture.tif")
 protected.areas <- rast("data/processed/bhb_protected_areas.tif")
 crownlands <- rast("data/processed/bhb_crownlands.tif")
+fire_history <-rast("data/processed/bhb_fire_history.tif")
 
 bhb.50km.v <- vect(bhb.50km.boundary)
 bhw.v <- vect(bhb.watershed)
@@ -60,6 +61,7 @@ ghm.bhb <- terra::mask(human.development, bhb.50km.v)
 ag.land.bhb <- terra::mask(ag.land, bhb.50km.v)
 pas.bhb <- terra::mask(protected.areas, bhb.50km.v)
 crown.bhb <- terra::mask(crownlands, bhb.50km.v)
+fire.bhb <- terra::mask(fire_history, bhb.50km.v)
 
 # Crop our rasters to the BH watershed BOUNDARY:
 
@@ -81,6 +83,7 @@ ghm.bhw <- terra::mask(human.development, bhw.v)
 ag.land.bhw <- terra::mask(ag.land, bhw.v)
 pas.bhw <- terra::mask(protected.areas, bhw.v)
 crown.bhw <- terra::mask(crownlands, bhw.v)
+fire.bhw <- terra::mask(fire_history, bhw.v)
 
 # Check layer names: ------------------------------------------------------
 
@@ -101,6 +104,7 @@ ghm.bhw # adjust name
 ag.land.bhw
 pas.bhw
 crown.bhw
+fire.bhw
 
 names(elevation.bhw)[names(elevation.bhw) == "CAN_msk_alt"] <- "elevation_km"
 names(roads.bhw)[names(roads.bhw) == "category"] <- "roads"
@@ -148,6 +152,7 @@ writeRaster(ghm.bhb, "data/processed/bhw_ghm_50km.tif", overwrite=TRUE)
 writeRaster(ag.land.bhb, "data/processed/bhw_agriculture_50km.tif", overwrite=TRUE)
 writeRaster(pas.bhb, "data/processed/bhw_protected_areas_50km.tif", overwrite=TRUE)
 writeRaster(crown.bhb, "data/processed/bhw_crownlands_50km.tif", overwrite=TRUE)
+writeRaster(fire.bhb, "data/processed/bhw_fire_history_50km.tif", overwrite=TRUE)
 
 
   # Variables with BH watershed boundary:
@@ -169,3 +174,4 @@ writeRaster(ghm.bhw, "data/processed/bhw_human_mod.tif", overwrite=TRUE)
 writeRaster(ag.land.bhw, "data/processed/bhw_agriculture.tif", overwrite=TRUE)
 writeRaster(pas.bhw, "data/processed/bhw_protected_areas.tif", overwrite=TRUE)
 writeRaster(crown.bhw, "data/processed/bhw_crownlands.tif", overwrite=TRUE)
+writeRaster(fire.bhw, "data/processed/bhw_fire_history.tif", overwrite=TRUE)

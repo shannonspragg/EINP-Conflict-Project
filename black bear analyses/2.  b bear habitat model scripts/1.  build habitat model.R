@@ -36,6 +36,7 @@ dist2wb <- rast("data/processed/dist2waterbodies_km_bhb.tif")
 human.development <- rast("data/processed/bhw_ghm.tif")
 ag.land <- rast("data/processed/bhb_agriculture.tif")
 bh.lake <- rast("data/processed/beaverhills_lake.tif")
+recent.wildfires <- rast("data/processed/bhb_fire_history.tif")
 
 bhb.buf.vect <- vect(bhb.50km.boundary)
 bhw.v <- vect(bhb.watershed)
@@ -59,6 +60,7 @@ dist2wb
 human.development
 ag.land
 bh.lake
+recent.wildfires
 
 roads.adjust <- roads / 1
 writeRaster(roads.adjust, "data/processed/bhb_roads_adjusted.tif")
@@ -83,13 +85,14 @@ dist2wb.pred <- -0.0995 * dist2wb
 human.development.pred <- -3.898 * human.development
 ag.land.pred <- -2.303 * ag.land
 bh.lake.pred <- -6.0 * bh.lake
+recent.wildfires.pred <- -1.1 * recent.wildfires
 
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
 bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, roads.pred, waterways.pred,
                     grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
-                    dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred)
+                    dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred, recent.wildfires.pred)
 
 # Model 2:
 bear.hab.mod.no.dist <- c(private.land.pred, elevation.pred, slope.pred, shrubland.pred, roads.pred, waterways.pred,
