@@ -207,3 +207,11 @@ bhw_CCS_50km.dbf
 bhw_CCS_50km.prj
 bhw_CCS_50km.shp
 bhw_CCS_50km.shx
+agnostic_cum_currmap.tif
+agnostic_flow_potential.tif
+agnostic_normalized.tif
+forest_specialist_cum_currmap.tif
+forest_specialist_normalized.tif
+general_focal_cum_currmap.tif
+general_focal_flow_potential.tif
+general_focal_normalized.tif
