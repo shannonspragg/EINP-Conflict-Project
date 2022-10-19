@@ -25,7 +25,8 @@ ground.crop.rast <- rast("data/processed/ground_crop_density_raster.tif")
 ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
 ghm.rast <- rast("data/processed/bhw_ghm.tif")
 bhs <- rast("data/processed/bbear_habitat_suitability.tif")
-biophys_cumcurrmap <- rast("data/processed/bbear_male_cum_currmap.tif")
+agnostic_bio_cumcurrmap <- rast("data/processed/bbear_agnostic_cum_currmap.tif")
+forest_specialist_bio_cumcurrmap <- rast("data/processed/bbear_forest_specialist_cum_currmap.tif")
 
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------
