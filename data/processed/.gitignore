@@ -203,3 +203,7 @@ general_focal_biophys_fuzsum_bhb.tif
 general_focal_biophys_resist.tif
 general_focal_species_habitat.tif
 .DS_Store
+bhw_CCS_50km.dbf
+bhw_CCS_50km.prj
+bhw_CCS_50km.shp
+bhw_CCS_50km.shx
