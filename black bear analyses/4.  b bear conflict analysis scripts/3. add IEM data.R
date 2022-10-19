@@ -17,6 +17,7 @@ library(units)
 
 iem.reports <- read.csv("data/original/IEM Download_2022-10-01 .csv") # these are all black bear reports
 prov.conflict <- st_read("data/processed/conflict_confirmed_dataframe.shp")
+bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
 
 head(iem.reports)
 
@@ -87,8 +88,23 @@ IEM.filt['AREA_HA'] <- NA
 # Reorder the columns to match:
 IEM.sf <- IEM.filt[ , c(1,7,4,8,9,10,11,5,12,13,14,3,2,15,16,17,18,6)]
 
+# Assign CCS regions: -----------------------------------------------------
+
+# Write this as a .shp for later:
+ab.ccs <- st_read("data/processed/AB_CCS.shp")
+ab.ccs.reproj <- st_transform(ab.ccs, st_crs(bhb.50k.buf))
+iem.reproj <- st_transform(IEM.sf, st_crs(bhb.50k.buf))
+
+# Assign our points to a CCS category:
+iem.ccs.join <- st_join(iem.reproj, left = TRUE, ab.ccs.reproj) # join points
+
+head(iem.ccs.join) # Assigned points to a CCS category
+
+iem.ccs.join <- iem.ccs.join %>% 
+  dplyr::select(., -c(22,21,19))
+
 # Join our reports together:
-conf.conflict.all <- rbind(prov.conflict, IEM.sf) # now we have 2099 obs!
+conf.conflict.all <- rbind(prov.conflict, iem.ccs.join) # now we have 2099 obs!
 
 # Update our file
 st_write(conf.conflict.all, "data/processed/conflict_conf_iem_dataframe.shp", append = FALSE)

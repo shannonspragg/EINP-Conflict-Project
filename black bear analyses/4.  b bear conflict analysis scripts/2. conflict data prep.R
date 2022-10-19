@@ -14,6 +14,7 @@ library(units)
  
 conflicts <- read.csv("data/original/Beaver Hills Biosphere - all species.csv")
 bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
+can.ccs.shp<- st_make_valid(st_read("Data/original/lccs000b21a_e.shp"))
 
   # Add columns: Convert selected species to 1's and all others to 0's:
 conflict.data <- conflicts %>% 
@@ -139,5 +140,57 @@ roadkill.reproj <- st_transform(roadkills.sf, st_crs(conflict.conf.bhb))
 conf.conflict.all <- rbind(conflict.conf.bhb, roadkill.reproj)
 
 
-st_write(conf.conflict.all, "data/processed/conflict_confirmed_dataframe.shp", append = FALSE)
+# NEED: Add in the census regions for varying intercept: ------------------
+
+# Filter CCS Files to AB Only ---------------------------------------------------
+# Make sf and filter down to only British Columbia for Census SubDivs (CCS):
+can.ccs.sf<- as(can.ccs.shp, "sf")
+unique(can.ccs.sf$PRUID) # Shows that the name for BC is "British Columbia / Colombie-Britannique"
+
+# Filter down to just BC:
+ab.ccs<-can.ccs.sf %>%
+  filter(., PRUID == "48") 
+
+# Save this for later:
+st_write(ab.ccs, "data/processed/AB_CCS.shp", append = FALSE)
+
+############################ Next, Add in the CCS Region Names to the Data:
+# Project the CCS Regions to match our data: ------------------------------
+ab.ccs.reproj <- st_transform(ab.ccs, st_crs(bhb.50k.buf))
+
+# Check to see if the projections match:
+st_crs(ab.ccs.reproj) == st_crs(bhb.50k.buf) # [TRUE] 
+
+st_crs(conf.conflict.all) == st_crs(ab.ccs.reproj) # [TRUE] 
+
+# Plot these together to make sure:
+plot(st_geometry(ab.ccs.reproj))
+plot(st_geometry(bhb.50k.buf), add=TRUE)
+
+# Crop CCS Down to SOI 10km Extent: --------------------------------------------
+bhw.ccs.crop <- st_intersection(ab.ccs.reproj, bhb.50k.buf)
+
+plot(st_geometry(bhw.ccs.crop))
+plot(st_geometry(conf.conflict.all), add=TRUE)
+
+# Write this as a .shp for later:
+st_write(bhw.ccs.crop, "data/processed/bhw_CCS_50km.shp", append=FALSE)
+
+# Assign the WARP Points to a CCS Region: ---------------------------------
+## Here we want to overlay the points with the regions, adding a column in the warp data that is CCS region ID, 
+#  make sure this is a factor, to fit this as a varying intercept
+
+# Assign our points to a CCS category:
+conflict.ccs.join <- st_join(conf.conflict.all, left = TRUE, ab.ccs.reproj) # join points
+
+head(conflict.ccs.join) # Assigned points to a CCS category
+
+conflict.ccs.join <- conflict.ccs.join %>% 
+  dplyr::select(., -c(22,21,19))
+
+head(conflict.ccs.join)
+
+# Save conflict df: -------------------------------------------------------
+
+st_write(conflict.ccs.join, "data/processed/conflict_confirmed_dataframe.shp", append = FALSE)
 

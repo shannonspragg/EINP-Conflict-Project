@@ -57,16 +57,27 @@ abs.pts.sf['AREA_HA'] <- NA
 abs.pts.sf <- abs.pts.sf[ , c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,1)]
 
 
+# Assign CCS regions: -----------------------------------------------------
+
+# Write this as a .shp for later:
+ab.ccs <- st_read("data/processed/AB_CCS.shp")
+ab.ccs.reproj <- st_transform(ab.ccs, st_crs(bhb.50k.buf))
+presabs.reproj <- st_transform(abs.pts.sf, st_crs(bhb.50k.buf))
+
+# Assign our points to a CCS category:
+presabs.ccs.join <- st_join(presabs.reproj, left = TRUE, ab.ccs.reproj) # join points
+
+head(presabs.ccs.join) # Assigned points to a CCS category
+
+presabs.ccs.join <- presabs.ccs.join %>% 
+  dplyr::select(., -c(22,21,19))
+
 # Restructure Data frame: --------------------------------------------------
 ## Here we add our presence points to our absences
 # Join our all species presence points with the absence points:
-st_crs(conflict.conf) == st_crs(abs.pts.sf)
+st_crs(conflict.conf) == st_crs(presabs.ccs.join)
 
-abs.pts.reproj <- st_transform(abs.pts.sf, st_crs(conflict.conf))
-st_crs(abs.pts.reproj) == st_crs(conflict.conf) # TRUE
-
-conf.conflict.pts.w.abs <- rbind(conflict.conf, abs.pts.reproj)
-
+conf.conflict.pts.w.abs <- rbind(conflict.conf, presabs.ccs.join)
 
 # Plot these to check:
 plot(st_geometry(bhb.50k.buf))
