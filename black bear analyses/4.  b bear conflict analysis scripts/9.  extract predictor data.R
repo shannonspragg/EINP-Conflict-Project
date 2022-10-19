@@ -25,8 +25,9 @@ ground.crop.rast <- rast("data/processed/ground_crop_density_raster.tif")
 ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
 ghm.rast <- rast("data/processed/bhw_ghm.tif")
 bhs <- rast("data/processed/bbear_habitat_suitability.tif")
-agnostic_bio_cumcurrmap <- rast("data/processed/bbear_agnostic_cum_currmap.tif")
-forest_specialist_bio_cumcurrmap <- rast("data/processed/bbear_forest_specialist_cum_currmap.tif")
+agnostic_bio_cumcurrmap <- rast("data/processed/agnostic_cum_currmap.tif")
+forest_specialist_bio_cumcurrmap <- rast("data/processed/forest_specialist_cum_currmap.tif")
+gen_focal_bio_cumcurrmap <- rast("data/processed/general_focal_cum_currmap.tif")
 
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------
@@ -61,7 +62,9 @@ conf.ground.crop.ext <- terra::extract(ground.crop.rast, conflict.sv.buf, mean, 
 conf.ndvi.ext <- terra::extract(ndvi.rast, conflict.sv.buf, mean, na.rm = TRUE)
 conf.ghm.ext <- terra::extract(ghm.rast, conflict.sv.buf, mean, na.rm = TRUE)
 conf.bhs.ext <- terra::extract(bhs, conflict.sv.buf, mean, na.rm = TRUE)
-conf.biophys.ext <- terra::extract(biophys_cumcurrmap, conflict.sv.buf, mean, na.rm = TRUE)
+conf.agno.ext <- terra::extract(agnostic_bio_cumcurrmap, conflict.sv.buf, mean, na.rm = TRUE)
+conf.gfocal.ext <- terra::extract(gen_focal_bio_cumcurrmap, conflict.sv.buf, mean, na.rm = TRUE)
+conf.forest.sp.ext <- terra::extract(forest_specialist_bio_cumcurrmap, conflict.sv.buf, mean, na.rm = TRUE)
 
 pa.d2pa.ext <- terra::extract(dist2pa.rast, pres.abs.sv.buf, mean, na.rm = TRUE)
 pa.humdens.ext <- terra::extract(hum.dens.rast, pres.abs.sv.buf, mean, na.rm = TRUE)
@@ -70,7 +73,9 @@ pa.ground.crop.ext <- terra::extract(ground.crop.rast, pres.abs.sv.buf, mean, na
 pa.ndvi.ext <- terra::extract(ndvi.rast, pres.abs.sv.buf, mean, na.rm = TRUE)
 pa.ghm.ext <- terra::extract(ghm.rast, pres.abs.sv.buf, mean, na.rm = TRUE)
 pa.bhs.ext <- terra::extract(bhs, pres.abs.sv.buf, mean, na.rm = TRUE)
-pa.biophys.ext <- terra::extract(biophys_cumcurrmap, pres.abs.sv.buf, mean, na.rm = TRUE)
+pa.agno.ext <- terra::extract(agnostic_bio_cumcurrmap, pres.abs.sv.buf, mean, na.rm = TRUE)
+pa.gfocal.ext <- terra::extract(gen_focal_bio_cumcurrmap, pres.abs.sv.buf, mean, na.rm = TRUE)
+pa.forest.sp.ext <- terra::extract(forest_specialist_bio_cumcurrmap, pres.abs.sv.buf, mean, na.rm = TRUE)
 
 # Create New Column(s) for Extracted Values:
 conflict.reproj$dist2pa_km <- conf.d2pa.ext[,2]
@@ -80,7 +85,9 @@ conflict.reproj$ground_crops <- conf.ground.crop.ext[,2]
 conflict.reproj$ndvi <- conf.ndvi.ext[,2]
 conflict.reproj$gHM <- conf.ghm.ext[,2]
 conflict.reproj$bhs <- conf.bhs.ext[,2]
-conflict.reproj$biophys <- conf.biophys.ext[,2]
+conflict.reproj$agno_biophys <- conf.agno.ext[,2]
+conflict.reproj$gfocal_biophys <- conf.gfocal.ext[,2]
+conflict.reproj$forest_sp_biophys <- conf.forest.sp.ext[,2]
 
 pres.abs.reproj$dist2pa_km <- pa.d2pa.ext[,2]
 pres.abs.reproj$hum_dens <- pa.humdens.ext[,2]
@@ -89,7 +96,9 @@ pres.abs.reproj$ground_crop <- pa.ground.crop.ext[,2]
 pres.abs.reproj$ndvi <- pa.ndvi.ext[,2]
 pres.abs.reproj$gHM <- pa.ghm.ext[,2]
 pres.abs.reproj$bhs <- pa.bhs.ext[,2]
-pres.abs.reproj$biophys <- pa.biophys.ext[,2]
+pres.abs.reproj$agno_biophys <- pa.agno.ext[,2]
+pres.abs.reproj$gfocal_biophys <- pa.gfocal.ext[,2]
+pres.abs.reproj$forest_sp_biophys <- pa.forest.sp.ext[,2]
 
 
 # Check for NA's:
@@ -100,7 +109,9 @@ which(is.na(conflict.reproj$ground_crops)) #none
 which(is.na(conflict.reproj$ndvi)) #none
 which(is.na(conflict.reproj$gHM)) #none
 which(is.na(conflict.reproj$bhs)) #none
-which(is.na(conflict.reproj$biophys)) #none
+which(is.na(conflict.reproj$agno_biophys)) #none
+which(is.na(conflict.reproj$gfocal_biophys)) #none
+which(is.na(conflict.reproj$forest_sp_biophys)) #none
 
 which(is.na(pres.abs.reproj$dist2pa_km)) #none
 which(is.na(pres.abs.reproj$hum_dens)) #none
@@ -109,7 +120,9 @@ which(is.na(pres.abs.reproj$ground_crops)) #none
 which(is.na(pres.abs.reproj$ndvi)) #none
 which(is.na(pres.abs.reproj$gHM)) #none
 which(is.na(pres.abs.reproj$bhs)) #none
-which(is.na(pres.abs.reproj$biophys)) #none
+which(is.na(pres.abs.reproj$agno_biophys)) #none
+which(is.na(pres.abs.reproj$gfocal_biophys)) #none
+which(is.na(pres.abs.reproj$forest_sp_biophys)) #none
 
 
 # Save this as new file ---------------------------------------------------

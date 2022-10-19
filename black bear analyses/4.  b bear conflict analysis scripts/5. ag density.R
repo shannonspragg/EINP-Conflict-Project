@@ -110,10 +110,17 @@ ground.crop.crop <- crop(ground.crop.sv, temp.rast)
 animal.prod.rast <- terra::rasterize(animal.prod.crop, temp.rast, field = "Farms_per_sq_km")
 ground.crop.rast <- terra::rasterize(ground.crop.crop, temp.rast, field = "Farms_per_sq_km")
 
-farm.density.combined <- animal.prod.rast + ground.crop.rast
+# Make the NA's here 0's
+animal.prod.raster <- raster(animal.prod.rast)
+ground.crop.raster <- raster(ground.crop.rast)
+
+animal.prod.raster[is.na(animal.prod.raster[])] <- 0 
+ground.crop.raster[is.na(ground.crop.raster[])] <- 0
+
+farm.density.combined <- animal.prod.raster + ground.crop.raster
 
 # Save these Farm Rasters:
-terra::writeRaster(animal.prod.rast, "data/processed/animal_production_density_raster.tif", overwrite=TRUE)
-terra::writeRaster(ground.crop.rast, "data/processed/ground_crop_density_raster.tif" , overwrite=TRUE)
+terra::writeRaster(animal.prod.raster, "data/processed/animal_production_density_raster.tif", overwrite=TRUE)
+terra::writeRaster(ground.crop.raster, "data/processed/ground_crop_density_raster.tif" , overwrite=TRUE)
 terra::writeRaster(farm.density.combined, "data/processed/combined_farm_density.tif" , overwrite=TRUE)
 
