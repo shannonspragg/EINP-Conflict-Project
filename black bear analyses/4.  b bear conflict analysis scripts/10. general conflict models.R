@@ -19,7 +19,7 @@ theme_set(bayesplot::theme_default(base_family = "sans"))
 
 
 # Bring in Data: ----------------------------------------------------------
-warp.pres.abs <- st_read(here::here("./Data/processed/pres_abs_final.shp")) %>% st_drop_geometry()
+warp.pres.abs <- st_read(here::here("./Data/processed/pres_abs_full_df.shp")) %>% st_drop_geometry()
 
 #filter some of the absences
 pres.abs.filter <- warp.pres.abs %>%
