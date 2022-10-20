@@ -72,6 +72,10 @@ head(presabs.ccs.join) # Assigned points to a CCS category
 presabs.ccs.join <- presabs.ccs.join %>% 
   dplyr::select(., -c(22,21,19))
 
+# Add a column for conflict absence:
+presabs.ccs.join$cnflct_ <- 0
+presabs.ccs.join <- presabs.ccs.join[, c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,21,20)]
+
 # Restructure Data frame: --------------------------------------------------
 ## Here we add our presence points to our absences
 # Join our all species presence points with the absence points:

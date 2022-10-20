@@ -12,6 +12,7 @@ library(rgeos)
 library(rgdal)
 library(terra)
 library(units)
+library(raster)
 
 # Bring in our  Data --------------------------------------------
 
@@ -105,6 +106,9 @@ iem.ccs.join <- iem.ccs.join %>%
 
 # Join our reports together:
 conf.conflict.all <- rbind(prov.conflict, iem.ccs.join) # now we have 2099 obs!
+
+# Add a column for conflict presence:
+conf.conflict.all$conflict_pres <- 1
 
 # Update our file
 st_write(conf.conflict.all, "data/processed/conflict_conf_iem_dataframe.shp", append = FALSE)
