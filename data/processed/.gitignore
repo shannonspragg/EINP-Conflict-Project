@@ -228,3 +228,6 @@ bhw_gfocal_cumcurr_50km.tif
 bhw_gfocal_norm.tif
 bhw_gfocal_norm_50km.tif
 post_pa_full.rds
+post_int_only.rds
+post_pa_full_quad.rds
+post_pa_partial.rds
