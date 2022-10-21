@@ -237,3 +237,15 @@ post_pa_full_loo.rds
 post_pa_full_quad_loo.rds
 post_pa_loo_comp.rds
 post_pa_partial_loo.rds
+agno_bio_dens_mixe_plot.rds
+agno_bio_mixe_plot.rds
+animal_dens_mixe_plot.rds
+dist2pa_mixe_plot.rds
+gHM_dens_mixe_plot.rds
+gHM_mixe_plot.rds
+general_conflict_all_pred_plot.rds
+groundcrop_dens_mixe_plot.rds
+ndvi_dens_mixe_plot.rds
+ndvi_mixe_plot.rds
+post_pa_coef_plot.rds
+post_pa_full_predsplot.rds
