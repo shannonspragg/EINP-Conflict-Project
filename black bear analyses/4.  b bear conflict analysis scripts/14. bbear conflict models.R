@@ -20,23 +20,23 @@ theme_set(bayesplot::theme_default(base_family = "sans"))
 
 
 # Bring in Data & Prep: ----------------------------------------------------------
-bear.conflict <- st_read("Data/processed/warp_final.shp") %>% 
+bear.conflict <- st_read("data/processed/confirmed_reports_full_df.shp") %>% 
   st_buffer(., 5000)
 
 # Add General Conflict into Bear Data:
-prob.conflict <- rast("Data/processed/prob_conflict_all.tif")
-bear.prob.conflict <- terra::extract(prob.conflict, vect(bear.conflict), mean, na.rm=TRUE)
-bear.conflict$conflictprob <- bear.prob.conflict[,2]
+prob.conflict <- rast("data/processed/prob_conflict_all.tif")
+gen.prob.conflict <- terra::extract(prob.conflict, vect(bear.conflict), mean, na.rm=TRUE)
+bear.conflict$genconflictprob <- gen.prob.conflict[,2]
 
 bear.conflict.df <- bear.conflict %>% 
   st_drop_geometry() %>% 
-  select(., bears, CCSNAME, dst__PA, dst__GP, Anml_Fr, Grnd_Cr, Biophys, GrizzInc, BHS, Human_Dens,conflictprob)
+  dplyr::select(., bears, CCSNAME, dst2p_k, hum_dns, anml_fr, grnd_cr, ndvi, gHM, bhs, frst_s_, genconflictprob)
 
-colnames(bear.conflict.df) <- c("conflict", "CCSNAME.ps", "dist2pa", "dist2grizz", "livestockOps", "rowcropOps", "connectivity", "grizzinc", "habsuit", "humandens", "conflictprob")
+colnames(bear.conflict.df) <- c("bear_conflict", "CCSNAME.ps", "dist2pa", "humandens", "livestockOps", "rowcropOps", "ndvi", "gHM", "habsuit", "connectivity", "conflictprob")
 
 # Scale Data:
 bear.conflict.df.scl <- bear.conflict.df %>% 
-  mutate_at(c("dist2pa", "dist2grizz", "livestockOps", "rowcropOps", "connectivity", "grizzinc", "habsuit", "humandens", "conflictprob"), scale) 
+  mutate_at(c("dist2pa", "humandens", "livestockOps", "rowcropOps", "ndvi", "gHM", "habsuit", "connectivity", "conflictprob"), scale) 
 
 # Run Bear Conflict Models: -----------------------------------------------
 t_prior <- student_t(df = 7, location = 0, scale = 1.5)
@@ -45,7 +45,7 @@ int_prior <- normal(location = 0, scale = NULL, autoscale = FALSE)
 SEED<-14124869
 
 # Full Model:
-bear.full.mod <- stan_glmer(conflict ~ dist2pa + dist2grizz + livestockOps + rowcropOps + connectivity + grizzinc + habsuit + humandens + conflictprob + (1 | CCSNAME.ps), 
+bear.full.mod <- stan_glmer(conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
                             data = bear.conflict.df.scl,
                             family = binomial(link = "logit"), # define our binomial glm
                             prior = t_prior, prior_intercept = int_prior, QR=TRUE,
