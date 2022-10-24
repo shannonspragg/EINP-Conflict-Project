@@ -255,3 +255,9 @@ bear_full_mod.rds
 bear_int_only.rds
 bear_no_conf.rds
 bear_quad_reg.rds
+bear_conf_df_scl.rds
+bear_full_loo.rds
+bear_full_quad_loo.rds
+bear_int_only_loo.rds
+bear_loo_comp.rds
+bear_no_conf_loo.rds
