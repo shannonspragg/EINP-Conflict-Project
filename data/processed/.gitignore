@@ -274,3 +274,6 @@ bear_rowcrops_mixe_plot.rds
 biophys_bear_conf_plots.rds
 social_bear_conf_plots.rds
 all_bear_conf_plots.rds
+bbear_raw_habitat_suitability.tif
+prob_conflict_bear.tif
+prob_conflict_bear_bhw.tif
