@@ -277,3 +277,5 @@ all_bear_conf_plots.rds
 bbear_raw_habitat_suitability.tif
 prob_conflict_bear.tif
 prob_conflict_bear_bhw.tif
+biosocial_fuzsum.tif
+biosocial_resist.tif
