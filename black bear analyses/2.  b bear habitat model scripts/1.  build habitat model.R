@@ -125,7 +125,7 @@ bear.habitat.bhw <- terra::mask(habitat.prob.rast, bhw.v)
 bear.habitat.bhw.50km <- terra::mask(habitat.prob.rast, bhb.50km.v)
 
 # Save habitat model(s): -----------------------------------------------------
-
+writeRaster(bear.hab.rast, "data/processed/bbear_raw_habitat_suitability.tif", overwrite=TRUE) # use THIS ONE for conflict analysis
 writeRaster(habitat.prob.rast, "data/processed/bbear_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
 writeRaster(bear.habitat.bhw.50km, "data/processed/bbear_habitat_bhw_50km.tif", overwrite=TRUE) # for 50km buf of beaver hills watershed
 writeRaster(bear.habitat.bhw, "data/processed/bbear_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed

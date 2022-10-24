@@ -93,4 +93,5 @@ bear.prob.rast <- (exp(bear.linpred.rst))/(1 + exp(bear.linpred.rst))
 # Crop to BHW Boundary:
 bear.prob.rast.bhw <- mask(bear.prob.rast, bhw.v)
 
-writeRaster(prob.rast, "Data/processed/prob_conflict_bear.tif")
+writeRaster(bear.prob.rast, "Data/processed/prob_conflict_bear.tif")
+writeRaster(bear.prob.rast.bhw, "Data/processed/prob_conflict_bear_bhw.tif")
