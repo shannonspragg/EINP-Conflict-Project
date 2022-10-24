@@ -45,7 +45,7 @@ int_prior <- normal(location = 0, scale = NULL, autoscale = FALSE)
 SEED<-14124869
 
 # Full Model:
-bear.full.mod <- stan_glmer(conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
+bear.full.mod <- stan_glmer(bear_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
                             data = bear.conflict.df.scl,
                             family = binomial(link = "logit"), # define our binomial glm
                             prior = t_prior, prior_intercept = int_prior, QR=TRUE,
@@ -53,15 +53,15 @@ bear.full.mod <- stan_glmer(conflict ~ dist2pa + humandens + livestockOps + rowc
                             seed = SEED)
 
 # Full Model + Quadratic for GenConf:
-bear.full.mod.quad <- update(bear.full.mod, formula = conflict ~ dist2pa + dist2grizz + livestockOps + rowcropOps  + connectivity + grizzinc + habsuit + humandens + conflictprob + I(conflictprob^2) + (1 | CCSNAME.ps), QR=TRUE)
+bear.full.mod.quad <- update(bear.full.mod, formula = bear_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + conflictprob + I(conflictprob^2) + (1 | CCSNAME.ps), QR=TRUE)
 
 # Full Model - GenConf:
-bear.no.conf <- update(bear.full.mod, formula = conflict ~ dist2pa + dist2grizz + livestockOps + rowcropOps  + connectivity + grizzinc + habsuit + humandens + (1 | CCSNAME.ps), QR=TRUE)
+bear.no.conf <- update(bear.full.mod, formula = bear_conflict ~ dist2pa + + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + (1 | CCSNAME.ps), QR=TRUE)
 
 # Intercept Only Model: 
-bear.int.only <- update(bear.full.mod, formula = conflict ~ 1 + (1 | CCSNAME.ps) , QR = FALSE)
+bear.int.only <- update(bear.full.mod, formula = bear_conflict ~ 1 + (1 | CCSNAME.ps) , QR = FALSE)
 
-saveRDS(bear.full.mod.quad, "Data/processed/bear_quad_reg.rds")
-saveRDS(bear.int.only, "Data/processed/bear_int_only.rds")
-saveRDS(bear.full.mod, "Data/processed/bear_full.rds")
-saveRDS(bear.no.conf, "Data/processed/bear_no_conf.rds")
+saveRDS(bear.full.mod.quad, "data/processed/bear_quad_reg.rds")
+saveRDS(bear.int.only, "data/processed/bear_int_only.rds")
+saveRDS(bear.full.mod, "data/processed/bear_full_mod.rds")
+saveRDS(bear.no.conf, "data/processed/bear_no_conf.rds")
