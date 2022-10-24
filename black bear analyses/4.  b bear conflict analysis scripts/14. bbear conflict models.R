@@ -56,7 +56,7 @@ bear.full.mod <- stan_glmer(bear_conflict ~ dist2pa + humandens + livestockOps +
 bear.full.mod.quad <- update(bear.full.mod, formula = bear_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + conflictprob + I(conflictprob^2) + (1 | CCSNAME.ps), QR=TRUE)
 
 # Full Model - GenConf:
-bear.no.conf <- update(bear.full.mod, formula = bear_conflict ~ dist2pa + + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + (1 | CCSNAME.ps), QR=TRUE)
+bear.no.conf <- update(bear.full.mod, formula = bear_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + (1 | CCSNAME.ps), QR=TRUE)
 
 # Intercept Only Model: 
 bear.int.only <- update(bear.full.mod, formula = bear_conflict ~ 1 + (1 | CCSNAME.ps) , QR = FALSE)
