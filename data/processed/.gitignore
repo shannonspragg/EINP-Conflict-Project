@@ -251,3 +251,7 @@ post_pa_coef_plot.rds
 post_pa_full_predsplot.rds
 prob_conflict_all.tif
 prob_conflict_all_bhw.tif
+bear_full_mod.rds
+bear_int_only.rds
+bear_no_conf.rds
+bear_quad_reg.rds
