@@ -71,4 +71,4 @@ prob.rast.bhw <- mask(prob.rast, bhw.v)
 
 # Save these:
 writeRaster(prob.rast, "Data/processed/prob_conflict_all.tif")
-writeRaster(prob.rast, "Data/processed/prob_conflict_all_bhw.tif")
+writeRaster(prob.rast.bhw, "Data/processed/prob_conflict_all_bhw.tif")
