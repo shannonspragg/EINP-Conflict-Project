@@ -37,6 +37,7 @@ colnames(bear.conflict.df) <- c("bear_conflict", "CCSNAME.ps", "dist2pa", "human
 # Scale Data:
 bear.conflict.df.scl <- bear.conflict.df %>% 
   mutate_at(c("dist2pa", "humandens", "livestockOps", "rowcropOps", "ndvi", "gHM", "habsuit", "connectivity", "conflictprob"), scale) 
+saveRDS(bear.conflict.df.scl, "data/processed/bear_conf_df_scl.rds")
 
 # Run Bear Conflict Models: -----------------------------------------------
 t_prior <- student_t(df = 7, location = 0, scale = 1.5)

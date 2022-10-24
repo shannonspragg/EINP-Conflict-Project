@@ -17,30 +17,31 @@ library(modelr)
 theme_set(bayesplot::theme_default(base_family = "sans"))
  
 # Read data in:
-bear.full.mod.quad <- readRDS("Data/processed/bear_quad_reg.rds")
-bear.int.only <- readRDS("Data/processed/bear_int_only.rds")
-bear.full.mod <- readRDS("Data/processed/bear_full.rds")
-bear.no.conf <- readRDS("Data/processed/bear_no_conf.rds")
+bear.full.mod.quad <- readRDS("data/processed/bear_quad_reg.rds")
+bear.int.only <- readRDS("data/processed/bear_int_only.rds")
+bear.full.mod <- readRDS("data/processed/bear_full_mod.rds")
+bear.no.conf <- readRDS("data/processed/bear_no_conf.rds")
+bear.conflict.df.scl <- readRDS("data/processed/bear_conf_df_scl.rds")
 
 # Model Comparison: -------------------------------------------------------
-loo1 <- loo(bear.full.mod, save_psis = TRUE)
-loo2 <- loo(bear.full.mod.quad, save_psis = TRUE)
-loo3 <- loo(bear.no.conf, save_psis = TRUE)
-loo0 <- loo(bear.int.only, save_psis = TRUE)
+loo1b <- loo(bear.full.mod, save_psis = TRUE)
+loo2b <- loo(bear.full.mod.quad, save_psis = TRUE)
+loo3b <- loo(bear.no.conf, save_psis = TRUE)
+loo0b <- loo(bear.int.only, save_psis = TRUE)
 
-saveRDS(loo1, "Data/processed/bear_full_loo.rds")
-saveRDS(loo2, "Data/processed/bear_full_quad_loo.rds")
-saveRDS(loo3, "Data/processed/bear_no_conf_loo.rds")
-saveRDS(loo0, "Data/processed/bear_int_only_loo.rds")
+saveRDS(loo1b, "Data/processed/bear_full_loo.rds")
+saveRDS(loo2b, "Data/processed/bear_full_quad_loo.rds")
+saveRDS(loo3b, "Data/processed/bear_no_conf_loo.rds")
+saveRDS(loo0b, "Data/processed/bear_int_only_loo.rds")
 
 # Bring back in later:
-# loo1 <- readRDS("Data/processed/bear_full_loo.rds")
-# loo2 <- readRDS("Data/processed/bear_full_quad_loo.rds")
-# loo3 <- readRDS("Data/processed/bear_no_conf_loo.rds")
-# loo0 <- readRDS("Data/processed/bear_int_only_loo.rds")
+# loo1b <- readRDS("Data/processed/bear_full_loo.rds")
+# loo2b <- readRDS("Data/processed/bear_full_quad_loo.rds")
+# loo3b <- readRDS("Data/processed/bear_no_conf_loo.rds")
+# loo0b <- readRDS("Data/processed/bear_int_only_loo.rds")
 
-bear.loo.comp <- loo_compare(bloo1, bloo2, bloo3, bloo0)
-saveRDS(bear.loo.comp, "Data/processed/bear_loo_comp.rds")
+bear.loo.comp <- loo_compare(loo1b, loo2b, loo3b, loo0b)
+saveRDS(bear.loo.comp, "data/processed/bear_loo_comp.rds")
 
 preds3 <- posterior_epred(bear.no.conf)
 preds2 <- posterior_epred(bear.full.mod.quad)
@@ -55,36 +56,39 @@ pr2 <- as.integer(pred2 >= 0.5)
 pr1 <- as.integer(pred1 >= 0.5)
 pr0 <- as.integer(pred0 >=0.5)
 
-round(mean(xor(pr3,as.integer(bear.conflict.df.scl$conflict==0))),2) #.68 
-round(mean(xor(pr2,as.integer(bear.conflict.df.scl$conflict==0))),2) #.68
-round(mean(xor(pr1,as.integer(bear.conflict.df.scl$conflict==0))),2) #0.68
-round(mean(xor(pr0,as.integer(bear.conflict.df.scl$conflict==0))),2) #0.68
+round(mean(xor(pr3,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
+round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
+round(mean(xor(pr1,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.86
+round(mean(xor(pr0,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.82
 
-ploo1 <- E_loo(preds1, loo1$psis_object, type="mean", log_ratios = -log_lik(bear.full.mod))$value
+ploo1 <- E_loo(preds1, loo1b$psis_object, type="mean", log_ratios = -log_lik(bear.full.mod))$value
 
-ploo2<-E_loo(preds2, loo2$psis_object, type="mean", log_ratios = -log_lik(bear.full.mod.quad))$value
+ploo2<-E_loo(preds2, loo2b$psis_object, type="mean", log_ratios = -log_lik(bear.full.mod.quad))$value
 
-ploo3<-E_loo(preds3, loo3$psis_object, type="mean", log_ratios = -log_lik(bear.no.conf))$value
+ploo3<-E_loo(preds3, loo3b$psis_object, type="mean", log_ratios = -log_lik(bear.no.conf))$value
 
-ploo0<-E_loo(preds0, loo0$psis_object, type="mean", log_ratios = -log_lik(bear.int.only))$value
+ploo0<-E_loo(preds0, loo0b$psis_object, type="mean", log_ratios = -log_lik(bear.int.only))$value
 
-round(mean(xor(ploo1>0.5,as.integer(bear.conflict.df.scl$conflict==0))),2) #.67
-round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$conflict==0))),2) #.67
-round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$conflict==0))),2) #.67
-round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$conflict==0))),2) #.67
+round(mean(xor(ploo1>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
+round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
+round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
+round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.82
 
 # Building plots of results -----------------------------------------------
 
 # Plotting AUC
 opar <- par()
 par(pty = "s")
-pROC::roc(bear.conflict.df.scl$conflict, bear.full.mod.quad$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
+pROC::roc(bear.conflict.df.scl$bear_conflict, bear.full.mod.quad$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
           xlab= "False Positive Percentage", ylab= "True Positive Percentage",
           col="#377eb8", lwd=4, print.auc=TRUE)
-pROC::plot.roc(bear.conflict.df.scl$conflict, bear.full.mod.quad$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=60)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.full.mod$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=60)
 
-legend("bottomright", legend=c("Full Model", "Varying Intercept Model"),
-       col=c("#377eb8", "#4daf4a"), lwd = 4)
-par(opar)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.no.conf$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=70)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.int.only$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=80)
 
-# We will use full model without quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable
+legend("bottomright", legend=c("Quad Model", "Full Model",  "No Conflict Model", "Varying Intercept-only Model"),
+       col=c("#377eb8", "#4daf4a", "#B090D0", "#FFAA00"), lwd = 4)
+
+# We will use full model without quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable -- note that model without
+# general conflict is not really any different in AUC
