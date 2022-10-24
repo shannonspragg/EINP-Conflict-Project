@@ -90,5 +90,5 @@ pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.int.only$fitted.values, 
 legend("bottomright", legend=c("Quad Model", "Full Model",  "No Conflict Model", "Varying Intercept-only Model"),
        col=c("#377eb8", "#4daf4a", "#B090D0", "#FFAA00"), lwd = 4)
 
-# We will use full model without quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable -- note that model without
+# We will use full model with quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable -- note that model without
 # general conflict is not really any different in AUC
