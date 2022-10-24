@@ -390,5 +390,9 @@ biophys.p <-  connectivity.plot + habsuit.plot + dist2pa.plot.b + ndvi.plot + pl
 
 social.p <- pop.dens.plot + livestockOps.plot.b + rowcropOps.plot.b + human.mod.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
+bear.plot.all <- connectivity.plot + habsuit.plot + dist2pa.plot.b + ndvi.plot + pop.dens.plot + livestockOps.plot.b + rowcropOps.plot.b + human.mod.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+
 saveRDS(biophys.p, "data/processed/biophys_bear_conf_plots.rds")
 saveRDS(social.p, "data/processed/social_bear_conf_plots.rds")
+saveRDS(bear.plot.all, "data/processed/all_bear_conf_plots.rds")
+
