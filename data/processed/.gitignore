@@ -249,3 +249,5 @@ ndvi_dens_mixe_plot.rds
 ndvi_mixe_plot.rds
 post_pa_coef_plot.rds
 post_pa_full_predsplot.rds
+prob_conflict_all.tif
+prob_conflict_all_bhw.tif
