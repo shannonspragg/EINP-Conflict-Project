@@ -261,3 +261,15 @@ bear_full_quad_loo.rds
 bear_int_only_loo.rds
 bear_loo_comp.rds
 bear_no_conf_loo.rds
+bear_bhs_mixe_plot.rds
+bear_coef_plot.rds
+bear_connectivity_mixe_plot.rds
+bear_dist2pa_mixe_plot.rds
+bear_gHM_mixe_plot.rds
+bear_livestockOps_mixe_plot.rds
+bear_ndvi_mixe_plot.rds
+bear_popdens_mixe_plot.rds
+bear_quad_predsplot.rds
+bear_rowcrops_mixe_plot.rds
+biophys_bear_conf_plots.rds
+social_bear_conf_plots.rds
