@@ -7,7 +7,7 @@
 library(terra)
 library(sf)
 library(tidyverse)
-
+library(raster)
 
 # Load Data: --------------------------------------------------------------
 bhs <- rast("data/processed/bbear_habitat_suitability.tif")
@@ -19,23 +19,23 @@ gen.focal.hab <- rast("data/processed/general_focal_species_habitat.tif")
 forest.specialist <- rast("data/processed/forest_specialist_species_habitat.tif")
 
 # Prep gHM and elevation data:
-ghm1.crp <- project(ghm1, temp.rast) # crop to bhw buffer
+ghm1.crp <- terra::project(ghm1, temp.rast) # crop to bhw buffer
 # ghm2.crp <- project(ghm2, bhs)
 # ghm.mos <- mosaic(ghm1.crp, ghm2.crp, fun="max")
 ghm.conv <- ghm1.crp/65536
 
-bhb.bound <- st_read("Data/original/BHB_BOUNDARY.shp") %>% # MAKE SURE FILE IS UPDATED
+bhw.bound <- st_read("data/original/BHB_Subwatershed_Boundary.shp") %>% # MAKE SURE FILE IS UPDATED
   st_buffer(., 500000) %>% st_transform(., crs=crs(temp.rast)) %>% 
   as(., "SpatVector")
 bhb.buf.v <- vect(bhb.buf)
 elev.can <- rast(raster::getData('alt', country = 'CAN'))
-elev.can.crop <- crop(elev.can, project(bhb.bound, elev.can)) #crop to bhw
+elev.can.crop <- crop(elev.can, terra::project(bhb.bound, elev.can)) #crop to bhw
 
 rough <- terrain(elev.can.crop, v="TRI")
 rough.max <-  global(rough, "max", na.rm=TRUE)[1,]
 rough.min <-  global(rough, "min", na.rm=TRUE)[1,]
 rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
-rough.proj <- project(rough.rescale, temp.rast)
+rough.proj <- terra::project(rough.rescale, temp.rast)
 
 # Prep Species agnostic resistance: ---------------------------------------
 fuzzysum3 <- function(r1, r2, r3) {
@@ -106,9 +106,9 @@ writeRaster(forest_specialist_biophys_resistance, "Data/processed/forest_special
 
 
 
-# Add prob conflict for biophys + social surface --------------------------
+# Add prob conflict for biophys + social surface (after running conflict models)--------------------------
 
-prob.bear.conf <- rast("Data/processed/prob_conflict_bears_bhw.tif")
+prob.bear.conf <- rast("Data/processed/prob_conflict_bear.tif")
 
 fuzzysum3 <- function(r1, r2, r3) {
   rc1.1m <- (1-r1)
@@ -118,6 +118,7 @@ fuzzysum3 <- function(r1, r2, r3) {
 }
 # # Add together our biophys attributes + grizz inc resist: gHM, and roughness + grizz resist
 bio_social_fuzzysum <- fuzzysum3(ghm.conv, rough.proj, prob.bear.conf)
-writeRaster(bio_social_fuzzysum, "Data/processed/biosocial_fuzsum.tif",overwrite=TRUE)
 biosocial_resistance <- (1+bio_social_fuzzysum)^10
-writeRaster(biosocial_resistance, "Data/processed/biosocial_resist.tif", overwrite=TRUE)
+
+writeRaster(bio_social_fuzzysum, "data/processed/biosocial_fuzsum.tif",overwrite=TRUE)
+writeRaster(biosocial_resistance, "data/processed/biosocial_resist.tif", overwrite=TRUE)
