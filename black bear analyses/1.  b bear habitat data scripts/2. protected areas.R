@@ -54,6 +54,10 @@ ab.pa.proj <- ab.PAs.fin %>%
 bhb.pa.rast <- terra::rasterize(ab.pa.proj, temp.rast, field = "NAME_E") 
 #bhb.pa.crop <- terra::mask(bhb.pa.rast, bhb.buf.v) # we want the uncropped one for our model
 
+# Pull out EINP for later:
+einp <- ab.PAs.fin %>% dplyr::filter(ab.PAs.fin$NAME_E == "Elk Island National Park Of Canada")
+st_write(einp, "data/processed/einp.shp")
+
   # Dist to PA raster:
 dist2pa <- terra::distance(temp.rast, ab.pa.proj)
 dist2pa.km <- measurements::conv_unit(dist2pa, "m", "km")
