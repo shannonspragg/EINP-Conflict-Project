@@ -131,6 +131,10 @@ st_write(conflict.reproj, "Data/processed/confirmed_reports_full_df.shp", append
 st_write(pres.abs.reproj, "Data/processed/pres_abs_full_df.shp", append=FALSE)
 
 # Pull out just bear reports (for mapping purposes):
+bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bear.reports <- conflict.reproj %>% filter(conflict.reproj$bears == "1")
-st_write(bear.reports, "Data/processed/confirmed_bear_reports.shp", append = FALSE)
+br.reproj <- st_transform(bear.reports, st_crs(bhw))
+bear.reports.bhw <- st_intersection(br.reproj, bhw) # This gives 2057 total reports
+bear.reports.bhw <- bear.reports.bhw[!duplicated(bear.reports.bhw), ]
+st_write(bear.reports.bhw, "Data/processed/confirmed_bear_reports.shp", append = FALSE)
 
