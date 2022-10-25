@@ -35,7 +35,7 @@ colnames(pres.abs.filter) <- c("conflict_presence_ps", "dist.2.pa.ps", "human.de
 pres.abs.scl <- pres.abs.filter %>% 
   mutate_at(c("dist.2.pa.ps", "human.dens.ps", "animal.farm.dens.ps", "ground.crop.dens.ps", "ndvi.ps", 
               "gHM.ps", "agno.biophys.ps", "gen.focal.biophys.ps", "forest.sp.biophys.ps"), scale)
-
+saveRDS(pres.abs.scl, "data/processed/pres_abs_scl.rds")
 
 # Run General Conflict Models: --------------------------------------------
 t_prior <- student_t(df = 7, location = 0, scale = 1.5)
