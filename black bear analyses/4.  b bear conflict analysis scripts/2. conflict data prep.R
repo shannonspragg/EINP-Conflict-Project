@@ -53,10 +53,6 @@ temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
 conflict.data.reproj <- conflict.data.sf %>% st_transform(., crs(temp.rast))
 str(conflict.data.reproj)
-conflict.data.reproj <- mutate(conflict.data.reproj, id = row_number())
-conflict.data.reproj <- conflict.data.reproj %>%           # Reorder data frame
-  dplyr::select("id", everything())
-conflict.data.reproj$id <- as.numeric(conflict.data.reproj$id)
 
 # Filter data to confirmed and probable occurances (let's see if this is enough):
   # Just confirmed and probable:
@@ -69,8 +65,13 @@ sum(conflict.data.conf$OCC_SPECIES == "COUGAR") # 39 cougar
 # Filter to only columns we need:
 
 conflict.dataset.conf <- conflict.data.conf %>% 
-  dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
+  dplyr::select(., c('OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
                                         'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION', 'bears', 'wolves', 'cougars', 'geometry', 'OCC_OCCURRENCE_TMST', 'SITE_NAME'))
+
+conflict.dataset.conf <- mutate(conflict.dataset.conf, id = row_number())
+conflict.dataset.conf <- conflict.dataset.conf %>%           # Reorder data frame
+  dplyr::select("id", everything())
+conflict.dataset.conf$id <- as.numeric(conflict.dataset.conf$id)
 
 # Crop reports down to BHB watershed:
 st_crs(conflict.dataset.conf) == st_crs(bhb.50k.buf) #FALSE
@@ -78,16 +79,17 @@ conflict.reproj <- st_transform(conflict.dataset.conf, st_crs(bhb.50k.buf))
 st_crs(conflict.reproj) == st_crs(bhb.50k.buf) #TRUE
 
 conflict.bhb.50k.buf <- st_intersection(conflict.reproj, bhb.50k.buf) # This gives 2057 total reports
-#conflict.bhb.50km <- conflict.bhb.50k.buf %>%  distinct() #test for duplicates
-sum(conflict.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 298 b bear
-sum(conflict.bhb.50k.buf$OCC_SPECIES == "WOLF") # 28 wolf
-sum(conflict.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 70 cougar
+conflict.bhb.50k.buf <- conflict.bhb.50k.buf %>% distinct(OCC_FILE_NUMBER, .keep_all = TRUE) #rid of duplicates
+
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "BLACK BEAR") # 175 b bear
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "WOLF") # 21 wolf
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 38 cougar
 
 conflict.conf.bhb <- conflict.bhb.50k.buf %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
                      'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION',  'OCC_OCCURRENCE_TMST', 'SITE_NAME', 'bears', 'wolves', 'cougars', 'AREA_HA', 'geometry'))
 
-head(conflict.conf.bhb) #2057 observations
+head(conflict.conf.bhb) #1086 observations
 
 
 # Add in the 2 Collision Reports ------------------------------------------
@@ -140,7 +142,7 @@ roadkill.reproj <- st_transform(roadkills.sf, st_crs(conflict.conf.bhb))
 conf.conflict.all <- rbind(conflict.conf.bhb, roadkill.reproj)
 
 
-# NEED: Add in the census regions for varying intercept: ------------------
+# Add in the census regions for varying intercept: ------------------
 
 # Filter CCS Files to AB Only ---------------------------------------------------
 # Make sf and filter down to only British Columbia for Census SubDivs (CCS):
