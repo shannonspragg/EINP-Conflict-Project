@@ -44,9 +44,9 @@ pr2 <- as.integer(pred2 >= 0.5)
 pr3 <- as.integer(pred3 >= 0.5)
 pr0 <- as.integer(pred0 >=0.5)
 round(mean(xor(pr,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
-round(mean(xor(pr2,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
+round(mean(xor(pr2,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
 round(mean(xor(pr3,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
-round(mean(xor(pr0,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.70
+round(mean(xor(pr0,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.72
 
 ploo <- E_loo(preds, loo1$psis_object, type="mean", log_ratios = -log_lik(post.pa.full))$value
 ploo2 <- E_loo(preds2, loo2$psis_object, type="mean", log_ratios = -log_lik(post.pa.full.quad))$value
@@ -60,10 +60,10 @@ saveRDS(loo0, "Data/processed/post_int_only_loo.rds")
 saveRDS(post_pa_loo_comp, "Data/processed/post_pa_loo_comp.rds")
 
 # LOO classification accuracy
-round(mean(xor(ploo>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.874
-round(mean(xor(ploo2>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
+round(mean(xor(ploo>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
+round(mean(xor(ploo2>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
 round(mean(xor(ploo3>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
-round(mean(xor(ploo0>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.70
+round(mean(xor(ploo0>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.72
 
 
 # Building plots of results -----------------------------------------------
@@ -81,5 +81,5 @@ pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.pa.partial$fitted.values,
 legend("bottomright", legend=c("Full Model", "Varying Intercept-only Model", "Quad Model", "Partial Model"),
        col=c("#377eb8", "#4daf4a", "#B090D0", "#FFAA00"), lwd = 4)
 
-# Full model has 82.5% AUC, Quad model has 81.9% AUC, partial has 80.4% AUC, and intercept only has 77.9%
+# Full model has 81.6% AUC, Quad model has 80.1% AUC, partial has 79.8% AUC, and intercept only has 78.2%
 # We will use full model without quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable
