@@ -130,4 +130,7 @@ which(is.na(pres.abs.reproj$forest_sp_biophys)) #none
 st_write(conflict.reproj, "Data/processed/confirmed_reports_full_df.shp", append = FALSE)
 st_write(pres.abs.reproj, "Data/processed/pres_abs_full_df.shp", append=FALSE)
 
+# Pull out just bear reports (for mapping purposes):
+bear.reports <- conflict.reproj %>% filter(conflict.reproj$bears == "1")
+st_write(bear.reports, "Data/processed/confirmed_bear_reports.shp", append = FALSE)
 
