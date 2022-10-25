@@ -105,7 +105,7 @@ iem.ccs.join <- iem.ccs.join %>%
   dplyr::select(., -c(22,21,19))
 
 # Join our reports together:
-conf.conflict.all <- rbind(prov.conflict, iem.ccs.join) # now we have 2099 obs!
+conf.conflict.all <- rbind(prov.conflict, iem.ccs.join) # now we have 1128 obs!
 
 # Add a column for conflict presence:
 conf.conflict.all$conflict_pres <- 1

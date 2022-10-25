@@ -21,11 +21,11 @@ temp.rast.bhb <- terra::mask(temp.rast, bhb.50km.v)
 
 # Plot our points and BHB watershed:
 plot(st_geometry(bhb.50k.buf))
-plot(st_geometry(conflict.conf, add=TRUE)) #2099 reports
+plot(st_geometry(conflict.conf, add=TRUE)) #1128 reports
 
 # Generate Random Points for Pseudo-absences: -----------------------------
 set.seed(2345)
-p.abs.pts <- randomPoints(raster(temp.rast.bhb), 3000) # double the conflict reports was too much, trying 1.5x
+p.abs.pts <- randomPoints(raster(temp.rast.bhb), 2400) # double the conflict reports was too much, trying 1.5x
 
 # Make this a data frame:
 abs.pts.df <- data.frame(p.abs.pts)
@@ -81,7 +81,7 @@ presabs.ccs.join <- presabs.ccs.join[, c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,
 # Join our all species presence points with the absence points:
 st_crs(conflict.conf) == st_crs(presabs.ccs.join)
 
-conf.conflict.pts.w.abs <- rbind(conflict.conf, presabs.ccs.join)
+conf.conflict.pts.w.abs <- rbind(conflict.conf, presabs.ccs.join) # 3528 points total
 
 # Plot these to check:
 plot(st_geometry(bhb.50k.buf))
