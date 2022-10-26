@@ -24,6 +24,7 @@ library(ggplot2)
 
 # Bring in Data: ----------------------------------------------------------
 post.pa.full <- readRDS("data/processed/post_pa_full.rds")
+pres.abs.scl <- readRDS("data/processed/pres_abs_scl.rds")
 
 # Plot Effects of Posterior Coefficients:
 

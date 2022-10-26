@@ -24,10 +24,10 @@ bear.no.conf <- readRDS("data/processed/bear_no_conf.rds")
 bear.conflict.df.scl <- readRDS("data/processed/bear_conf_df_scl.rds")
 
 # Model Comparison: -------------------------------------------------------
-loo1b <- loo(bear.full.mod, save_psis = TRUE)
-loo2b <- loo(bear.full.mod.quad, save_psis = TRUE)
-loo3b <- loo(bear.no.conf, save_psis = TRUE)
-loo0b <- loo(bear.int.only, save_psis = TRUE)
+loo1b <- loo(bear.full.mod, save_psis = TRUE, k_threshold = 0.7) # there is one point that has a poor loo value
+loo2b <- loo(bear.full.mod.quad, save_psis = TRUE, k_threshold = 0.7)
+loo3b <- loo(bear.no.conf, save_psis = TRUE, k_threshold = 0.7)
+loo0b <- loo(bear.int.only, save_psis = TRUE, k_threshold = 0.7)
 
 saveRDS(loo1b, "Data/processed/bear_full_loo.rds")
 saveRDS(loo2b, "Data/processed/bear_full_quad_loo.rds")
@@ -56,10 +56,10 @@ pr2 <- as.integer(pred2 >= 0.5)
 pr1 <- as.integer(pred1 >= 0.5)
 pr0 <- as.integer(pred0 >=0.5)
 
-round(mean(xor(pr3,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
-round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
-round(mean(xor(pr1,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.86
-round(mean(xor(pr0,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.82
+round(mean(xor(pr3,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(pr1,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.84
+round(mean(xor(pr0,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.81
 
 ploo1 <- E_loo(preds1, loo1b$psis_object, type="mean", log_ratios = -log_lik(bear.full.mod))$value
 
@@ -69,10 +69,10 @@ ploo3<-E_loo(preds3, loo3b$psis_object, type="mean", log_ratios = -log_lik(bear.
 
 ploo0<-E_loo(preds0, loo0b$psis_object, type="mean", log_ratios = -log_lik(bear.int.only))$value
 
-round(mean(xor(ploo1>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
-round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
-round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.86
-round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.82
+round(mean(xor(ploo1>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.81
 
 # Building plots of results -----------------------------------------------
 

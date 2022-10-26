@@ -29,7 +29,7 @@ bhw.bound <- st_read("data/original/BHB_Subwatershed_Boundary.shp") %>% # MAKE S
   as(., "SpatVector")
 bhb.buf.v <- vect(bhb.buf)
 elev.can <- rast(raster::getData('alt', country = 'CAN'))
-elev.can.crop <- crop(elev.can, terra::project(bhb.bound, elev.can)) #crop to bhw
+elev.can.crop <- crop(elev.can, terra::project(bhw.bound, elev.can)) #crop to bhw
 
 rough <- terrain(elev.can.crop, v="TRI")
 rough.max <-  global(rough, "max", na.rm=TRUE)[1,]
