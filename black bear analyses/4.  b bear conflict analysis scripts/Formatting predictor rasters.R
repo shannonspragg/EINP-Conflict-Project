@@ -40,6 +40,6 @@ gen.conf.pred.stack <- c(dist2pa.bhw, hum.dens.bhw, animal.dens.bhw, ground.dens
 bbear.conf.pred.stack <- c(dist2pa.bhw, hum.dens.bhw, animal.dens.bhw, ground.dens.bhw, ndvi.bhw, ghm.bhw, bhs.bhw, biophys.bhw, conflict.bhw)
 
 plot(gen.conf.pred.stack)
-
+plot(bbear.conf.pred.stack)
 
 
