@@ -33,7 +33,8 @@ library(see)
 library(insight)
 library(ggplot2)
 
-bear.quad.preds.plot <- plot(bear.full.mod.quad, title = "Predictor Effects for Bear Conflict")
+bear.quad.result <- p_direction(bear.full.mod.quad)
+bear.quad.preds.plot <- plot(bear.quad.result, title = "Predictor Effects for Bear Conflict")
 bear.quad.preds.plot
 # this is the max probability of effect (MPE), showing the probability of a predictor having a positive or negative effect
 
