@@ -110,14 +110,14 @@ writeRaster(forest_specialist_biophys_resistance, "Data/processed/forest_special
 
 prob.bear.conf <- rast("Data/processed/prob_conflict_bear.tif")
 
-fuzzysum3 <- function(r1, r2, r3) {
-  rc1.1m <- (1-r1)
-  rc2.1m <- (1-r2)
-  rc3.1m <- (1-r3)
-  fuz.sum <- 1-(rc1.1m*rc2.1m*rc3.1m)
-}
+# fuzzysum3 <- function(r1, r2, r3) {
+#   rc1.1m <- (1-r1)
+#   rc2.1m <- (1-r2)
+#   rc3.1m <- (1-r3)
+#   fuz.sum <- 1-(rc1.1m*rc2.1m*rc3.1m)
+# }
 # # Add together our biophys attributes + grizz inc resist: gHM, and roughness + grizz resist
-bio_social_fuzzysum <- fuzzysum3(ghm.conv, rough.proj, prob.bear.conf)
+bio_social_fuzzysum <- fuzzysum4(ghm.conv, rough.proj, prob.bear.conf, bh.lake)
 biosocial_resistance <- (1+bio_social_fuzzysum)^10
 
 writeRaster(bio_social_fuzzysum, "data/processed/biosocial_fuzsum.tif",overwrite=TRUE)
