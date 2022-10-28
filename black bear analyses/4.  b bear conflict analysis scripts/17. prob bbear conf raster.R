@@ -37,6 +37,7 @@ bhs <- rast("data/processed/bbear_habitat_suitability.tif")
 biophys <- rast("data/processed/forest_specialist_cum_currmap.tif")
 conflict <- rast("Data/processed/prob_conflict_all.tif")
 
+bbear.conf.pred.stack <- c(dist.2.pa, hum.dens.r, animal.dens, ground.dens, ndvi.r, ghm.r, bhs, biophys, conflict)
 
 # pop.d.crop <- crop(pop.dens, animal.dens)
 # pop.dens <- mask(pop.d.crop, animal.dens)
