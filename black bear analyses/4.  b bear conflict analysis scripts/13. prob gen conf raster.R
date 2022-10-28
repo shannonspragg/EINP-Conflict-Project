@@ -36,7 +36,6 @@ agnostic_bio_cumcurrmap <- rast("data/processed/agnostic_cum_currmap.tif")
 # pop.d.crop <- crop(pop.dens, animal.dens)
 # pop.dens <- mask(pop.d.crop, animal.dens)
 # writeRaster(pop.dens, "Data/processed/pop_dens_SOI_10km.tif")
-gen.conf.pred.stack <- c(dist.2.pa, hum.dens.r, animal.dens, ground.dens, ndvi.r, ghm.r, agnostic_bio_cumcurrmap)
 
 # Create global intercept raster
 global.int <- dist.2.pa
