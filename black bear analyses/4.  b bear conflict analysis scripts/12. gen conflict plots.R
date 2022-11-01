@@ -86,8 +86,8 @@ levels(plot.df$human.dens.ps) <-  c("Lower 10%", "Mean", "Upper 10%")
 dist2pa.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = dist.2.pa.ps, y = mean, colour =human.dens.ps), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=dist.2.pa.ps, fill = human.dens.ps), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","Population Density")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "Population Density") +
+  scale_colour_viridis(discrete = "TRUE", option="C","Population Density")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "Population Density") +
   ylab("Probability of Conflict") + 
   xlab(expression("Distance to Protected Areas (km)"))+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -125,8 +125,8 @@ levels(plot.df$human.dens.ps) <-  c("Lower 10%", "Mean", "Upper 10%")
 animal.dens.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = animal.farm.dens, y = mean, colour =human.dens.ps), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=animal.farm.dens, fill = human.dens.ps), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","Population Density")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "Population Density") +
+  scale_colour_viridis(discrete = "TRUE", option="C","Population Density")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "Population Density") +
   ylab("Probability of Conflict") + 
   xlab(expression("Density of Livestock Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -178,8 +178,8 @@ levels(plot.df$human.dens.ps) <-  c("Lower 10%", "Mean", "Upper 10%")
 ground.dens.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = ground.crop.dens, y = mean, colour =human.dens.ps), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=ground.crop.dens, fill = human.dens.ps), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","Population Density")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "Population Density") +
+  scale_colour_viridis(discrete = "TRUE", option="C","Population Density")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "Population Density") +
   ylab("Probability of Conflict") + 
   xlab(expression("Density of Row-Crop Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -215,8 +215,8 @@ levels(plot.df$human.dens.ps) <-  c("Lower 10%", "Mean", "Upper 10%")
 ndvi.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = ndvi.ps, y = mean, colour =human.dens.ps), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=ndvi.ps, fill = human.dens.ps), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","Population Density")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "Population Density") +
+  scale_colour_viridis(discrete = "TRUE", option="C","Population Density")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "Population Density") +
   ylab("Probability of Conflict") + 
   xlab("Normalized Difference Vegetation Index (NDVI)")+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -252,8 +252,8 @@ levels(plot.df$human.dens.ps) <-  c("Lower 10%", "Mean", "Upper 10%")
 gHM.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = gHM.ps, y = mean, colour =human.dens.ps), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=gHM.ps, fill = human.dens.ps), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","Population Density")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "Population Density") +
+  scale_colour_viridis(discrete = "TRUE", option="C","Population Density")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "Population Density") +
   ylab("Probability of Conflict") + 
   xlab("Global Human Modification (gHM)")+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -289,8 +289,8 @@ levels(plot.df$human.dens.ps) <-  c("Lower 10%", "Mean", "Upper 10%")
 agno.biophys.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = agno.biophys.ps, y = mean, colour =human.dens.ps), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=agno.biophys.ps, fill = human.dens.ps), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","Population Density")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "Population Density") +
+  scale_colour_viridis(discrete = "TRUE", option="C","Population Density")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "Population Density") +
   ylab("Probability of Conflict") + 
   xlab("Species Agnostic Biophysical Connectivity")+
   # guides(fill=guide_legend(title="Population Density"))+

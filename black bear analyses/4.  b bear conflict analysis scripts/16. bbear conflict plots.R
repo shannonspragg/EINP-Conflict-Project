@@ -96,8 +96,8 @@ levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
 dist2pa.plot.b <- ggplot(data=plot.df) +
   geom_line(aes(x = dist2pa_un, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=dist2pa_un, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "General Conflict Prob.") +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
   xlab("Distance to Protected Areas (km)")+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -138,8 +138,8 @@ levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
 pop.dens.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = humandens, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=humandens, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "General Conflict Prob.") +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
   xlab("Human Population Density")+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -178,8 +178,8 @@ levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
 livestockOps.plot.b <- ggplot(data=plot.df) +
   geom_line(aes(x = livestockOps_un, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=livestockOps_un, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "General Conflict Prob.") +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
   xlab(expression("Density of Livestock Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -219,8 +219,8 @@ levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
 rowcropOps.plot.b <- ggplot(data=plot.df) +
   geom_line(aes(x = rowcropOps_un, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=rowcropOps_un, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "General Conflict Prob.") +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
   xlab(expression("Density of Row-crop Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -258,8 +258,8 @@ levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
 connectivity.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = connectivity_un, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=connectivity_un, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "General Conflict Prob.") +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
   xlab("Cumulative Current Flow (Amperes)")+
   # guides(fill=guide_legend(title="Population Density"))+
@@ -295,16 +295,16 @@ plot.df <- postdraws %>%
             hi = quantile(.epred, 0.8))
 
 levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-ndvi.plot <- ggplot(data=plot.df) +
+ndvi.plot.b <- ggplot(data=plot.df) +
   geom_line(aes(x = ndvi, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=ndvi, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "General Conflict Prob.") +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
   xlab("Normalized Difference Vegetation Index (NDVI)")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
-saveRDS(ndvi.plot, "data/processed/bear_ndvi_mixe_plot.rds")
+saveRDS(ndvi.plot.b, "data/processed/bear_ndvi_mixe_plot.rds")
 
 
 # Prep BHS Plot -----------------------------------------------------------
@@ -339,10 +339,10 @@ levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
 habsuit.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = habsuit_un, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=habsuit_un, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "General Conflict Prob.") +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
-  xlab("Predicted Grizzly Bear Habitat Suitability")+
+  xlab("Predicted Black Bear Habitat Suitability")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(habsuit.plot, "data/processed/bear_bhs_mixe_plot.rds")
@@ -379,8 +379,8 @@ levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
 human.mod.plot <- ggplot(data=plot.df) +
   geom_line(aes(x = gHM, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=gHM, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="D","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="D", "General Conflict Prob.") +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
   xlab("Degree of Human Modification (gHM)")+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
