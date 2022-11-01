@@ -43,6 +43,13 @@ saveRDS(loo0b, "Data/processed/bear_int_only_loo.rds")
 bear.loo.comp <- loo_compare(loo1b, loo2b, loo3b, loo0b)
 saveRDS(bear.loo.comp, "data/processed/bear_loo_comp.rds")
 
+plot(
+  loo2b,
+  diagnostic = c("k", "n_eff"),
+  label_points = TRUE,
+  main = "PSIS diagnostic plot"
+)
+
 preds3 <- posterior_epred(bear.no.conf)
 preds2 <- posterior_epred(bear.full.mod.quad)
 preds1 <- posterior_epred(bear.full.mod)
