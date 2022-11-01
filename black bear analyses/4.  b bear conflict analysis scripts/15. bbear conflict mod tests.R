@@ -15,7 +15,9 @@ library(viridis)
 library(patchwork)
 library(modelr)
 theme_set(bayesplot::theme_default(base_family = "sans"))
- 
+install.packages("performance") 
+library(performance)
+
 # Read data in:
 bear.full.mod.quad <- readRDS("data/processed/bear_quad_reg.rds")
 bear.int.only <- readRDS("data/processed/bear_int_only.rds")
@@ -81,6 +83,28 @@ round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) 
 round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
 round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.81
 
+
+# Try model averaging: ----------------------------------------------------
+    ## It looks like there is uncertainty with model selection due to the similarity of the models. 
+    # Here we try model averaging and stacking to differentiate the full model from the full model + quad (both with delta LOOIC < -2:
+lpd_point <- cbind(
+  loo1b$pointwise[,"elpd_loo"], 
+  loo2b$pointwise[,"elpd_loo"]
+)
+pbma_wts <- pseudobma_weights(lpd_point, BB=FALSE)
+pbma_BB_wts <- pseudobma_weights(lpd_point) # default is BB=TRUE
+stacking_wts <- stacking_weights(lpd_point)
+round(cbind(pbma_wts, pbma_BB_wts, stacking_wts), 2)
+# This shows us that the first model (bear.full.model) is holding the majority of the weight
+
+# Apply these weights to the posterior predictions:
+yrep1 <- posterior_predict(bear.full.mod, draws=(0.91*7500)) # 6825 draws
+yrep2 <- posterior_predict(bear.full.mod.quad, draws=round(0.09*7500)) # only 675 draws
+
+yrep <- c(yrep1, yrep2)
+
+# Based on the above, it looks like the best model is #3: bear.no.conflict , followed by the bear.full.mod, bear.full.mod.quad, and bear.int.only (respectively)
+
 # Building plots of results -----------------------------------------------
 
 # Plotting AUC
@@ -97,5 +121,5 @@ pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.int.only$fitted.values, 
 legend("bottomright", legend=c("Quad Model", "Full Model",  "No Conflict Model", "Varying Intercept-only Model"),
        col=c("#377eb8", "#4daf4a", "#B090D0", "#FFAA00"), lwd = 4)
 
-# We will use full model with quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable -- note that model without
-# general conflict is not really any different in AUC
+# We will use the third model, excluding general conflict (bear.no.conflict) as it has the lowest LOOIC and the predictor estimates seem more 
+# stable -- though the top 3 models were very similar
