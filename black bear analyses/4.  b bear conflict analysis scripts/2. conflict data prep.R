@@ -62,6 +62,14 @@ sum(conflict.data.conf$OCC_SPECIES == "BLACK BEAR") #  185 b bear
 sum(conflict.data.conf$OCC_SPECIES == "WOLF") # 21 wolf
 sum(conflict.data.conf$OCC_SPECIES == "COUGAR") # 39 cougar
 
+  # See if we can further expand this: NOTE: may use this later on if we bigger samples for running models
+conflict.data.expanded <- dplyr::filter(conflict.data.reproj, OCC_VALIDITY_INFORMATION == "CONFIRMED" | OCC_VALIDITY_INFORMATION == "PROBABLE" | OCC_VALIDITY_INFORMATION == "CANNOT BE JUDGED")
+
+sum(conflict.data.expanded$OCC_SPECIES == "BLACK BEAR") #  210 b bear
+sum(conflict.data.expanded$OCC_SPECIES == "WOLF") # 30 wolf
+sum(conflict.data.expanded$OCC_SPECIES == "COUGAR") # 86 cougar
+
+
 # Filter to only columns we need:
 
 conflict.dataset.conf <- conflict.data.conf %>% 
