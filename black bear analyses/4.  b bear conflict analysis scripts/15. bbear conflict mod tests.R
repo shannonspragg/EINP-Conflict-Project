@@ -82,10 +82,10 @@ par(pty = "s")
 pROC::roc(bear.conflict.df.scl$bear_conflict, bear.full.mod.quad$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
           xlab= "False Positive Percentage", ylab= "True Positive Percentage",
           col="#377eb8", lwd=4, print.auc=TRUE)
-pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.full.mod$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=60)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.full.mod$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=45)
 
-pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.no.conf$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=70)
-pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.int.only$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=80)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.no.conf$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=40)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.int.only$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=35)
 
 legend("bottomright", legend=c("Quad Model", "Full Model",  "No Conflict Model", "Varying Intercept-only Model"),
        col=c("#377eb8", "#4daf4a", "#B090D0", "#FFAA00"), lwd = 4)

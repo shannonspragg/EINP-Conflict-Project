@@ -74,12 +74,12 @@ par(pty = "s")
 pROC::roc(pres.abs.scl$conflict_presence_ps, post.pa.full$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
           xlab= "False Positive Percentage", ylab= "True Positive Percentage",
           col="#377eb8", lwd=4, print.auc=TRUE)
-pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.int.only$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=60)
-pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.pa.full.quad$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=70)
-pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.pa.partial$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=80)
+pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.int.only$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=35)
+pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.pa.full.quad$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=45)
+pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.pa.partial$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=40)
 
-legend("bottomright", legend=c("Full Model", "Varying Intercept-only Model", "Quad Model", "Partial Model"),
-       col=c("#377eb8", "#4daf4a", "#B090D0", "#FFAA00"), lwd = 4)
+legend("bottomright", legend=c("Full Model", "Full Model + Quadratic Pop Dens","Partial Model", "Varying Intercept-only Model"),
+       col=c("#377eb8", "#B090D0", "#FFAA00", "#4daf4a"), lwd = 4)
 
 # Full model has 81.6% AUC, Quad model has 80.1% AUC, partial has 79.8% AUC, and intercept only has 78.2%
 # We will use full model without quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable
