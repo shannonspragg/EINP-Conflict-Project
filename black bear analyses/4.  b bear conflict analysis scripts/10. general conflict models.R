@@ -57,7 +57,7 @@ post.pa.partial <- stan_glmer(conflict_presence_ps ~ animal.farm.dens.ps + groun
                            seed = SEED) # we add seed for reproducibility
 
 # Full Model + Quadratic for Pop Dens:
-post.pa.full.quad <- update(post.pa.full, formula = conflict_presence_ps ~ I(human.dens.ps^2) + animal.farm.dens.ps + ground.crop.dens.ps + ndvi.ps + gHM.ps + agno.biophys.ps + (1 | CCSNAME.ps), QR = TRUE)
+post.pa.full.quad <- update(post.pa.full, formula = conflict_presence_ps ~ I(human.dens.ps^2) + dist.2.pa.ps + animal.farm.dens.ps + ground.crop.dens.ps + ndvi.ps + gHM.ps + agno.biophys.ps + (1 | CCSNAME.ps), QR = TRUE)
 
 # Intercept-only model:
 post.int.only <-  update(post.pa.full, formula = conflict_presence_ps ~ 1+ (1 | CCSNAME.ps), QR = FALSE)
