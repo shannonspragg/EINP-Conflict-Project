@@ -329,3 +329,7 @@ config.ini
 cum_currmap.tif
 flow_potential.tif
 normalized_cum_currmap.tif
+agnostic_normalized_cum_currmap.tif
+forest_specialist_flow_potential.tif
+forest_specialist_normalized_cum_currmap.tif
+general_focal_normalized_cum_currmap.tif
