@@ -38,13 +38,13 @@ bhb.watershed <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
 sp_agnostic_cumcurr <- rast("data/processed/agnostic_cum_currmap.tif")
-sp_agnostic_norm <- rast("data/processed/agnostic_normalized.tif")
+sp_agnostic_norm <- rast("data/processed/agnostic_normalized_cum_currmap.tif")
 
 gen_focal_cumcurr <- rast("data/processed/general_focal_cum_currmap.tif")
-gen_focal_norm <- rast("data/processed/general_focal_normalized.tif")
+gen_focal_norm <- rast("data/processed/general_focal_normalized_cum_currmap.tif")
 
 forest_sp_cumcurr <- rast("data/processed/forest_specialist_cum_currmap.tif")
-forest_sp_norm <- rast("data/processed/forest_specialist_normalized.tif")
+forest_sp_norm <- rast("data/processed/forest_specialist_normalized_cum_currmap.tif")
 
 # Conflict connectivity outputs: (you won't have these until after conflict analysis)
 bbear_conflict_cumcurr <- rast("data/processed/bbear_conflict_cum_currmap.tif")
