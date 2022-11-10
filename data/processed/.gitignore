@@ -336,3 +336,8 @@ general_focal_normalized_cum_currmap.tif
 gen conf coef effect plot.jpeg
 gen conf mixed effects plots.jpeg
 gen conf roc curves.jpeg
+bbear biophys mixed effects.jpeg
+bbear full mod coef efects.jpeg
+bbear full mod mixed effects.jpeg
+bbear model roc curves.jpeg
+bbear social mixed effects.jpeg
