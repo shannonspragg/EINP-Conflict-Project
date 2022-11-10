@@ -66,8 +66,8 @@ pr1 <- as.integer(pred1 >= 0.5)
 pr0 <- as.integer(pred0 >=0.5)
 
 round(mean(xor(pr3,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
-round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
-round(mean(xor(pr1,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.84
+round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.85
+round(mean(xor(pr1,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.85
 round(mean(xor(pr0,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.81
 
 ploo1 <- E_loo(preds1, loo1b$psis_object, type="mean", log_ratios = -log_lik(bear.full.mod))$value
@@ -78,9 +78,9 @@ ploo3<-E_loo(preds3, loo3b$psis_object, type="mean", log_ratios = -log_lik(bear.
 
 ploo0<-E_loo(preds0, loo0b$psis_object, type="mean", log_ratios = -log_lik(bear.int.only))$value
 
-round(mean(xor(ploo1>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
-round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
-round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(ploo1>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.85
+round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.85
+round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.83
 round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.81
 
 
@@ -113,13 +113,12 @@ par(pty = "s")
 pROC::roc(bear.conflict.df.scl$bear_conflict, bear.full.mod.quad$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
           xlab= "False Positive Percentage", ylab= "True Positive Percentage",
           col="#377eb8", lwd=4, print.auc=TRUE)
-pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.full.mod$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=45)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.full.mod$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=55)
 
-pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.no.conf$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=40)
-pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.int.only$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=35)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.no.conf$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=45)
+pROC::plot.roc(bear.conflict.df.scl$bear_conflict, bear.int.only$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=40)
 
-legend("bottomright", legend=c("Quad Model", "Full Model",  "No Conflict Model", "Varying Intercept-only Model"),
-       col=c("#377eb8", "#4daf4a", "#B090D0", "#FFAA00"), lwd = 4)
+legend("bottomright", legend=c("Full Model", "Quad Model",  "No Conflict Model", "Varying Intercept-only Model"),
+       col=c("#4daf4a","#377eb8", "#B090D0", "#FFAA00"), lwd = 4)
 
-# We will use the third model, excluding general conflict (bear.no.conflict) as it has the lowest LOOIC and the predictor estimates seem more 
-# stable -- though the top 3 models were very similar
+# We will use the full model, as it has the lowest LOOIC, the best AUC, and seems to be stable.
