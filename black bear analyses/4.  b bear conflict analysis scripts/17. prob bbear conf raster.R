@@ -12,8 +12,8 @@ library(terra)
 # Bring in Data: ----------------------------------------------------------
 #bear.full.mod.quad <- readRDS("Data/processed/bear_quad_reg.rds")
 # bear.int.only <- readRDS("Data/processed/bear_int_only.rds")
-# bear.full.mod <- readRDS("Data/processed/bear_full.rds")
-bear.no.conf <- readRDS("Data/processed/bear_no_conf.rds")
+ bear.full.mod <- readRDS("Data/processed/bear_full_mod.rds")
+#bear.no.conf <- readRDS("Data/processed/bear_no_conf.rds")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
 
@@ -35,9 +35,9 @@ ndvi.r <- rast("data/processed/bhb_ndvi.tif")
 ghm.r <- rast("data/processed/bhw_ghm.tif")
 bhs <- rast("data/processed/bbear_habitat_suitability.tif")
 biophys <- rast("data/processed/forest_specialist_cum_currmap.tif")
-#conflict <- rast("Data/processed/prob_conflict_all.tif") # Only need this if using model with conflict
+conflict <- rast("Data/processed/prob_conflict_all.tif") # Only need this if using model with conflict
 
-bbear.conf.pred.stack <- c(dist.2.pa, hum.dens.r, animal.dens, ground.dens, ndvi.r, ghm.r, bhs, biophys) #, conflict)
+bbear.conf.pred.stack <- c(dist.2.pa, hum.dens.r, animal.dens, ground.dens, ndvi.r, ghm.r, bhs, biophys, conflict)
 
 # pop.d.crop <- crop(pop.dens, animal.dens)
 # pop.dens <- mask(pop.d.crop, animal.dens)
@@ -71,7 +71,7 @@ gHM.scl <- (ghm.r - attributes(bear.conflict.df.scl$gHM)[[2]])/attributes(bear.c
 
 biophys.scl <- (biophys - attributes(bear.conflict.df.scl$connectivity)[[2]])/attributes(bear.conflict.df.scl$connectivity)[[3]]
 
-#conflict.scl <- (conflict - attributes(bear.conflict.df.scl$conflictprob)[[2]])/attributes(bear.conflict.df.scl$conflictprob)[[3]]
+conflict.scl <- (conflict - attributes(bear.conflict.df.scl$conflictprob)[[2]])/attributes(bear.conflict.df.scl$conflictprob)[[3]]
 
 # Generate lin pred
 dist2pa.pred <- dist.2.pa.scl * fixed.effects[['dist2pa']]
@@ -82,7 +82,7 @@ ndvi.pred <- ndvi.scl * fixed.effects[['ndvi']]
 bhs.pred <- bhs.scl * fixed.effects[['habsuit']]
 ghm.pred <- gHM.scl * fixed.effects[['gHM']]
 biophys.pred <- biophys.scl * fixed.effects[['connectivity']]
-# conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
+conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
 # Add our Rasters:
