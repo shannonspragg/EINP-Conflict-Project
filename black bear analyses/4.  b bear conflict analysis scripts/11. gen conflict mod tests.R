@@ -81,5 +81,5 @@ pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.pa.partial$fitted.values,
 legend("bottomright", legend=c("Full Model", "Full Model + Quadratic Pop Dens","Partial Model", "Varying Intercept-only Model"),
        col=c("#377eb8", "#B090D0", "#FFAA00", "#4daf4a"), lwd = 4)
 
-# Full model has 81.6% AUC, Quad model has 80.1% AUC, partial has 79.8% AUC, and intercept only has 78.2%
+# Full model has 81.3% AUC, Quad model has 80.6% AUC, partial has 79.7% AUC, and intercept only has 78.2%
 # We will use full model without quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable
