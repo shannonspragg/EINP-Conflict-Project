@@ -33,19 +33,16 @@ bhb.roads[bhb.roads >= 1] <- 1
 bhb.roads.raster <- raster(bhb.roads)
 bhb.roads.raster[is.na(bhb.roads.raster[])] <- 0 
 
+# Calculate road density:
 
+template.rast.1km <- rast(res=c(1000,1000), ext=ext(temp.raster)) # Let's do a 30x30 res to match land cover
+crs(template.rast.1km) <- "epsg:32612" # UTM zone 12N for AB
+values(template.rast.1km) <- rep(1, ncell(template.rast.1km))
+temp.raster.1km <- raster(template.rast.1km)
 
-# OR THIS:
-# temp.raster <- raster(temp.rast)
-# temp.raster <- aggregate(temp.raster, 33.34) # make this 1km
-# template.rast.1km <- rast(res=c(1000,1000), ext=ext(temp.raster)) # Let's do a 30x30 res to match land cover
-# crs(template.rast.1km) <- "epsg:32612" # UTM zone 12N for AB
-# values(template.rast.1km) <- rep(1, ncell(template.rast.1km))
-# temp.raster.1km <- raster(template.rast.1km)
-# 
-# roads.crop <- st_crop(ab.roads.reproj, c(xmin=295652.2, xmax=439902.2, ymin=5846234, ymax=6010984))
-# road.density.1km <- rasterize(roads.crop, temp.raster.1km, fun='count', background=0)
-# 
+roads.crop <- st_crop(ab.roads.reproj, c(xmin=257856.3, xmax=488214.7, ymin=5837774, ymax=6087088))
+road.density.1km <- rasterize(roads.crop, temp.raster.1km, fun='count', background=0)
+
 # e <- extent(295652.2, 439832.2, 5846234, 6011054)
 # 
 # road.density.1 <- crop(road.density.1km, e)
