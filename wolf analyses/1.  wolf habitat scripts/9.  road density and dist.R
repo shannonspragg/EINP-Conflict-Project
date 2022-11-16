@@ -43,32 +43,10 @@ temp.raster.1km <- raster(template.rast.1km)
 roads.crop <- st_crop(ab.roads.reproj, c(xmin=257856.3, xmax=488214.7, ymin=5837774, ymax=6087088))
 road.density.1km <- rasterize(roads.crop, temp.raster.1km, fun='count', background=0)
 
-# e <- extent(295652.2, 439832.2, 5846234, 6011054)
-# 
-# road.density.1 <- crop(road.density.1km, e)
-#   #setExtent(road.density.1km, e, keepres=TRUE)
+rd.disagg <- raster::disaggregate(road.density.1km, 4) # change to 250m resolution
 
-
-# road.density.rsmpl <- resample(road.density.1km, temp.raster) # correct the extent
-# road.dens.1km <- aggregate(road.density.rsmpl, 4)
-
-# Need to have road density at 4km and 500m:
-# road.dens.4km <- aggregate(road.density.1km, 4) # make this a 4km resolution?
-# road.dens.500m <- disaggregate(road.density.1km, 2) # make this a 4km resolution?
-# 
-# # road.dens.4sqkm <- road.dens.4km / raster::area(road.dens.4km) # road density 1km
-# # road.dens.500sqkm <- road.dens.500m / raster::area(road.dens.500m) # road density 1km
-# 
-# # check for NA's:
-# table(is.na(road.dens.4km[])) #FALSE, no NA's
-# table(is.na(road.dens.500m[])) #FALSE, no NA's
-
-# road.dens.4km.rast <- rast(road.dens.4km)
-# road.dens.4km.crop <- crop(road.dens.4km.rast, temp.rast)
-
-# writeRaster(road.density.1km, "data/processed/bhb_road_density_1km.tif", overwrite=TRUE)
-# writeRaster(road.dens.4km, "data/processed/bhb_road_density_4km.tif", overwrite=TRUE)
-# writeRaster(road.dens.500m, "data/processed/bhb_road_density_500m.tif", overwrite=TRUE)
+writeRaster(road.density.1km, "data/processed/bhb_road_density_1km.tif", overwrite=TRUE)
+writeRaster(rd.disagg, "data/processed/bhb_road_density_250m.tif", overwrite=TRUE)
 writeRaster(dist2roads.km, "data/processed/dist2roads_km_bhb.tif", overwrite=TRUE)
 writeRaster(bhb.roads.raster, "data/processed/bhb_roads.tif", overwrite=TRUE)
 
