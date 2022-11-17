@@ -363,3 +363,7 @@ ungulate_harvest_per_wmu.dbf
 ungulate_harvest_per_wmu.prj
 ungulate_harvest_per_wmu.shp
 ungulate_harvest_per_wmu.shx
+wolf_habitat_bhw.tif
+wolf_habitat_bhw_50km.tif
+wolf_habitat_suitability.tif
+wolf_raw_habitat_suitability.tif
