@@ -67,6 +67,7 @@ writeRaster(roads.adjust, "data/processed/bhb_roads_adjusted.tif")
 pop.dens.a <- pop.dens / 10000 #making this meters
 dist2water.a <- dist2water / 100
 dist2wb.a <- dist2wb / 100
+dist2roads.a <- dist2roads / 100
 slope.a <- slope / 10
 
 
@@ -76,8 +77,8 @@ slope.a <- slope / 10
 private.land.pred <- -1.7 * private.land.rast
 elevation.pred <- -0.5012 * elevation 
 slope.pred <- -0.2058 * slope.a
-roads.pred <- -0.75 * roads.adjust
-dist2roads.pred <- 1.35 * dist2roads
+roads.pred <- -0.75 * roads.adjust # don't use this AND dist to roads
+dist2roads.pred <- 0.9 * dist2roads.a
 pop.dens.pred <- -1 * pop.dens.a
 shrubland.pred <- -0.35 * shrubland
 grassland.pred <- -1.5 * grassland
@@ -95,14 +96,14 @@ recent.wildfires.pred <- -1.1 * recent.wildfires
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
-bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, roads.pred, waterways.pred,
+bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
                     grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
                     dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred, recent.wildfires.pred)
 
 # Model 2:
-bear.hab.mod.no.dist <- c(private.land.pred, elevation.pred, slope.pred, shrubland.pred, roads.pred, waterways.pred,
+bear.hab.mod.no.dist <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
                           grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
-                         human.development.pred, ag.land.pred)
+                          dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred, recent.wildfires.pred)
 
 
 # Convert to Probability Scale (IF NEEDED): -------------------------------

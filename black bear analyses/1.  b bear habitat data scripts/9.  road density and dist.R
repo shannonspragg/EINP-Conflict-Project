@@ -16,14 +16,19 @@ temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 temp.raster <- rast("data/processed/bhb_50km_template_rast.tif")
 ab.roads.reproj <- st_transform(ab.roads, st_crs(bhb.bound))
 
+# Filter roads by type for dist calc --------------------------------------
+ab.roads.filt <- ab.roads.reproj %>% filter(ab.roads.reproj$TYPE == "FWY" | ab.roads.reproj$TYPE == "PASS" | ab.roads.reproj$TYPE == "HWY")
+
 # Make Roads Raster -------------------------------------------------------
 bhb.buf.v <- vect(bhb.bound)
 ab.roads.v <- vect(ab.roads.reproj)
+ab.roads.filt.v <- vect(ab.roads.filt)
 
 bhb.roads.crop <- terra::crop(ab.roads.v, temp.rast)
+bhb.major.roads <- terra::crop(ab.roads.filt.v, temp.rast)
 
 # Dist to roads raster:
-dist2roads <- terra::distance(temp.rast, ab.roads.v)
+dist2roads <- terra::distance(temp.rast, ab.roads.filt.v)
 dist2roads.km <- measurements::conv_unit(dist2roads, "m", "km")
 
 # Roads raster:

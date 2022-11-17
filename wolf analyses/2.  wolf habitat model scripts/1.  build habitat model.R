@@ -23,6 +23,7 @@ private.land.rast <- rast("data/processed/bhb_privatelands.tif")
 elevation <- rast("data/processed/elevation_km_bhb.tif")
 slope <- rast("data/processed/slope_bhb.tif")
 road.dens <- rast("data/processed/bhb_road_density_250m.tif")
+dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
 pop.dens <- rast("data/processed/human_dens_bhb.tif")
 shrubland <- rast("data/processed/bhb_shrubland.tif")
 grassland <- rast("data/processed/bhb_grassland.tif")
@@ -74,6 +75,7 @@ ungulate.dens.adj <- ungulate.density / 10000 # adjusting scale on here
 pop.dens.adj <- pop.dens / 10000 #making this meters
 dist2pa.adj <- dist2pa.rast / 100
 dist2waterways.adj <- dist2waterways / 100
+dist2roads.adj <- dist2roads / 100
 slope.adj <- slope / 10
 
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
@@ -96,6 +98,7 @@ rocky.pred <- 0.25 * rocky
 exposed.pred <- 0.35 * exposed
 private.land.pred <- -0.35 * private.land.rast
 dist2pa.pred <- -1.05 * dist2pa.adj
+dist2roads.pred <- 1.35 * dist2roads.adj
 elevation.pred <- 1.15 * elevation
 slope.pred <- 0.95 * slope.adj
 human.dev.pred <- -1.35 * human.development
