@@ -40,13 +40,15 @@ crs(template.rast.1km) <- "epsg:32612" # UTM zone 12N for AB
 values(template.rast.1km) <- rep(1, ncell(template.rast.1km))
 temp.raster.1km <- raster(template.rast.1km)
 
-roads.crop <- st_crop(ab.roads.reproj, c(xmin=257856.3, xmax=488214.7, ymin=5837774, ymax=6087088))
+roads.crop <- st_crop(ab.roads.reproj, c(xmin=257856.3, xmax=488106.3, ymin=5837774, ymax=6087024))
 road.density.1km <- rasterize(roads.crop, temp.raster.1km, fun='count', background=0)
 
 rd.disagg <- raster::disaggregate(road.density.1km, 4) # change to 250m resolution
+rd.rast <- rast(rd.disagg)
+rd.crop <- terra::project(rd.rast, temp.rast)
 
 writeRaster(road.density.1km, "data/processed/bhb_road_density_1km.tif", overwrite=TRUE)
-writeRaster(rd.disagg, "data/processed/bhb_road_density_250m.tif", overwrite=TRUE)
+writeRaster(rd.crop, "data/processed/bhb_road_density_250m.tif", overwrite=TRUE)
 writeRaster(dist2roads.km, "data/processed/dist2roads_km_bhb.tif", overwrite=TRUE)
 writeRaster(bhb.roads.raster, "data/processed/bhb_roads.tif", overwrite=TRUE)
 
