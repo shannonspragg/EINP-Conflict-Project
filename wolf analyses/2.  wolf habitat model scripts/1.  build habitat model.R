@@ -81,9 +81,9 @@ slope.adj <- slope / 10
 
 road.dens.pred <- -1.25 * road.dens.adj
 prey.dens.pred <- 1.45 * ungulate.dens.adj
-forest.pred <- 1.35 * forests
+forest.pred <- 1.85 * forests
 human.dens.pred <- -1.30 * pop.dens.adj
-livestock.pred <- -0.25 * livestock.density
+livestock.pred <- -0.65 * livestock.density
 shrubland.pred <- 0.95 * shrubland
 grassland.pred <- 0.75 * grassland
 ag.land.pred <- -0.75 * ag.land
@@ -98,7 +98,7 @@ private.land.pred <- -0.35 * private.land.rast
 dist2pa.pred <- -1.05 * dist2pa.adj
 elevation.pred <- 1.15 * elevation
 slope.pred <- 0.95 * slope.adj
-human.dev.pred <- -1.25 * human.development
+human.dev.pred <- -1.35 * human.development
 
 
 # Stack Precictor Rasters -------------------------------------------------
