@@ -58,7 +58,7 @@ exposed
 glacial
 rocky
 waterways
-dist2water
+dist2waterways
 dist2wb
 human.development
 ag.land
@@ -68,72 +68,80 @@ recent.wildfires
 ungulate.density
 dist2pa.rast 
 
+# Adjust scale of some of these so they're on 0-1:
+road.dens.adj <- road.dens / 1000 #making this meters
+ungulate.dens.adj <- ungulate.density / 10000 # adjusting scale on here
+pop.dens.adj <- pop.dens / 10000 #making this meters
+dist2pa.adj <- dist2pa.rast / 100
+dist2waterways.adj <- dist2waterways / 100
+slope.adj <- slope / 10
+
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
   # Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
 
-road.dens.pred <- -0.95 * road.dens
-prey.dens.pred <- 1.35 * ungulate.density
-forest.pred <- 1.45 * forests
-human.dens.pred <- -0.90 * pop.dens
+road.dens.pred <- -1.25 * road.dens.adj
+prey.dens.pred <- 1.45 * ungulate.dens.adj
+forest.pred <- 1.35 * forests
+human.dens.pred <- -1.30 * pop.dens.adj
 livestock.pred <- -0.25 * livestock.density
 shrubland.pred <- 0.95 * shrubland
 grassland.pred <- 0.75 * grassland
 ag.land.pred <- -0.75 * ag.land
-waterbodies.pred <- 1.20 * waterways
+waterbodies.pred <- 0.45 * waterways
+dist2water.pred <- -1.2 * dist2waterways.adj
 major.lake.pred <- -2.5 * bh.lake
 recent.burn.pred <- -0.35 * recent.wildfires
 glacial.pred <- 0.20 * glacial
 rocky.pred <- 0.25 * rocky
 exposed.pred <- 0.35 * exposed
-private.land.pred <- -0.1 * private.land.rast
-dist2pa.pred <- -1.25 * dist2pa.rast
-elevation.pred <- 0.95 * elevation
-slope.pred <- 0.85 * slope
-human.dev.pred <- -0.75 * human.development
+private.land.pred <- -0.35 * private.land.rast
+dist2pa.pred <- -1.05 * dist2pa.adj
+elevation.pred <- 1.15 * elevation
+slope.pred <- 0.95 * slope.adj
+human.dev.pred <- -1.25 * human.development
 
 
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
 wolf.hab.stack <- c(road.dens.pred, prey.dens.pred, forest.pred, human.dens.pred, livestock.pred, shrubland.pred, grassland.pred, ag.land.pred, 
-                    waterbodies.pred, major.lake.pred, recent.burn.pred, glacial.pred, rocky.pred, exposed.pred, private.land.pred, dist2pa.pred,
+                    waterbodies.pred, dist2water.pred , major.lake.pred, recent.burn.pred, glacial.pred, rocky.pred, exposed.pred, private.land.pred, dist2pa.pred,
                     elevation.pred, slope.pred, human.dev.pred)
 
 # Model 2:
-bear.hab.mod.no.dist <- c(private.land.pred, elevation.pred, slope.pred, shrubland.pred, roads.pred, waterways.pred,
-                          grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
-                         human.development.pred, ag.land.pred)
+wolf.hab.mod.simple <- c(road.dens.pred, forest.pred, prey.dens.pred, human.dens.pred, shrubland.pred, grassland.pred, dist2water.pred, elevation.pred,
+                         dist2pa.pred, ag.land.pred)
 
 
 # Convert to Probability Scale (IF NEEDED): -------------------------------
 
 # Model 1:
-bear.hab.rast <- sum(bear.hab.stack, na.rm=TRUE)
-habitat.prob.rast <- (exp(bear.hab.rast))/(1 + exp(bear.hab.rast))
-plot(habitat.prob.rast)
+wolf.hab.rast <- sum(wolf.hab.stack, na.rm=TRUE)
+wolf.habitat.prob.rast <- (exp(wolf.hab.rast))/(1 + exp(wolf.hab.rast))
+plot(wolf.habitat.prob.rast)
 
 # Model 2:
-bh.rast.2 <- sum(bear.hab.mod.no.dist, na.rm=TRUE)
-habitat.prob.rast.2 <- (exp(bh.rast.2))/(1 + exp(bh.rast.2))
-plot(habitat.prob.rast.2)
+wolf.hab.simple <- sum(wolf.hab.mod.simple, na.rm=TRUE)
+wolf.hab.prob.rast.2 <- (exp(wolf.hab.simple))/(1 + exp(wolf.hab.simple))
+plot(wolf.hab.prob.rast.2)
 
 
 # Overlay our boundary line: ----------------------------------------------
 bhb.50km.v <- vect(bhb.50km.boundary)
 
-plot(habitat.prob.rast)
+plot(wolf.habitat.prob.rast)
 plot(bhb.50km.v, add=TRUE)
 
 
 # Mask Habitat Model to BHB Watershed -------------------------------------
-bear.habitat.bhw <- terra::mask(habitat.prob.rast, bhw.v)
-bear.habitat.bhw.50km <- terra::mask(habitat.prob.rast, bhb.50km.v)
+wolf.habitat.bhw <- terra::mask(wolf.habitat.prob.rast, bhw.v)
+wolf.habitat.bhw.50km <- terra::mask(wolf.habitat.prob.rast, bhb.50km.v)
 
 # Save habitat model(s): -----------------------------------------------------
-writeRaster(bear.hab.rast, "data/processed/bbear_raw_habitat_suitability.tif", overwrite=TRUE) # use THIS ONE for conflict analysis
-writeRaster(habitat.prob.rast, "data/processed/bbear_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
-writeRaster(bear.habitat.bhw.50km, "data/processed/bbear_habitat_bhw_50km.tif", overwrite=TRUE) # for 50km buf of beaver hills watershed
-writeRaster(bear.habitat.bhw, "data/processed/bbear_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed
+writeRaster(wolf.hab.rast, "data/processed/wolf_raw_habitat_suitability.tif", overwrite=TRUE) # use THIS ONE for conflict analysis
+writeRaster(wolf.habitat.prob.rast, "data/processed/wolf_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
+writeRaster(wolf.habitat.bhw.50km, "data/processed/wolf_habitat_bhw_50km.tif", overwrite=TRUE) # for 50km buf of beaver hills watershed
+writeRaster(wolf.habitat.bhw, "data/processed/wolf_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed
 
 
 
