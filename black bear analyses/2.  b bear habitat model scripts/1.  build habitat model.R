@@ -1,10 +1,8 @@
 
 # Prep Covariate Rasters for HSI: -----------------------------------------
-    # Here we bring in the covariates for our black bear HSI (following Loosen et al., 2018):
+    # Here we bring in the covariates for our black bear HSI :
     # land tenure (protected areas, crown lands, private lands), NDVI, shrubland, recently burned areas
     # (not grizzly bear use (GBU) -- there aren't GB pops in our study area)
-
-    # We need to scale all of the rasters, make them continuous surfaces (0 or 1), and ensure they are all at the desired resolution
 
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
@@ -65,23 +63,30 @@ recent.wildfires
 roads.adjust <- roads / 1
 writeRaster(roads.adjust, "data/processed/bhb_roads_adjusted.tif")
 
+# Adjust some of these:
+pop.dens.a <- pop.dens / 10000 #making this meters
+dist2water.a <- dist2water / 100
+dist2wb.a <- dist2wb / 100
+slope.a <- slope / 10
+
+
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
   # Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
 
-private.land.pred <- -1.8454 * private.land.rast
+private.land.pred <- -1.7 * private.land.rast
 elevation.pred <- -0.5012 * elevation 
-slope.pred <- -0.2058 * slope
+slope.pred <- -0.2058 * slope.a
 roads.pred <- -0.75 * roads.adjust
-dist2roads.pred <- 1.5425 * dist2roads
-pop.dens.pred <- -1 * pop.dens
+dist2roads.pred <- 1.35 * dist2roads
+pop.dens.pred <- -1 * pop.dens.a
 shrubland.pred <- -0.35 * shrubland
-grassland.pred <- -1.81 * grassland
+grassland.pred <- -1.5 * grassland
 coniferous.forest.pred <- 1.389 * coniferous.forest
 broadleaf.forest.pred <- 2.101 * broadleaf.forest
 alpine.mixed.forest.pred <- 2.323 * alpine.mixed.forest
 waterways.pred <- -0.5489 * waterways
-dist2water.pred <- -0.0995 * dist2water
-dist2wb.pred <- -0.0995 * dist2wb
+dist2water.pred <- -0.0995 * dist2water.a
+dist2wb.pred <- -0.0995 * dist2wb.a
 human.development.pred <- -3.898 * human.development
 ag.land.pred <- -2.303 * ag.land
 bh.lake.pred <- -6.0 * bh.lake
