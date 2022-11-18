@@ -10,6 +10,7 @@ library(sp)
 library(rgeos)
 library(rgdal)
 library(terra)
+library(raster)
 
 # Bring in Data: ----------------------------------------------------------
 

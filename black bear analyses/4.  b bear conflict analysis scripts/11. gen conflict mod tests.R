@@ -43,9 +43,9 @@ pr <- as.integer(pred >= 0.5)
 pr2 <- as.integer(pred2 >= 0.5)
 pr3 <- as.integer(pred3 >= 0.5)
 pr0 <- as.integer(pred0 >=0.5)
-round(mean(xor(pr,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
-round(mean(xor(pr2,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
-round(mean(xor(pr3,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
+round(mean(xor(pr,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.75
+round(mean(xor(pr2,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
+round(mean(xor(pr3,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
 round(mean(xor(pr0,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.72
 
 ploo <- E_loo(preds, loo1$psis_object, type="mean", log_ratios = -log_lik(post.pa.full))$value
@@ -60,9 +60,9 @@ saveRDS(loo0, "Data/processed/post_int_only_loo.rds")
 saveRDS(post_pa_loo_comp, "Data/processed/post_pa_loo_comp.rds")
 
 # LOO classification accuracy
-round(mean(xor(ploo>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
-round(mean(xor(ploo2>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
-round(mean(xor(ploo3>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
+round(mean(xor(ploo>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.75
+round(mean(xor(ploo2>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
+round(mean(xor(ploo3>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
 round(mean(xor(ploo0>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.72
 
 

@@ -78,9 +78,9 @@ ploo3<-E_loo(preds3, loo3b$psis_object, type="mean", log_ratios = -log_lik(bear.
 
 ploo0<-E_loo(preds0, loo0b$psis_object, type="mean", log_ratios = -log_lik(bear.int.only))$value
 
-round(mean(xor(ploo1>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.85
-round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.85
-round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.83
+round(mean(xor(ploo1>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(ploo2>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(ploo3>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
 round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.81
 
 
