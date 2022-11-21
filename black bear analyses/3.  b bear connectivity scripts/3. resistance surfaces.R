@@ -37,6 +37,10 @@ rough.min <-  global(rough, "min", na.rm=TRUE)[1,]
 rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
 rough.proj <- terra::project(rough.rescale, temp.rast)
 
+# Save elev and ruggedness:
+writeRaster(elev.can.crop, "data/processed/elevation_bhw.tif")
+writeRaster(rough.proj, "data/processed/topo_roughness_bhw.tif")
+
 # Prep Species agnostic resistance: ---------------------------------------
 fuzzysum3 <- function(r1, r2, r3) {
   rc1.1m <- (1-r1)
