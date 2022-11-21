@@ -18,7 +18,7 @@ bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
 
 # generate spatial pred ---------------------------------------------------
-fixed.effects <- fixef(bear.no.conf)
+fixed.effects <- fixef(bear.full.mod)
 var.int <- ranef(bear.no.conf)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
 
 
