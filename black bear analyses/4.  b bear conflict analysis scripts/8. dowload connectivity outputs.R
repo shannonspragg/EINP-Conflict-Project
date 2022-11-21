@@ -108,3 +108,5 @@ writeRaster(forest_sp_norm.bhw, "data/processed/bhw_forest_sp_norm.tif", overwri
 
 writeRaster(bbear_conflict_cumcurr.bhw, "data/processed/bhw_bbear_conflict_cumcurr.tif", overwrite=TRUE)
 writeRaster(bbear_conflict_norm.bhw, "data/processed/bhw_bbear_conflict_norm.tif", overwrite=TRUE)
+
+
