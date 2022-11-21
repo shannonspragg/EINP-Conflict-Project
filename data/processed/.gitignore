@@ -373,3 +373,4 @@ bear conf coef plot.jpeg
 bear conf roc curves.jpeg
 bear social mixed effect plots.jpeg
 gen conf mixed effects plot.jpeg
+bear conf all mixed effects plots.jpeg
