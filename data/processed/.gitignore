@@ -376,3 +376,19 @@ gen conf mixed effects plot.jpeg
 bear conf all mixed effects plots.jpeg
 elevation_bhw.tif
 topo_roughness_bhw.tif
+bhw_dist2_protected_areas.tif
+bhw_dist2_protected_areas_50km.tif
+bhw_exposedland.tif
+bhw_exposedland_50km.tif
+bhw_forests.tif
+bhw_forests_50km.tif
+bhw_glacial.tif
+bhw_glacial_50km.tif
+bhw_livestock_density.tif
+bhw_livestock_density_50km.tif
+bhw_road_density.tif
+bhw_road_density_50km.tif
+bhw_rocky.tif
+bhw_rocky_50km.tif
+bhw_ungulate_density.tif
+bhw_ungulate_density_50km.tif
