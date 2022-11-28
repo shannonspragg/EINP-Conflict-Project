@@ -60,7 +60,6 @@ glacial
 rocky
 waterways
 dist2waterways
-dist2wb
 human.development
 ag.land
 livestock.density
@@ -71,7 +70,7 @@ dist2pa.rast
 
 # Adjust scale of some of these so they're on 0-1:
 road.dens.adj <- road.dens / 1000 #making this meters
-ungulate.dens.adj <- ungulate.density / 10000 # adjusting scale on here
+ungulate.dens.adj <- ungulate.density / 100 
 pop.dens.adj <- pop.dens / 10000 #making this meters
 dist2pa.adj <- dist2pa.rast / 100
 dist2waterways.adj <- dist2waterways / 100
@@ -139,6 +138,8 @@ plot(bhb.50km.v, add=TRUE)
 # Mask Habitat Model to BHB Watershed -------------------------------------
 wolf.habitat.bhw <- terra::mask(wolf.habitat.prob.rast, bhw.v)
 wolf.habitat.bhw.50km <- terra::mask(wolf.habitat.prob.rast, bhb.50km.v)
+
+plot(wolf.habitat.bhw)
 
 # Save habitat model(s): -----------------------------------------------------
 writeRaster(wolf.hab.rast, "data/processed/wolf_raw_habitat_suitability.tif", overwrite=TRUE) # use THIS ONE for conflict analysis
