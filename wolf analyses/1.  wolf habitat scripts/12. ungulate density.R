@@ -20,7 +20,7 @@ ungulate.harvest <- read_csv("data/original/ungulate_harvest_counts.csv") # remo
 wmu.reproj <- st_transform(wmu, st_crs(crs(temp.rast)))
 
 # Crop down to BHW buffer: ------------------------------------------------
-bhb.buf.v <- vect(bhb.bound)
+bhb.buf.v <- vect(bhw)
 wmu.v <- vect(wmu.reproj)
 crs(wmu.v) == crs(temp.rast)
 
@@ -41,19 +41,44 @@ wmu.harvest.join <- wmu.bhw.sf %>%
   left_join(., ungulate.harvest, by = c("WMU" = "WMU"))
 
 
+# Calculate densities: ----------------------------------------------------
+# Calculate our areas for the two objects: 
+# Make our area units kilometers:
+wmu.harvest.join$AREA_SQ_KM <- units::set_units(st_area(wmu.harvest.join), km^2)
+
+# Now we make a new col with our ungulates per sq km:
+wmu.harvest.join$Total_ungulates_per_sq_km <- wmu.harvest.join$`total_ungulate_harvest` / wmu.harvest.join$AREA_SQ_KM
+head(wmu.harvest.join)
+
+  # Just white tailed deer
+wmu.harvest.join$Total_wt_deer_per_sq_km <- wmu.harvest.join$`wt_deer_harvest_count` / wmu.harvest.join$AREA_SQ_KM
+head(wmu.harvest.join)
+  # Mule deer
+wmu.harvest.join$Total_mule_deer_per_sq_km <- wmu.harvest.join$`mule_deer_harvest_count` / wmu.harvest.join$AREA_SQ_KM
+head(wmu.harvest.join)
+  # Elk
+wmu.harvest.join$Total_elk_per_sq_km <- wmu.harvest.join$`elk_harvest_count` / wmu.harvest.join$AREA_SQ_KM
+head(wmu.harvest.join)
+
+# Make this col numeric:
+wmu.harvest.join$Total_ungulates_per_sq_km <- as.numeric(wmu.harvest.join$Total_ungulates_per_sq_km)
+wmu.harvest.join$Total_wt_deer_per_sq_km <- as.numeric(wmu.harvest.join$Total_wt_deer_per_sq_km)
+wmu.harvest.join$Total_mule_deer_per_sq_km <- as.numeric(wmu.harvest.join$Total_mule_deer_per_sq_km)
+wmu.harvest.join$Total_elk_per_sq_km <- as.numeric(wmu.harvest.join$Total_elk_per_sq_km)
+
 # Make rasters for ungulate count ------------------------------------------
 harvest.v <- vect(wmu.harvest.join)
 
-total.ungulate.rast <- terra::rasterize(harvest.v, temp.rast, field = "total_ungulate_harvest")
-total.elk.rast <- terra::rasterize(harvest.v, temp.rast, field = "elk_harvest_count")
-total.muledeer.rast <- terra::rasterize(harvest.v, temp.rast, field = "mule_deer_harvest_count")
-total.whitetailed.deer.rast <- terra::rasterize(harvest.v, temp.rast, field = "wt_deer_harvest_count")
+total.ungulate.rast <- terra::rasterize(harvest.v, temp.rast, field = "Total_ungulates_per_sq_km")
+total.elk.rast <- terra::rasterize(harvest.v, temp.rast, field = "Total_elk_per_sq_km")
+total.muledeer.rast <- terra::rasterize(harvest.v, temp.rast, field = "Total_mule_deer_per_sq_km")
+total.whitetailed.deer.rast <- terra::rasterize(harvest.v, temp.rast, field = "Total_wt_deer_per_sq_km")
 
 
 # Save these: -------------------------------------------------------------
-writeRaster(total.ungulate.rast, "data/processed/total_ungulate_density.tif")
-writeRaster(total.elk.rast, "data/processed/total_elk_density.tif")
-writeRaster(total.muledeer.rast, "data/processed/total_muledeer_density.tif")
-writeRaster(total.whitetailed.deer.rast, "data/processed/total_white_tailed_deer_density.tif")
-st_write(wmu.harvest.join, "data/processed/ungulate_harvest_per_wmu.shp")
+writeRaster(total.ungulate.rast, "data/processed/total_ungulate_density.tif", overwrite=TRUE)
+writeRaster(total.elk.rast, "data/processed/total_elk_density.tif", overwrite=TRUE)
+writeRaster(total.muledeer.rast, "data/processed/total_muledeer_density.tif", overwrite=TRUE)
+writeRaster(total.whitetailed.deer.rast, "data/processed/total_white_tailed_deer_density.tif", overwrite=TRUE)
+st_write(wmu.harvest.join, "data/processed/ungulate_harvest_per_wmu.shp", append = FALSE)
 
