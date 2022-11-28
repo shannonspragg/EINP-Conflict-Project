@@ -12,7 +12,7 @@ library(raster)
 
 
 # Bring in data: ----------------------------------------------------------
-wmu <- st_read("data/original/bf_wmu_polygons-polygon.shp")
+wmu <- st_read("data/original/WMU_Biologist_Contact_32611.shp")
 bhw <- st_read("data/processed/bhb_50km.shp")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 ungulate.harvest <- read_csv("data/original/ungulate_harvest_counts.csv") # remove notes col
@@ -35,11 +35,12 @@ ungulate.harvest <- ungulate.harvest[ -c(7) ]
 ungulate.harvest$WMU <- as.character(ungulate.harvest$WMU)
 
 # Join WMU with harvest data ----------------------------------------------
-wmu.bhw.sf$WMU <- str_sub(wmu.bhw.sf$WMU, -3, -1)
+wmu.bhw.sf$WMU <- str_sub(wmu.bhw.sf$WMUNIT_COD, -3, -1)
 
 wmu.harvest.join <- wmu.bhw.sf %>% 
   left_join(., ungulate.harvest, by = c("WMU" = "WMU"))
 
+wmu.harvest.join <- wmu.harvest.join %>% dplyr::select(., -c(7,8,9,10,11,12,13)) # just select cols we want
 
 # Calculate densities: ----------------------------------------------------
 # Calculate our areas for the two objects: 
