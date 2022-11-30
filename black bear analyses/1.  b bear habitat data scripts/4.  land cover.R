@@ -60,6 +60,11 @@ bhb.reproj<- st_transform(bhb.buf, st_crs(ab_landcover))
 # Try this in terra:
 template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
+## Set up a raster "template" for alberta
+temp.rast.ab <- rast(res=c(250,250), ext=ext(landcover.v)) # Let's do a 250x250 res for computational purposes
+crs(temp.rast.ab) <- "epsg:32612" # UTM zone 12N for AB
+values(temp.rast.ab) <- rep(1, ncell(temp.rast.ab))
+
 bhb.v <- vect(bhb.buf)
 landcover.v <- vect(ab_landcover)
 shrubland.v <- vect(shrubland)
@@ -82,7 +87,7 @@ bhb.water.crop <- crop(water.v, template.rast)
 bhb.ag.crop <- crop(agriculture.v, template.rast)
 bhb.generalist.crop <- crop(generalist.v, template.rast)
 
-ab.landcover.rast <- terra::rasterize(landcover.v, template.rast, field = "LC_DESCRIPTION")
+ab.landcover.rast <- terra::rasterize(landcover.v, temp.rast.ab, field = "LC_DESCRIPTION")
 bhb.landcover.type.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_class")
 bhb.grassland.rast <- terra::rasterize(bhb.grass.crop, template.rast, field = "LC_class")
@@ -176,6 +181,7 @@ bhb.generalist.raster[is.na(bhb.generalist.raster[])] <- 0
 table(is.na(bhb.generalist.raster[])) # FALSE
 
 # Save rasters
+terra::writeRaster(ab.landcover.rast, "data/processed/ab_landcover.tif", overwrite=TRUE)
 terra::writeRaster(bhb.landcover.type.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
 terra::writeRaster(bhb.shrubland.raster, "data/processed/bhb_shrubland.tif", overwrite=TRUE)
 terra::writeRaster(bhb.grassland.raster, "data/processed/bhb_grassland.tif", overwrite=TRUE)
