@@ -51,7 +51,7 @@ generalist_habitat <- dplyr::filter(ab_landcover, LC_DESCRIPTION == "Shrubland" 
 # Crop to our Region --------------------------------------------------------
 bhb.buf <- st_read("data/processed/bhb_50km.shp") # Beaver Hills Watershed
 
-#bhb.reproj<- st_transform(bhb.buf, st_crs(ab_landcover))
+bhb.reproj<- st_transform(bhb.buf, st_crs(ab_landcover))
 
 #st_crs(ab_landcover) == st_crs(bhb.reproj)
 # st_is_valid(bhw.reproj)
@@ -61,7 +61,7 @@ bhb.buf <- st_read("data/processed/bhb_50km.shp") # Beaver Hills Watershed
 template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
 bhb.v <- vect(bhb.buf)
-#landcover.v <- vect(ab_landcover)
+landcover.v <- vect(ab_landcover)
 shrubland.v <- vect(shrubland)
 grassland.v <- vect(grassland)
 conifer.v <- vect(conifer.mix)
@@ -72,7 +72,7 @@ agriculture.v <- vect(agriculture)
 generalist.v <- vect(generalist_habitat)
 wb.v <- vect(wb.bhb)
 
-#bhb.landcover.crop <- crop(landcover.v, template.rast)
+bhb.landcover.crop <- crop(landcover.v, template.rast)
 bhb.shrub.crop <- crop(shrubland.v, template.rast)
 bhb.grass.crop <- crop(grassland.v, template.rast)
 bhb.conifer.crop <- crop(conifer.v, template.rast)
@@ -82,7 +82,8 @@ bhb.water.crop <- crop(water.v, template.rast)
 bhb.ag.crop <- crop(agriculture.v, template.rast)
 bhb.generalist.crop <- crop(generalist.v, template.rast)
 
-#bhb.landcover.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
+ab.landcover.rast <- terra::rasterize(landcover.v, template.rast, field = "LC_DESCRIPTION")
+bhb.landcover.type.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_class")
 bhb.grassland.rast <- terra::rasterize(bhb.grass.crop, template.rast, field = "LC_class")
 bhb.conifer.rast <- terra::rasterize(bhb.conifer.crop, template.rast, field = "LC_class")
@@ -175,7 +176,7 @@ bhb.generalist.raster[is.na(bhb.generalist.raster[])] <- 0
 table(is.na(bhb.generalist.raster[])) # FALSE
 
 # Save rasters
-#terra::writeRaster(bhb.landcover.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
+terra::writeRaster(bhb.landcover.type.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
 terra::writeRaster(bhb.shrubland.raster, "data/processed/bhb_shrubland.tif", overwrite=TRUE)
 terra::writeRaster(bhb.grassland.raster, "data/processed/bhb_grassland.tif", overwrite=TRUE)
 terra::writeRaster(bhb.conifer.raster, "data/processed/bhb_conifer_mix.tif", overwrite=TRUE)
