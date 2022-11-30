@@ -34,7 +34,7 @@ points(bears, col= bears$animlID)
 
 
 # Reclassify landcover data for analysis: ---------------------------------
-classification <- read.table("landcover reclass.txt", header=T)
+classification <- read.table("data/original/landcover reclass.txt", header=T)
 head(classification)
 
 levels(classification$Description2) # look at new classification levels
@@ -68,23 +68,52 @@ plot (layers)
 install.packages("reshape2")
 library(reshape2)
 
-use <- extract(layers, bears)
-use$bearID <- as.factor(bears$animlID)
+use <- raster::extract(layers, bears)
+use$BearID <- as.factor(bears$animlID)
 
 #use reshape2, dcast function:
-useCatID <- dcast (use, CatID - landcover, lengch, value.var = "Cat:ID") 
+useBearID <- dcast(use, BearID ~ land, length, value.var = "BearID")
+
 newclass.names <- unique(classification[,3:4])
 names(useCatID) <- c("CatID", as.character(newclass.names[l:13,2]))
 
 # Generate random points and extract landcover categories:
 
 #use sampleRandomfunction from raster to create availability 
-set.seed (8 )
-rand.II <- sampleRandom(landcover, size=lOOO) 
+set.seed (8)
+rand.II <- sampleRandom(land, size = 1000) 
 rand.II.land <- data.frame(rand.II)
 #s u m u μ c o u n c s o f e a c h l a n d c o v e r t y p e 
 table(rand.II.land)
 
+#sum up counts of each landcover type
+avail.II <- tapply(rand.II.land, rand.II.land, length) 
+names(avail.II) <- as.characcer(newclass.names[1:14, 2] )
+avail.II
+#remove exotics, which was not observed in sample of use
+avai1.II <-avai1.II[c(-14)]
 
 
+# Running an MCP: ---------------------------------------------------------
+library(sp)
+install.packages("adehabitatHS")
+library(adehabitatHS)
+
+bear.unique <- unique(bears$animlID)
+samples <- 200
+rand.III <- matrix(nrow=0, ncol = 2)
+
+# loop for all individuals
+for(i in 1:length(bear.unique)) {
+  id.i <- bear.unique[i]
+  bear.i <- bears[bears$animlID == id.i,]
+  mcp.i <- mcp(SpatialPoints(coordinates(bear.i)), percent = 99)
+  rand.i <- spsample(mcp.i, type = "random", n= samples)
+  rand.i.sample <- raster::extract(land, rand.i)
+  
+  # make matrix of id and rand samples
+  bear.i <- rep(bear.unique[i], length(rand.i))
+  rand.bear.i <- cbind(bear.i, rand.i.sample)
+  rand.III <- rbind(rand.III, rand.bear.i)
+}
 
