@@ -173,5 +173,102 @@ library(adehabitatLT)
 bears.ltraj <- as.ltraj(xy = coordinates(bears), 
                           date =  as.POSIXct(paste(bears$Date, bears$Time, sep = " ")), 
                           id = bears$animlID)
+plot(bears.ltraj, id = "U01")
+
+# distance for first bear id:
+bears.ltraj[[1]][,6]
+hist(bears.ltraj[[1]][,6], main = "First BearID")
+
+#plots of relative movement angles for second CatID 
+#relativeangles:changeindireccionfromprevious timestep 
+rose.diag(na.omit(bears.ltraj[[1]][,10]), bins=12, prop= 1.5) 
+circ.plot(bears.ltraj[[2]][,10], pch = 1)
+
+# Step selection generating 10 locations to sample habitat use
+stepdata <- data.frame(coordinates(bears))
+stepdata$BearID <- as.factor(bears$animlID)
+names(stepdata) <- c("X", "Y", "BearID")
+n.use <- dim(stepdata)[[1]]
+n.avail <- n.use * 10
+
+# generate random samples of step lengths and turning angles:
+# convert trajectory back to df for manipulation
+traj.df <- ld(bears.ltraj)
+
+# sample steps with replacement
+avail.dist <- matrix(sample(na.omit(traj.df$dist), 
+                            size = n.avail, replace = T), ncol = 10)
+avail.angle <- matrix(sample(na.omit(traj.df$rel.angle), 
+                            size = n.avail, replace = T), ncol = 10)
+#name cols:
+colnames(avail.dist) <- c("a.dist1", "a.dist2", "a.dist3", "a.dist4","a.dist5","a.dist6","a.dist7","a.dist8","a.dist9","a.dist10")
+colnames(avail.angle) <- c("a.angle1", "a.angle2", "a.angle3", "a.angle4", "a.angle5", "a.angle6", "a.angle7", "a.angle8", "a.angle9", "a.angle10")
+
+# link availible distances/angles to observations:
+traj.df <- cbind(traj.df, avail.dist, avail.angle)
+
+#calculatecoordinates in t+l from t using absolute angle: 
+traj.df[2,"x"] + traj.df[2,"dist"] * cos(traj.df[2,"abs.angle"])
+traj.df[2, "y"] + traj.df[2, "dist"] * sin(traj.df[2,"abs.angle"])
+# check:
+traj.df[3, c("x", "y")]
+
+# create new values for df where av ailible xy coords are created and linked to appropriate use coords
+traj.df$abs.angle_t_1 <- NA 
+for(i in 2:nrow(traj.df)) {
+  traj.df$abs.angle_t_1[i] <- ifelse(traj.df$id[i] ==
+  traj.df$id[i - 1], traj.df$abs.angle[i - 1] , NA) 
+  }
+traj.df$abs.angle_t_2 <- NA 
+for(i in 2:nrow(traj.df)) {
+  traj.df$abs.angle_t_2[i] <- ifelse(traj.df$id[i] ==
+                                       traj.df$id[i - 1], traj.df$abs.angle[i - 1] , NA) 
+}
+traj.df$abs.angle_t_3 <- NA 
+for(i in 2:nrow(traj.df)) {
+  traj.df$abs.angle_t_3[i] <- ifelse(traj.df$id[i] ==
+                                       traj.df$id[i - 1], traj.df$abs.angle[i - 1] , NA) 
+}
+
+# calc new coords using trig
+  # use coords for t + 1
+traj.df$x_t1 <- traj.df[, "x"] + traj.df[,"dist"] * cos(traj.df[, "abs.angle"]) 
+traj.df$y_t1 <- traj.df[, "y"] + traj.df[, "dist"] * sin(traj.df[,"abs.angle"])
+
+#calculate avail coords for t+l
+traj.df$x_a1 <- traj.df[, "x"] + traj.df[, "a.dist1"] * cos(traj.df[, "abs.angle_t_1"] + traj.df[, "a.angle1"]) 
+traj.df$y_a1 <- traj.df[, "y"] + traj.df[, "a.dist1"] * sin(traj.df[, "abs.angle_t_1"] + traj.df[, "a.angle1"])
+
+traj.df$x_a2 <- traj.df[, "x"] + traj.df[, "a.dist2"] * cos(traj.df[, "abs.angle_t_2"] + traj.df[, "a.angle2"]) 
+traj.df$y_a2 <- traj.df[, "y"] + traj.df[, "a.dist2"] * sin(traj.df[, "abs.angle_t_2"] + traj.df[, "a.angle2"])
+
+traj.df$x_a3 <- traj.df[, "x"] + traj.df[, "a.dist3"] * cos(traj.df[, "abs.angle_t_3"] + traj.df[, "a.angle3"]) 
+traj.df$y_a3 <- traj.df[, "y"] + traj.df[, "a.dist3"] * sin(traj.df[, "abs.angle_t_3"] + traj.df[, "a.angle3"])
+
+# reformat data for step selection:
+traj.df <- traj.df[complete.cases(traj.df),] #remove NAs
+traj.use <- data.frame(use = rep(1, nrow(traj.df)),
+                       traj.df[,c("id", "pkey", "date", "x_t1", "y_t1")])
+traj.a1 <- data.frame(use = rep(0, nrow(traj.df)),
+                      traj.df[,c("id", "pkey", "date", "x_a1", "y_a1")])
+traj.a2 <- data.frame(use = rep(0, nrow(traj.df)),
+                      traj.df[,c("id", "pkey", "date", "x_a2", "y_a2")])
+traj.a3 <- data.frame(use = rep(0, nrow(traj.df)),
+                      traj.df[,c("id", "pkey", "date", "x_a3", "y_a3")])
+names(traj.use) <- c("use", "id", "pair", "date", "x", "y")
+names(traj.a1) <- c("use", "id", "pair", "date", "x", "y")
+names(traj.a2) <- c("use", "id", "pair", "date", "x", "y")
+names(traj.a3) <- c("use", "id", "pair", "date", "x", "y")
+
+# append use and availible data together: (traj.a4-10 should be created in same way as above)
+
+
+
+
+
+
+
+
+
 
 
