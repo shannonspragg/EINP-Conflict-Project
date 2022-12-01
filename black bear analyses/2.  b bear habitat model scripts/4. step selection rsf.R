@@ -276,6 +276,7 @@ logit.bear.ssf <- clogit(use ~ forested + shrub.grass + landcover.desc + strata(
 
 # logistic ignoring local pairing structure of data
 logit.rsf <- glm(use ~ forested + shrub.grass + landcover.desc, family = "binomial", data = stepdata.final)
+logit.rsf2 <- glm(use ~  landcover.desc, family = "binomial", data = stepdata.final)
 
 # compare coefficients
 logit.ssf
@@ -284,4 +285,4 @@ logit.bear.ssf
 coef(logit.bear.ssf)
 logit.rsf
 coef(logit.rsf)
-
+logit.rsf2
