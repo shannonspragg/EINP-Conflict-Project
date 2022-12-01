@@ -11,7 +11,15 @@ library(terra)
 
 # Bring in data: ----------------------------------------------------------
 # Landcover:
-land <- raster("data/processed/bhb_landcover.tif") # TRY WITH AB raster (not cropped)
+land <- raster("data/processed/bhb_landcover.tif") 
+private.land.rast <- raster("data/processed/bhb_privatelands.tif")
+elevation <- raster("data/processed/elevation_km_bhb.tif")
+slope <- raster("data/processed/slope_bhb.tif")
+roads <- raster("data/processed/bhb_roads.tif")
+dist2roads <- raster("data/processed/dist2roads_km_bhb.tif")
+pop.dens <- raster("data/processed/human_dens_bhb.tif")
+recent.wildfires <- raster("data/processed/bhb_fire_history.tif")
+
 projection(land)
 
 # Bear collar data:
@@ -19,8 +27,17 @@ bears <- readOGR("data/processed/bear_collar_data.shp")
 projection(bears)
 
 land <- projectRaster(land, crs = "EPSG:26912") # UTM zone 12N for AB
-#land <- raster(land)
+private <- projectRaster(private.land.rast, crs = "EPSG:26912")
+elevation <- projectRaster(elevation, crs = "EPSG:26912")
+slope <- projectRaster(slope, crs = "EPSG:26912")
+roads <- projectRaster(roads, crs = "EPSG:26912")
+dist2roads <- projectRaster(dist2roads, crs = "EPSG:26912")
+hum.dens <- projectRaster(pop.dens, crs = "EPSG:26912")
+recent.burn <- projectRaster(recent.wildfires, crs = "EPSG:26912")
+
 crs(land) 
+crs(private)
+crs(roads)
 crs(bears)
 
 crs.land <- CRS("EPSG:26912")
@@ -51,9 +68,11 @@ forest.focal <-focal(forests,w=fw, fun="sum",na.rm=T)
 shrubgrass.focal <- focal(shrubgrass, w = fw, fun= "sum", na.rm= T)
 
 #merge raster data
-layers <- stack(land, forest.focal, shrubgrass.focal)
-names(layers) <- c( "landcover", "forested", "shrub/grass") 
-plot (layers)
+#layers <- stack(land, forest.focal, shrubgrass.focal, private)
+layers <- stack(land, forest.focal, shrubgrass.focal, private, elevation, slope, roads, dist2roads, hum.dens, recent.burn)
+
+names(layers) <- c( "landcover", "forested", "shrub/grass", "privateland", "elevation", "slope", "roads", "dist2roads", "human.dens", "recent.burns") 
+plot(layers)
 
 # Step Selection Functions ------------------------------------------------
 # Split bear datetime col into two:
@@ -251,7 +270,7 @@ stepdata.final <- data.frame(cbind(stepdata.final, cov))
 # make landcover categories:
 stepdata.final <- stepdata.final %>%
   dplyr::mutate(landcover.desc = 
-                  case_when(stepdata.final$landcover == 20 ~ "Water",
+                  case_when(stepdata.final$landcover == 11 ~ "Water",
                             stepdata.final$landcover == 10 ~ "Snow/Ice",
                             stepdata.final$landcover == 8 ~ "Rock/Rubble",
                             stepdata.final$landcover == 5 ~ "Exposed Land",
@@ -269,14 +288,14 @@ install.packages("survival")
 library(survival)
 
 # conditional logistic
-logit.ssf <- clogit(use ~ forested + shrub.grass + landcover.desc + strata(pair), data = stepdata.final)
+logit.ssf <- clogit(use ~ forested + shrub.grass + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns + strata(pair), data = stepdata.final)
 
 # including bearID as cluster:
-logit.bear.ssf <- clogit(use ~ forested + shrub.grass + landcover.desc + strata(pair) + cluster(id), method = "approximate", data = stepdata.final)
+logit.bear.ssf <- clogit(use ~ forested + shrub.grass + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns + strata(pair) + cluster(id), method = "approximate", data = stepdata.final)
 
 # logistic ignoring local pairing structure of data
-logit.rsf <- glm(use ~ forested + shrub.grass + landcover.desc, family = "binomial", data = stepdata.final)
-logit.rsf2 <- glm(use ~  landcover.desc, family = "binomial", data = stepdata.final)
+logit.rsf <- glm(use ~ forested + shrub.grass + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns, family = "binomial", data = stepdata.final)
+logit.rsf2 <- glm(use ~  landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns, family = "binomial", data = stepdata.final)
 
 # compare coefficients
 logit.ssf
@@ -284,5 +303,6 @@ coef(logit.ssf)
 logit.bear.ssf
 coef(logit.bear.ssf)
 logit.rsf
-coef(logit.rsf)
+coef(logit.rsf) # Here are the coefficients we use to build our "validated" habitat model
 logit.rsf2
+
