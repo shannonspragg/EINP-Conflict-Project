@@ -117,3 +117,61 @@ for(i in 1:length(bear.unique)) {
   rand.III <- rbind(rand.III, rand.bear.i)
 }
 
+# reshape data with dcast function:
+rand.III <- data.frame(rand.III)
+rand.III$bear.i <- as.factor(rand.III$bear.i)
+colnames(rand.III) = c("bear.i", "land") 
+avail.III <- dcast(rand.III,bear.i ~ land, length, value.var = "bear.i")
+#names(avail.III) <- c( "BearID", as.character(newclass.names[1:13,2])) 
+avail.III
+
+# Calculate selection ratios
+library(adehabitatHS)
+
+sel.ratioII <- widesII(u = useBearID[,c(2:ncol(useBearID))],
+                       a = as.vector(avail.II),
+                       avknown = F, alpha = 0.05)
+summary(sel.ratioII)
+sel.ratioII
+sel.ratioII$wi # selection ratios
+sel.ratioII$se.wi # selection ratio SEs
+plot(sel.ratioII)
+
+
+
+# Step Selection Functions ------------------------------------------------
+# Split bear datetime col into two:
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+
+bears.sf <- st_as_sf(bears)
+bears.sf$Date <- str_sub(bears.sf$DateTim, 1, 10)
+bears.sf$Time <- str_sub(bears.sf$DateTim, 12, 20)
+
+#bears.sf <- bears.sf %>% tidyr::separate(DateTim, c('Date', 'Time'), sep = " ")
+bears <- as(bears.sf, "Spatial")
+
+# Prep trajectory:
+install.packages("adehabitatLT")
+library(adehabitatLT)
+
+#reformat date ro a POSIXct object for date:
+# substrRight <- function(x, n) {
+#   substr(x, nchar(x) - n+1, nchar(x))
+# }
+
+# bears$Date <- as.character(bears$Date)
+# bear.date <- as.numeric(substrRight(bears$Date, 3))
+# #bear.date <- as.numeric(bears$Date)
+# bears$Date <- as.Date(bear.date, origin = as.Date("2021-08-11 1:00:01"))
+# head(bears)
+# # create POSIXct object:
+# bears$Date <- as.POSIXct(bears$Date, "%Y-%m-%d %H:%M:%S")
+# bear.ltrag <- as.ltraj(xy = coordinates(bears), date = bears$Date, id = bears$animlID, typeII = T)
+
+bears.ltraj <- as.ltraj(xy = coordinates(bears), 
+                          date =  as.POSIXct(paste(bears$Date, bears$Time, sep = " ")), 
+                          id = bears$animlID)
+
+
