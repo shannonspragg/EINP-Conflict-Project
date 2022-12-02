@@ -19,6 +19,10 @@ roads <- raster("data/processed/bhb_roads.tif")
 dist2roads <- raster("data/processed/dist2roads_km_bhb.tif")
 pop.dens <- raster("data/processed/human_dens_bhb.tif")
 recent.wildfires <- raster("data/processed/bhb_fire_history.tif")
+water <- raster("data/processed/bhb_water_areas.tif")
+dist2drainage <- raster("data/processed/dist2drainage_km_bhb.tif")
+dist2wb <- raster("data/processed/dist2waterbodies_km_bhb.tif")
+human.dev <- raster("data/processed/bhw_ghm.tif")
 
 projection(land)
 
@@ -34,6 +38,10 @@ roads <- projectRaster(roads, crs = "EPSG:26912")
 dist2roads <- projectRaster(dist2roads, crs = "EPSG:26912")
 hum.dens <- projectRaster(pop.dens, crs = "EPSG:26912")
 recent.burn <- projectRaster(recent.wildfires, crs = "EPSG:26912")
+water <- projectRaster(water, crs = "EPSG:26912")
+dist2drainage <- projectRaster(dist2drainage, crs = "EPSG:26912")
+dist2waterbodies <- projectRaster(dist2wb, crs = "EPSG:26912")
+hum.dev <- projectRaster(human.dev, crs = "EPSG:26912")
 
 crs(land) 
 crs(private)
@@ -69,9 +77,11 @@ shrubgrass.focal <- focal(shrubgrass, w = fw, fun= "sum", na.rm= T)
 
 #merge raster data
 #layers <- stack(land, forest.focal, shrubgrass.focal, private)
-layers <- stack(land, forest.focal, shrubgrass.focal, private, elevation, slope, roads, dist2roads, hum.dens, recent.burn)
+layers <- stack(land, forest.focal, private, elevation, slope, roads, dist2roads, hum.dens, 
+                recent.burn, water, dist2drainage, dist2waterbodies, hum.dev)
 
-names(layers) <- c( "landcover", "forested", "shrub/grass", "privateland", "elevation", "slope", "roads", "dist2roads", "human.dens", "recent.burns") 
+names(layers) <- c( "landcover", "forested", "privateland", "elevation", "slope", "roads", "dist2roads", "human.dens",
+                    "recent.burns", "water", "dist2drainage", "dist2waterbodies", "human.mod") 
 plot(layers)
 
 # Step Selection Functions ------------------------------------------------
@@ -288,13 +298,13 @@ install.packages("survival")
 library(survival)
 
 # conditional logistic
-logit.ssf <- clogit(use ~ forested + shrub.grass + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns + strata(pair), data = stepdata.final)
+logit.ssf <- clogit(use ~ forested + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns + water + dist2drainage + dist2waterbodies + human.mod + strata(pair), data = stepdata.final)
 
 # including bearID as cluster:
-logit.bear.ssf <- clogit(use ~ forested + shrub.grass + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns + strata(pair) + cluster(id), method = "approximate", data = stepdata.final)
+logit.bear.ssf <- clogit(use ~ forested + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns +  water + dist2drainage + dist2waterbodies + human.mod + strata(pair) + cluster(id), method = "approximate", data = stepdata.final)
 
 # logistic ignoring local pairing structure of data
-logit.rsf <- glm(use ~ forested + shrub.grass + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns, family = "binomial", data = stepdata.final)
+logit.rsf <- glm(use ~ forested + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns  + water + dist2drainage + dist2waterbodies + human.mod, family = "binomial", data = stepdata.final)
 logit.rsf2 <- glm(use ~  landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns, family = "binomial", data = stepdata.final)
 
 # compare coefficients
