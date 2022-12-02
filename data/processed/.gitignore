@@ -415,3 +415,8 @@ bear_collar_data.shp
 bear_collar_data.shx
 ab_landcover.tif
 ab_landcover.tif.aux.xml
+bbear_habitat_val_correlation.tif
+bbear_raw_validated_habitat_suitability.tif
+bbear_val_habitat_bhw.tif
+bbear_val_habitat_bhw_50km.tif
+bbear_validated_habitat_suitability.tif
