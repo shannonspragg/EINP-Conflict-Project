@@ -420,3 +420,9 @@ bbear_raw_validated_habitat_suitability.tif
 bbear_val_habitat_bhw.tif
 bbear_val_habitat_bhw_50km.tif
 bbear_validated_habitat_suitability.tif
+bbear_habitat_corr_50%.tif
+bbear_habitat_corr_60%.tif
+einp_reproj.dbf
+einp_reproj.prj
+einp_reproj.shp
+einp_reproj.shx
