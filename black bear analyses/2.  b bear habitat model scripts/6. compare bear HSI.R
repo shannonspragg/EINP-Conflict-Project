@@ -30,7 +30,9 @@ bear.collars <- st_read("data/processed/bear_collar_data.shp")
 projection(bear.collars)
 
 einp <- st_read("data/processed/einp_reproj.shp") 
-einp10km.v <- vect(st_buffer(einp, 10000))
+einp.10km <- st_buffer(einp, 10000)
+einp10km.v <- vect(einp.10km)
+st_write(einp.10km, "data/processed/einp_10km.shp")
 # Look at collar points over our study area -------------------------------
 bear.collars.sv <- vect(bear.collars)
 

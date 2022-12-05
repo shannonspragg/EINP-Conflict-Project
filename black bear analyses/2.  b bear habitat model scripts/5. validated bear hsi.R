@@ -125,11 +125,13 @@ plot(einp.10km.v, add=TRUE)
 # Mask Habitat Model to BHB Watershed -------------------------------------
 bear.habitat.val.bhw <- terra::mask(habitat.val.rast, bhw.v)
 bear.habitat.val.bhw.50km <- terra::mask(habitat.val.rast, bhb.50km.v)
-
+bear.hab.val.einp10km <- terra::mask(habitat.val.rast, einp10km.v)
 plot(bear.habitat.val.bhw)
+plot(bear.hab.val.einp10km)
 
 # Save habitat model(s): -----------------------------------------------------
 writeRaster(bear.hab.val.rast, "data/processed/bbear_raw_validated_habitat_suitability.tif", overwrite=TRUE) # use THIS ONE for conflict analysis
 writeRaster(habitat.val.rast, "data/processed/bbear_validated_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
 writeRaster(bear.habitat.val.bhw.50km, "data/processed/bbear_val_habitat_bhw_50km.tif", overwrite=TRUE) # for 50km buf of beaver hills watershed
 writeRaster(bear.habitat.val.bhw, "data/processed/bbear_val_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed
+writeRaster(bear.hab.val.einp10km, "data/processed/bbear_val_habitat_einp_10km.tif")
