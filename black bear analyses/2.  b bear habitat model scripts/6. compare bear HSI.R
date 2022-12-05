@@ -29,6 +29,8 @@ validated_bbear_50km <- rast("data/processed/bbear_val_habitat_bhw_50km.tif")
 bear.collars <- st_read("data/processed/bear_collar_data.shp")
 projection(bear.collars)
 
+einp <- st_read("data/processed/einp_reproj.shp") 
+einp10km.v <- vect(st_buffer(einp, 10000))
 # Look at collar points over our study area -------------------------------
 bear.collars.sv <- vect(bear.collars)
 
@@ -40,6 +42,9 @@ plot(bear.collars.sv, add=T)
 plot(validated_bbear_habsui)
 plot(bear.collars.sv, add=T)
 
+  # Plot bears in 10km EINP buffer:
+plot(einp10km.v)
+plot(bear.collars.sv, add=TRUE, col="red")
 
 # Compare % overlap of the two models: ------------------------------------
 
@@ -57,13 +62,13 @@ plot(bbear.habitat.50km.corr)
 title("Estimated and Validated Habitat Correlation for 50km buffer of BH Subwatershed") 
 
 # Filter these for values less than 0.5 (looking for > 50% overlap:
-bbear.habitat.corr[bbear.habitat.corr > 0.5] <- 1
-bbear.habitat.corr[bbear.habitat.corr < 0.49] <- 0
+bbear.habitat.corr[bbear.habitat.corr > 0.6] <- 1
+bbear.habitat.corr[bbear.habitat.corr < 0.59] <- 0
 
 plot(bbear.habitat.corr)
 #contour(bbear.habitat.corr, add=TRUE)
 title("Estimated and Validated Habitat Correlation for BH Subwatershed") 
-
+writeRaster(bbear.habitat.corr, "data/processed/bbear_habitat_corr_60%.tif")
 
 # Plotting the Correlation: -----------------------------------------------
 

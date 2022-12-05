@@ -15,6 +15,9 @@ library(dplyr)
 # Bring in covariate data: -------------------------------------------------------------
 bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
 bhb.watershed <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
+einp <- st_read("data/processed/einp.shp")
+einp.reproj <- st_transform(einp, crs=st_crs(bhb.watershed))
+st_write(einp.reproj, "data/processed/einp_reproj.shp")
 
 # model 1 Beckman et al., 2015:
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
@@ -114,10 +117,10 @@ plot(habitat.val.rast)
 
 # Overlay our boundary line: ----------------------------------------------
 bhb.50km.v <- vect(bhb.50km.boundary)
-
+einp.10km.v <- vect(st_buffer(einp.reproj, 10000) )
 plot(habitat.val.rast)
-plot(bhb.50km.v, add=TRUE)
-
+plot(bhw.v, add=TRUE)
+plot(einp.10km.v, add=TRUE)
 
 # Mask Habitat Model to BHB Watershed -------------------------------------
 bear.habitat.val.bhw <- terra::mask(habitat.val.rast, bhw.v)
@@ -130,4 +133,3 @@ writeRaster(bear.hab.val.rast, "data/processed/bbear_raw_validated_habitat_suita
 writeRaster(habitat.val.rast, "data/processed/bbear_validated_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
 writeRaster(bear.habitat.val.bhw.50km, "data/processed/bbear_val_habitat_bhw_50km.tif", overwrite=TRUE) # for 50km buf of beaver hills watershed
 writeRaster(bear.habitat.val.bhw, "data/processed/bbear_val_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed
-
