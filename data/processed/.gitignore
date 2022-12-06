@@ -433,3 +433,14 @@ einp_10km.shp
 einp_10km.shx
 bbear_val_habitat_bhw.tif.aux.xml
 bbear_val_habitat_einp_10km.tif.aux.xml
+bhw_wolf_biophys_cumcurr.tif
+bhw_wolf_biophys_cumcurr_50km.tif
+bhw_wolf_biophys_norm.tif
+bhw_wolf_biophys_norm_50km.tif
+wolf_biophys_cum_currmap.tif
+wolf_biophys_flow_potential.tif
+wolf_biophys_normalized_cum_currmap.tif
+wolf_conflict_pres_abs_df.dbf
+wolf_conflict_pres_abs_df.prj
+wolf_conflict_pres_abs_df.shp
+wolf_conflict_pres_abs_df.shx
