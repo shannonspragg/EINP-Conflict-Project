@@ -166,7 +166,7 @@ plot(st_geometry(conf.conflict.all), add=TRUE)
 # Write this as a .shp for later:
 st_write(bhw.ccs.crop, "data/processed/bhw_CCS_50km.shp", append=FALSE)
 
-# Assign the WARP Points to a CCS Region: ---------------------------------
+# Assign the conflict points to a CCS Region: ---------------------------------
 ## Here we want to overlay the points with the regions, adding a column in the warp data that is CCS region ID, 
 #  make sure this is a factor, to fit this as a varying intercept
 
