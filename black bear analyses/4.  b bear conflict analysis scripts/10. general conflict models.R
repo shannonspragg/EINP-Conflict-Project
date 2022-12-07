@@ -35,6 +35,7 @@ colnames(pres.abs.filter) <- c("conflict_presence_ps", "dist.2.pa.ps", "human.de
 pres.abs.scl <- pres.abs.filter %>% 
   mutate_at(c("dist.2.pa.ps", "human.dens.ps", "animal.farm.dens.ps", "ground.crop.dens.ps", "ndvi.ps", 
               "gHM.ps", "agno.biophys.ps", "gen.focal.biophys.ps", "forest.sp.biophys.ps"), scale)
+
 saveRDS(pres.abs.scl, "data/processed/pres_abs_scl.rds")
 
 # Run General Conflict Models: --------------------------------------------
@@ -61,6 +62,13 @@ post.pa.full.quad <- update(post.pa.full, formula = conflict_presence_ps ~ I(hum
 
 # Intercept-only model:
 post.int.only <-  update(post.pa.full, formula = conflict_presence_ps ~ 1+ (1 | CCSNAME.ps), QR = FALSE)
+
+post.int.only <- stan_glmer(conflict_presence_ps ~ 1 + (1 | CCSNAME.ps), 
+                           data = pres.abs.scl,
+                           family = binomial(link = "logit"), # define our binomial glm
+                           prior = t_prior, prior_intercept = t_prior, QR=FALSE,
+                           iter = 3000, chains=5,
+                           seed = SEED) # we add seed for reproducibility
 
 saveRDS(post.pa.full, "data/processed/post_pa_full.rds")
 saveRDS(post.pa.partial, "data/processed/post_pa_partial.rds")
