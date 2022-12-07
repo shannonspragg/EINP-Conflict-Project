@@ -66,8 +66,8 @@ pr1 <- as.integer(pred1 >= 0.5)
 pr0 <- as.integer(pred0 >=0.5)
 
 round(mean(xor(pr3,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
-round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.85
-round(mean(xor(pr1,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.85
+round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(pr1,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.84
 round(mean(xor(pr0,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.81
 
 ploo1 <- E_loo(preds1, loo1b$psis_object, type="mean", log_ratios = -log_lik(bear.full.mod))$value

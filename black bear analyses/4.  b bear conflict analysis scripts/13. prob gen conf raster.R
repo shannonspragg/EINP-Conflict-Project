@@ -69,6 +69,7 @@ prob.rast <- (exp(linpred.rast))/(1 + exp(linpred.rast))
 
 # Crop to BHW Boundary:
 prob.rast.bhw <- mask(prob.rast, bhw.v)
+plot(prob.rast.bhw)
 
 # Save these:
 writeRaster(prob.rast, "Data/processed/prob_conflict_all.tif", overwrite=TRUE)

@@ -391,9 +391,9 @@ saveRDS(human.mod.plot, "data/processed/bear_gHM_mixe_plot.rds")
 # Add Plots together:
 biophys.p <-  connectivity.plot + habsuit.plot + dist2pa.plot.b + ndvi.plot.b + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         
 
-social.p <-  livestockOps.plot.b + rowcropOps.plot.b + human.mod.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+social.p <-  livestockOps.plot.b + rowcropOps.plot.b + human.mod.plot + pop.dens.plot +  plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
-bear.plot.all <- connectivity.plot + habsuit.plot + dist2pa.plot.b + ndvi.plot.b + livestockOps.plot.b + rowcropOps.plot.b + human.mod.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+bear.plot.all <- connectivity.plot + habsuit.plot + dist2pa.plot.b + ndvi.plot.b + livestockOps.plot.b + rowcropOps.plot.b + human.mod.plot + pop.dens.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
 saveRDS(biophys.p, "data/processed/biophys_bear_conf_plots.rds")
 saveRDS(social.p, "data/processed/social_bear_conf_plots.rds")

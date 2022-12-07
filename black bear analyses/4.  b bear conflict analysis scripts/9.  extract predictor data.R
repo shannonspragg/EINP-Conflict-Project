@@ -125,6 +125,9 @@ which(is.na(pres.abs.reproj$agno_biophys)) #none
 which(is.na(pres.abs.reproj$gfocal_biophys)) #none
 which(is.na(pres.abs.reproj$forest_sp_biophys)) #none
 
+# remove the NA quick:
+conflict.reproj <- conflict.reproj[-c(1130), ]  
+pres.abs.reproj <- pres.abs.reproj[-c(1130), ]  
 
 # Save this as new file ---------------------------------------------------
 
