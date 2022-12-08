@@ -23,13 +23,13 @@ library(ggplot2)
 
 
 # Bring in Data: ----------------------------------------------------------
-post.pa.full <- readRDS("data/processed/post_pa_full.rds")
-pres.abs.scl <- readRDS("data/processed/pres_abs_scl.rds")
+w.post.pa.full <- readRDS("data/processed/w_post_pa_full.rds")
+w.pres.abs.scl <- readRDS("data/processed/w_pres_abs_scl.rds")
 
 # Plot Effects of Posterior Coefficients:
 
-post.pa.result <- p_direction(post.pa.full)
-post.pa.full.preds.plot <- plot(post.pa.result, title = "Predictor Effects for General Wildlife Conflict")
+w.post.pa.result <- p_direction(w.post.pa.full)
+post.pa.full.preds.plot <- plot(w.post.pa.result, title = "Predictor Effects for General Wildlife Conflict")
 # this is the max probability of effect (MPE), showing the probability of a predictor having a positive or negative effect
 
 gen_conf_coef_plot <- plot(post.pa.full, pars = c("dist.2.pa.ps","human.dens.ps",
@@ -37,8 +37,8 @@ gen_conf_coef_plot <- plot(post.pa.full, pars = c("dist.2.pa.ps","human.dens.ps"
                                                   "ground.crop.dens.ps",
                                                   "ndvi.ps", "gHM.ps", "agno.biophys.ps"), main = "Predictor Effects for General Wildlife Conflict")
 
-saveRDS(post.pa.full.preds.plot, "data/processed/post_pa_full_predsplot.rds")
-saveRDS(gen_conf_coef_plot, "data/processed/post_pa_coef_plot.rds")
+saveRDS(post.pa.full.preds.plot, "data/processed/w_post_pa_full_predsplot.rds")
+saveRDS(gen_conf_coef_plot, "data/processed/w_post_pa_coef_plot.rds")
 
 # Simulate Data & Posterior Predictive Draws: -----------------------------
 

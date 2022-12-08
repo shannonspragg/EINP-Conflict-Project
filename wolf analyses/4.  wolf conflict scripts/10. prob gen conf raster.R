@@ -10,8 +10,8 @@ library(terra)
 
 
 # Bring in Data: ----------------------------------------------------------
-post.pa.full <- readRDS("Data/processed/post_pa_full.rds")
-pres.abs.scl <- readRDS("data/processed/pres_abs_scl.rds")
+w.post.pa.full <- readRDS("Data/w_processed/post_pa_full.rds")
+w.pres.abs.scl <- readRDS("w_data/processed/pres_abs_scl.rds")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
 
