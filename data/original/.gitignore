@@ -219,3 +219,16 @@ landcover reclass.txt
 Beaver Hills Biosphere WPCP Summary 2014-2022.xlsx
 willdife_predator_compensations.csv
 willdife_predator_compensations.xlsx
+Pipelines.csv
+Pipelines_GCS_NAD83.dbf
+Pipelines_GCS_NAD83.prj
+Pipelines_GCS_NAD83.shp
+Pipelines_GCS_NAD83.shp.xml
+Pipelines_GCS_NAD83.shx
+Pipelines_NAD83_10TM_AEPForest.dbf
+Pipelines_NAD83_10TM_AEPForest.prj
+Pipelines_NAD83_10TM_AEPForest.shp
+Pipelines_NAD83_10TM_AEPForest.shp.xml
+Pipelines_NAD83_10TM_AEPForest.shx
+Unmapped Pipelines.csv
+Unmapped Pipelines.csv.xml
