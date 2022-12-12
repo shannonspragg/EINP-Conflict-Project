@@ -453,3 +453,8 @@ bhb_pipelines.prj
 bhb_pipelines.shp
 bhb_pipelines.shx
 bhb_pipelines.tif
+cougar_habitat_bhw.tif
+cougar_habitat_bhw_50km.tif
+cougar_habitat_suitability.tif
+cougar_raw_habitat_suitability.tif
+forest_edge_habitats.tif
