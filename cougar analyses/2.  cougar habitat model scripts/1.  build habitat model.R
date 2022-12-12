@@ -1,10 +1,8 @@
 
 # Prep Covariate Rasters for HSI: -----------------------------------------
-    # Here we bring in the covariates for our wolf HSI based on literature review:
-    # land tenure (protected areas,  private lands), waterbodies, land cover (forest, shrub, grassland, riperian, glacial, rocky, open),
-    # elevation, slope. human modification, road density, human density, ag density, ungulate density, and recently burned areas
-
-    # We need to scale all of the rasters, make them continuous surfaces (0 or 1), and ensure they are all at the desired resolution
+    # Here we bring in the covariates for our cougar HSI based on literature review:
+    #  waterbodies, land cover (forest, shrub, grassland, wetland, developed, edge, open),
+    # terrain ruggedness, slope. human modification, road density, pipeline density, human density, and ungulate density
 
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
