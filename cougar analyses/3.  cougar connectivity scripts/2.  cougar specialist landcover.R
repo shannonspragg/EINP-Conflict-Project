@@ -1,6 +1,6 @@
 
-# Producing Specialist Species Layer - Wolves --------------------------------
-## Combine land cover of alpine, forest, and broadleaf with XXX for ideal wolf habitat types 
+# Producing Specialist Species Layer - Cougars --------------------------------
+## Combine land cover of forests, edge habitats, and wetland areas for ideal cougar habitat types 
 
 
 # Load Packages: ----------------------------------------------------------
@@ -11,25 +11,27 @@ library(tidyverse)
 
 # Bring in Data: ----------------------------------------------------------
 forest  <- rast("data/processed/bhb_forest_land.tif")
-shrub <- rast("data/processed/bhb_shrubland.tif")
+edge.habitat <- rast("data/processed/bhb_shrubland.tif")
+wetland <- rast("data/processed/bhb_water_areas.tif")
 
 # Double check these are correct:
 plot(forest)
-plot(shrub)
-
+plot(edge.habitat)
+plot(wetland)
 
 # Condense these into one raster: -----------------------------------------
-specialist.wolf <- c(forest, shrub)
+specialist.cougar <- c(forest, edge.habitat, wetland)
 
-specialist.wolf.rast <- sum(specialist.wolf, na.rm=TRUE)
-plot(specialist.wolf.rast)
+specialist.cougar.rast <- sum(specialist.cougar, na.rm=TRUE)
+plot(specialist.cougar.rast)
 
 
 
 # Assign values for specialist selection: ---------------------------------
-specialist.wolf.rast[specialist.wolf.rast == 1] <- 900 
-specialist.wolf.rast[specialist.wolf.rast == 0] <- 0.7 # increase this to represent wolf selection, not crazy specific but still high
-specialist.wolf.rast[specialist.wolf.rast == 900] <- 0 
+specialist.cougar.rast[specialist.cougar.rast == 2] <- 1 
+specialist.cougar.rast[specialist.cougar.rast == 1] <- 900 
+specialist.cougar.rast[specialist.cougar.rast == 0] <- 0.7 # increase this to represent cougar selection, not crazy specific but still high
+specialist.cougar.rast[specialist.cougar.rast == 900] <- 0 
 
-# Save:
-writeRaster(specialist.wolf.rast, "data/processed/wolf_specialist_habitat.tif")
+# Save resistance input:
+writeRaster(specialist.cougar.rast, "data/processed/cougar_specialist_habitat_resist.tif")
