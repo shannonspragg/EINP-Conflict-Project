@@ -35,6 +35,8 @@ human.development <- rast("data/processed/bhw_ghm.tif")
 ag.land <- rast("data/processed/bhb_agriculture.tif")
 bh.lake <- rast("data/processed/beaverhills_lake.tif")
 recent.wildfires <- rast("data/processed/bhb_fire_history.tif")
+rocky <- rast("data/processed/bhb_rocky_land.tif")
+exposed <- rast("data/processed/bhb_exposed_land.tif")
 
 bhb.buf.vect <- vect(bhb.50km.boundary)
 bhw.v <- vect(bhb.watershed)
@@ -77,7 +79,7 @@ slope.a <- slope / 10
 private.land.pred <- -1.7 * private.land.rast
 elevation.pred <- -0.5012 * elevation 
 slope.pred <- -0.2058 * slope.a
-roads.pred <- -0.75 * roads.adjust # don't use this AND dist to roads
+#roads.pred <- -0.75 * roads.adjust # don't use this AND dist to roads
 dist2roads.pred <- 0.9 * dist2roads.a
 pop.dens.pred <- -1 * pop.dens.a
 shrubland.pred <- -0.35 * shrubland
@@ -93,12 +95,38 @@ ag.land.pred <- -2.303 * ag.land
 bh.lake.pred <- -6.0 * bh.lake
 recent.wildfires.pred <- -1.1 * recent.wildfires
 
+# Trying a slightly less vaired model:
+private.land.pred2 <- -0.55 * private.land.rast
+elevation.pred2 <- -0.10 * elevation 
+slope.pred2 <- -0.15 * slope.a
+#roads.pred2 <- -0.75 * roads.adjust # don't use this AND dist to roads
+dist2roads.pred2 <- 0.80 * dist2roads.a
+pop.dens.pred2 <- -0.55 * pop.dens.a
+shrubland.pred2 <- -0.35 * shrubland
+grassland.pred2 <- -0.45 * grassland
+rocky.pred2 <- 0.10 * rocky
+exposed.pred2 <- -0.35 * exposed
+coniferous.forest.pred2 <- 1.50 * coniferous.forest
+broadleaf.forest.pred2 <- 1.65 * broadleaf.forest
+alpine.mixed.forest.pred2 <- 1.95 * alpine.mixed.forest
+waterways.pred2 <- -0.15 * waterways
+dist2water.pred2 <- -0.10 * dist2water.a
+dist2wb.pred2 <- -0.10 * dist2wb.a
+human.development.pred2 <- -1.15 * human.development
+ag.land.pred2 <- -0.95 * ag.land
+bh.lake.pred2 <- -2.0 * bh.lake
+recent.wildfires.pred2 <- -0.60 * recent.wildfires
+
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
 bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
                     grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
                     dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred, recent.wildfires.pred)
+
+bear.hab.stack2 <- c(private.land.pred2, elevation.pred2, slope.pred2, dist2roads.pred2, shrubland.pred2, rocky.pred2, exposed.pred2, waterways.pred2,
+                    grassland.pred2, coniferous.forest.pred2, broadleaf.forest.pred2, alpine.mixed.forest.pred2,
+                    dist2water.pred2, dist2wb.pred2, human.development.pred2, ag.land.pred2, bh.lake.pred2, recent.wildfires.pred2)
 
 # Model 2:
 bear.hab.mod.no.dist <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
@@ -114,7 +142,7 @@ habitat.prob.rast <- (exp(bear.hab.rast))/(1 + exp(bear.hab.rast))
 plot(habitat.prob.rast)
 
 # Model 2:
-bh.rast.2 <- sum(bear.hab.mod.no.dist, na.rm=TRUE)
+bh.rast.2 <- sum(bear.hab.stack2, na.rm=TRUE)
 habitat.prob.rast.2 <- (exp(bh.rast.2))/(1 + exp(bh.rast.2))
 plot(habitat.prob.rast.2)
 
@@ -129,6 +157,9 @@ plot(bhb.50km.v, add=TRUE)
 # Mask Habitat Model to BHB Watershed -------------------------------------
 bear.habitat.bhw <- terra::mask(habitat.prob.rast, bhw.v)
 bear.habitat.bhw.50km <- terra::mask(habitat.prob.rast, bhb.50km.v)
+
+bear.habitat2.bhw <- terra::mask(habitat.prob.rast.2, bhw.v)
+plot(bear.habitat2.bhw)
 
 # Save habitat model(s): -----------------------------------------------------
 writeRaster(bear.hab.rast, "data/processed/bbear_raw_habitat_suitability.tif", overwrite=TRUE) # use THIS ONE for conflict analysis
