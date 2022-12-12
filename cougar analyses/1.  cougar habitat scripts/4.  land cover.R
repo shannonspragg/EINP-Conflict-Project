@@ -47,10 +47,7 @@ agriculture <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Agricultu
 exposed <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Exposed Land")
 glacial <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Snow/Ice")
 rocky <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Rock/Rubble")
-
-# Subset forest, alpine, shrub, grassland for generalist species resistance:
-generalist_habitat <- dplyr::filter(ab_landcover, LC_DESCRIPTION == "Shrubland" | LC_DESCRIPTION == "Grassland" | LC_DESCRIPTION == "Coniferous Forest"
-                                    | LC_DESCRIPTION == "Broadleaf Forest" | LC_DESCRIPTION == "Mixed Forest")
+developed <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Developed")
 
 # Crop to our Region --------------------------------------------------------
 bhb.buf <- st_read("data/processed/bhb_50km.shp") # Beaver Hills Watershed
@@ -76,6 +73,7 @@ glacial.v <- vect(glacial)
 rocky.v <- vect(rocky)
 generalist.v <- vect(generalist_habitat)
 wb.v <- vect(wb.bhb)
+developed.v <- vect(developed) 
 
 bhb.shrub.crop <- crop(shrubland.v, template.rast)
 bhb.grass.crop <- crop(grassland.v, template.rast)
@@ -86,6 +84,7 @@ bhb.generalist.crop <- crop(generalist.v, template.rast)
 bhb.exposed.crop <- crop(exposed.v, template.rast)
 bhb.glacial.crop <- crop(glacial.v, template.rast)
 bhb.rocky.crop <- crop(rocky.v, template.rast)
+bhb.dev.crop <- crop(developed.v, template.rast)
 
 bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_class")
 bhb.grassland.rast <- terra::rasterize(bhb.grass.crop, template.rast, field = "LC_class")
@@ -96,6 +95,7 @@ bhb.generalist.rast <- terra::rasterize(bhb.generalist.crop, template.rast, fiel
 bhb.exposed.rast <- terra::rasterize(bhb.exposed.crop, template.rast, field = "LC_class")
 bhb.glacial.rast <- terra::rasterize(bhb.glacial.crop, template.rast, field = "LC_class")
 bhb.rocky.rast <- terra::rasterize(bhb.rocky.crop, template.rast, field = "LC_class")
+bhb.dev.rast <- terra::rasterize(bhb.dev.crop, template.rast, field = "LC_class")
 
 # Make shrubland a continuous raster:
 bhb.shrubland.rast[bhb.shrubland.rast == 50] <- 1
@@ -171,6 +171,12 @@ bhb.rocky.raster <- raster(bhb.rocky.rast)
 bhb.rocky.raster[is.na(bhb.rocky.raster[])] <- 0 
 names(bhb.rocky.raster)[names(bhb.rocky.raster) == "LC_class"] <- "rocky"
 
+# Make developed land a continuous raster:
+bhb.dev.rast[bhb.dev.rast == 34] <- 1
+bhb.dev.raster <- raster(bhb.dev.rast)
+bhb.dev.raster[is.na(bhb.dev.raster[])] <- 0 
+names(bhb.dev.raster)[names(bhb.dev.raster) == "LC_class"] <- "developed"
+
 # CHECK FOR NA'S:
 table(is.na(bhb.generalist.raster[])) # FALSE
 
@@ -187,3 +193,4 @@ writeRaster(bhb.generalist.raster, "data/processed/bhb_generalist_lc.tif", overw
 terra::writeRaster(bhb.exposed.raster, "data/processed/bhb_exposed_land.tif", overwrite=TRUE)
 terra::writeRaster(bhb.glacial.raster, "data/processed/bhb_glacial_land.tif", overwrite=TRUE)
 terra::writeRaster(bhb.rocky.raster, "data/processed/bhb_rocky_land.tif", overwrite=TRUE)
+terra::writeRaster(bhb.dev.raster, "data/processed/bhb_developed_land.tif", overwrite=TRUE)
