@@ -471,3 +471,11 @@ cougar_biophys_fuzsum_bhb.tif
 cougar_biophys_normalized_cum_currmap.tif
 cougar_biophys_resist.tif
 cougar_specialist_habitat_resist.tif
+cougar_conflict_confirmed_dataframe.dbf
+cougar_conflict_confirmed_dataframe.prj
+cougar_conflict_confirmed_dataframe.shp
+cougar_conflict_confirmed_dataframe.shx
+cougar_conflict_pres_abs_df.dbf
+cougar_conflict_pres_abs_df.prj
+cougar_conflict_pres_abs_df.shp
+cougar_conflict_pres_abs_df.shx
