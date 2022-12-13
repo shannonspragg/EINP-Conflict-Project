@@ -1,5 +1,5 @@
 
-# Mixed effects plots of bbear conflict results -----------------------------
+# Mixed effects plots of cougar conflict results -----------------------------
 
 # Load Packages: ----------------------------------------------------------
 library(rstanarm)
@@ -23,8 +23,8 @@ library(ggplot2)
 
 
 # Bring in Data: ----------------------------------------------------------
-wolf.full.mod <- readRDS("data/processed/wolf_full_mod.rds")
-#wolf.no.conflict.mod <- readRDS("data/processed/wolf_no_conf.rds")
+cougar.full.mod <- readRDS("data/processed/cougar_full_mod.rds")
+#cougar.no.conflict.mod <- readRDS("data/processed/cougar_no_conf.rds")
 
 # Plot Effects of Posterior Coefficients:
 library(bayestestR)
@@ -34,23 +34,23 @@ library(see)
 library(insight)
 library(ggplot2)
 
-wolf.full.result <- p_direction(wolf.full.mod)
-wolf.mod.preds.plot <- plot(wolf.full.result, title = "Predictor Effects for Bear Conflict")
-wolf.mod.preds.plot
+cougar.full.result <- p_direction(cougar.full.mod)
+cougar.mod.preds.plot <- plot(cougar.full.result, title = "Predictor Effects for Bear Conflict")
+cougar.mod.preds.plot
 # this is the max probability of effect (MPE), showing the probability of a predictor having a positive or negative effect
 
-wolf.coef.plot <- plot(wolf.full.mod, pars = c("dist2pa","humandens",
+cougar.coef.plot <- plot(cougar.full.mod, pars = c("dist2pa","humandens",
                                               "livestockOps",
                                               "rowcropOps",
-                                              "ungulate_dens", "gHM", "habsuit", "connectivity", "wolfincrease", "roaddens", "conflictprob"), main = "Predictor Effects for Black Bear Conflict")
+                                              "ungulate_dens", "gHM", "habsuit", "connectivity", "cougarincrease", "roaddens", "conflictprob"), main = "Predictor Effects for Black Bear Conflict")
 
-saveRDS(wolf.mod.preds.plot, "data/processed/wolf_noconf_predsplot.rds")
-saveRDS(wolf.coef.plot, "data/processed/wolf_coef_plot.rds")
+saveRDS(cougar.mod.preds.plot, "data/processed/cougar_noconf_predsplot.rds")
+saveRDS(cougar.coef.plot, "data/processed/cougar_coef_plot.rds")
 
 # Plot results ------------------------------------------------------------
 
-posterior <- as.matrix(wolf.full.mod)
-parnames <- names(fixef(wolf.full.mod))[2:9] # change range based on model variables
+posterior <- as.matrix(cougar.full.mod)
+parnames <- names(fixef(cougar.full.mod))[2:9] # change range based on model variables
 p <- mcmc_intervals(posterior,
                     pars = parnames,
                     prob = 0.8) +
@@ -62,14 +62,14 @@ p <- mcmc_intervals(posterior,
                               "ungulate_dens" = "Ungulate Density",
                               "habsuit" = "Black bear habitat suitability",
                                "gHM" = "Human modification" ,
-                              "wolfincrease" = "Public Support of Wolf Population Increase",
+                              "cougarincrease" = "Public Support of cougar Population Increase",
                               "roaddens" = "Road Density",
                                "conflictprob" = "Prob of wildlife conflict"))
                               # "I(conflictprob^2)" = expression("Prob of wildlife conflict"^2))) # only use these if using conflict model
 
 
 # Prep Dist to PA Plot ----------------------------------------------------
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = seq_range(dist2pa, n=300),
                     humandens = mean(humandens),
                     livestockOps = mean(livestockOps),
@@ -78,16 +78,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, # changing to add_elpd_draws from add_fitted_draws
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, # changing to add_elpd_draws from add_fitted_draws
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$dist2pa_un <- (postdraws$dist2pa * attributes(wolf.conflict.df.scl$dist2pa)[[3]])+attributes(wolf.conflict.df.scl$dist2pa)[[2]]
+postdraws$dist2pa_un <- (postdraws$dist2pa * attributes(cougar.conflict.df.scl$dist2pa)[[3]])+attributes(cougar.conflict.df.scl$dist2pa)[[2]]
 
 # Plot Dist to PA:
 plot.df <- postdraws %>% 
@@ -108,13 +108,13 @@ dist2pa.plot.w <- ggplot(data=plot.df) +
   xlab("Distance to Protected Areas (km)")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(dist2pa.plot.w, "data/processed/wolf_dist2pa_mixe_plot.rds")
+saveRDS(dist2pa.plot.w, "data/processed/cougar_dist2pa_mixe_plot.rds")
 
 
 # Prep Human Density Plot: ----------------------------------------------------
 
 
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = seq_range(humandens, n=300),
                     livestockOps = mean(livestockOps),
@@ -123,16 +123,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod,
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod,
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$humandens <- (postdraws$humandens * attributes(wolf.conflict.df.scl$humandens)[[3]])+attributes(wolf.conflict.df.scl$humandens)[[2]]
+postdraws$humandens <- (postdraws$humandens * attributes(cougar.conflict.df.scl$humandens)[[3]])+attributes(cougar.conflict.df.scl$humandens)[[2]]
 
 # Plot Human Dens:
 plot.df <- postdraws %>%
@@ -152,11 +152,11 @@ pop.dens.plot <- ggplot(data=plot.df) +
   xlab("Human Population Density")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(pop.dens.plot, "data/processed/wolf_popdens_mixe_plot.rds")
+saveRDS(pop.dens.plot, "data/processed/cougar_popdens_mixe_plot.rds")
 
 
 # Prep Livestock plot: ----------------------------------------------------
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
                     livestockOps = seq_range(livestockOps, n=300),
@@ -165,16 +165,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$livestockOps_un <- (postdraws$livestockOps * attributes(wolf.conflict.df.scl$livestockOps)[[3]])+attributes(wolf.conflict.df.scl$livestockOps)[[2]]
+postdraws$livestockOps_un <- (postdraws$livestockOps * attributes(cougar.conflict.df.scl$livestockOps)[[3]])+attributes(cougar.conflict.df.scl$livestockOps)[[2]]
 
 # Plot Livestock Dens:
 plot.df <- postdraws %>% 
@@ -194,12 +194,12 @@ livestockOps.plot.w <- ggplot(data=plot.df) +
   xlab(expression("Density of Livestock Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(livestockOps.plot.w, "data/processed/wolf_livestockOps_mixe_plot.rds")
+saveRDS(livestockOps.plot.w, "data/processed/cougar_livestockOps_mixe_plot.rds")
 
 
 # Prep Row Crop Plot: -----------------------------------------------------
 
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
                     livestockOps = mean(livestockOps),
@@ -208,16 +208,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$rowcropOps_un <- (postdraws$rowcropOps * attributes(wolf.conflict.df.scl$rowcropOps)[[3]])+attributes(wolf.conflict.df.scl$rowcropOps)[[2]]
+postdraws$rowcropOps_un <- (postdraws$rowcropOps * attributes(cougar.conflict.df.scl$rowcropOps)[[3]])+attributes(cougar.conflict.df.scl$rowcropOps)[[2]]
 
 # Plot Row Crop Dens:
 plot.df <- postdraws %>% 
@@ -237,10 +237,10 @@ rowcropOps.plot.w <- ggplot(data=plot.df) +
   xlab(expression("Density of Row-crop Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(rowcropOps.plot.w, "data/processed/wolf_rowcrops_mixe_plot.rds")
+saveRDS(rowcropOps.plot.w, "data/processed/cougar_rowcrops_mixe_plot.rds")
 
 # Prep Connectivity Plot: -------------------------------------------------
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
                     livestockOps = mean(livestockOps),
@@ -249,16 +249,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$connectivity_un <- (postdraws$connectivity * attributes(wolf.conflict.df.scl$connectivity)[[3]])+attributes(wolf.conflict.df.scl$connectivity)[[2]]
+postdraws$connectivity_un <- (postdraws$connectivity * attributes(cougar.conflict.df.scl$connectivity)[[3]])+attributes(cougar.conflict.df.scl$connectivity)[[2]]
 
 # Plot Biophys Current:
 plot.df <- postdraws %>% 
@@ -278,11 +278,11 @@ connectivity.plot <- ggplot(data=plot.df) +
   xlab("Cumulative Current Flow (Amperes)")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(connectivity.plot, "data/processed/wolf_connectivity_mixe_plot.rds")
+saveRDS(connectivity.plot, "data/processed/cougar_connectivity_mixe_plot.rds")
 
 # Prep Ungulate density Plot: ---------------------------------------------------------
 
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
                     livestockOps = mean(livestockOps),
@@ -291,16 +291,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = seq_range(ungulate_dens, n=300),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$ungulate_dens <- (postdraws$ungulate_dens * attributes(wolf.conflict.df.scl$ungulate_dens)[[3]]) + attributes(wolf.conflict.df.scl$ungulate_dens)[[2]]
+postdraws$ungulate_dens <- (postdraws$ungulate_dens * attributes(cougar.conflict.df.scl$ungulate_dens)[[3]]) + attributes(cougar.conflict.df.scl$ungulate_dens)[[2]]
 
 # Plot GrizzInc:
 plot.df <- postdraws %>% 
@@ -320,12 +320,12 @@ ungulate.plot.w <- ggplot(data=plot.df) +
   xlab("Ungulate Population Density")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(ungulate.plot.w, "data/processed/wolf_ungulate_density_mixe_plot.rds")
+saveRDS(ungulate.plot.w, "data/processed/cougar_ungulate_density_mixe_plot.rds")
 
 
 # Prep WHS Plot -----------------------------------------------------------
 
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
                     livestockOps = mean(livestockOps),
@@ -334,16 +334,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = seq_range(habsuit, n=300),
                     gHM = mean(gHM),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$habsuit_un <- (postdraws$habsuit * attributes(wolf.conflict.df.scl$habsuit)[[3]])+attributes(wolf.conflict.df.scl$habsuit)[[2]]
+postdraws$habsuit_un <- (postdraws$habsuit * attributes(cougar.conflict.df.scl$habsuit)[[3]])+attributes(cougar.conflict.df.scl$habsuit)[[2]]
 
 #Plot wHS:
 plot.df <- postdraws %>% 
@@ -363,11 +363,11 @@ habsuit.plot <- ggplot(data=plot.df) +
   xlab("Predicted Black Bear Habitat Suitability")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(habsuit.plot, "data/processed/wolf_bhs_mixe_plot.rds")
+saveRDS(habsuit.plot, "data/processed/cougar_bhs_mixe_plot.rds")
 
 # Prep gHM Plot -----------------------------------------------------------
 
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
                     livestockOps = mean(livestockOps),
@@ -376,16 +376,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = mean(habsuit),
                     gHM = seq_range(gHM, n=300),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$ghm <- (postdraws$gHM * attributes(wolf.conflict.df.scl$gHM)[[3]])+attributes(wolf.conflict.df.scl$gHM)[[2]]
+postdraws$ghm <- (postdraws$gHM * attributes(cougar.conflict.df.scl$gHM)[[3]])+attributes(cougar.conflict.df.scl$gHM)[[2]]
 
 # Plot Pop Dens:
 plot.df <- postdraws %>% 
@@ -404,11 +404,11 @@ human.mod.plot <- ggplot(data=plot.df) +
   ylab("Probability of Bear Conflict") + 
   xlab("Degree of Human Modification (gHM)")+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(human.mod.plot, "data/processed/wolf_gHM_mixe_plot.rds")
+saveRDS(human.mod.plot, "data/processed/cougar_gHM_mixe_plot.rds")
 
-# Prep wolf inc Plot -----------------------------------------------------------
+# Prep cougar inc Plot -----------------------------------------------------------
 
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
                     livestockOps = mean(livestockOps),
@@ -417,39 +417,39 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
-                    wolfincrease = seq_range(wolfincrease, n=300),
+                    cougarincrease = seq_range(cougarincrease, n=300),
                     roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$wolfinc <- (postdraws$wolfinc * attributes(wolf.conflict.df.scl$wolfinc)[[3]])+attributes(wolf.conflict.df.scl$wolfinc)[[2]]
+postdraws$cougarinc <- (postdraws$cougarinc * attributes(cougar.conflict.df.scl$cougarinc)[[3]])+attributes(cougar.conflict.df.scl$cougarinc)[[2]]
 
 # Plot Pop Dens:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(wolfinc, conflictprob) %>% 
+  group_by(cougarinc, conflictprob) %>% 
   summarise(., mean = mean(.epred),
             lo = quantile(.epred, 0.2),
             hi = quantile(.epred, 0.8))
 
 levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-wolf.increase.plot <- ggplot(data=plot.df) +
-  geom_line(aes(x = wolfinc, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=wolfinc, fill = conflictprob), alpha = 0.2) +
+cougar.increase.plot <- ggplot(data=plot.df) +
+  geom_line(aes(x = cougarinc, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=cougarinc, fill = conflictprob), alpha = 0.2) +
   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
   ylab("Probability of Bear Conflict") + 
-  xlab("Public Support of Wolf Population Increase (%)")+
+  xlab("Public Support of cougar Population Increase (%)")+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(wolf.increase.plot, "data/processed/wolf_increase_mixe_plot.rds")
+saveRDS(cougar.increase.plot, "data/processed/cougar_increase_mixe_plot.rds")
 
 # Prep road dens Plot -----------------------------------------------------------
 
-simdata <- wolf.conflict.df.scl %>%
+simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
                     livestockOps = mean(livestockOps),
@@ -458,16 +458,16 @@ simdata <- wolf.conflict.df.scl %>%
                     ungulate_dens = mean(ungulate_dens),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
-                    wolfincrease = mean(wolfincrease),
+                    cougarincrease = mean(cougarincrease),
                     roaddens = seq_range(roaddens, n=300),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$roaddens <- (postdraws$roaddens * attributes(wolf.conflict.df.scl$roaddens)[[3]])+attributes(wolf.conflict.df.scl$roaddens)[[2]]
+postdraws$roaddens <- (postdraws$roaddens * attributes(cougar.conflict.df.scl$roaddens)[[3]])+attributes(cougar.conflict.df.scl$roaddens)[[2]]
 
 # Plot Pop Dens:
 plot.df <- postdraws %>% 
@@ -486,17 +486,17 @@ road.dens.plot <- ggplot(data=plot.df) +
   ylab("Probability of Bear Conflict") + 
   xlab("Road Density per km")+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(road.dens.plot, "data/processed/wolf_road_density_mixe_plot.rds")
+saveRDS(road.dens.plot, "data/processed/cougar_road_density_mixe_plot.rds")
 
 
 # Add Plots together:
 biophys.p <-  connectivity.plot + habsuit.plot + dist2pa.plot.w + ungulate.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         
 
-social.p <-  livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot + road.dens.plot + wolf.increase.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+social.p <-  livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot + road.dens.plot + cougar.increase.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
-wolf.plot.all <- connectivity.plot + habsuit.plot + dist2pa.plot.w + ungulate.plot + livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot + road.dens.plot + wolf.increase.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+cougar.plot.all <- connectivity.plot + habsuit.plot + dist2pa.plot.w + ungulate.plot + livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot + road.dens.plot + cougar.increase.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
-saveRDS(biophys.p, "data/processed/biophys_wolf_conf_plots.rds")
-saveRDS(social.p, "data/processed/social_wolf_conf_plots.rds")
-saveRDS(wolf.plot.all, "data/processed/all_wolf_conf_plots.rds")
+saveRDS(biophys.p, "data/processed/biophys_cougar_conf_plots.rds")
+saveRDS(social.p, "data/processed/social_cougar_conf_plots.rds")
+saveRDS(cougar.plot.all, "data/processed/all_cougar_conf_plots.rds")
 

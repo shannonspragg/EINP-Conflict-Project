@@ -23,13 +23,13 @@ library(ggplot2)
 
 
 # Bring in Data: ----------------------------------------------------------
-w.post.pa.full <- readRDS("data/processed/w_post_pa_full.rds")
-w.pres.abs.scl <- readRDS("data/processed/w_pres_abs_scl.rds")
+c.post.pa.full <- readRDS("data/processed/w_post_pa_full.rds")
+c.pres.abs.scl <- readRDS("data/processed/w_pres_abs_scl.rds")
 
 # Plot Effects of Posterior Coefficients:
 
-w.post.pa.result <- p_direction(w.post.pa.full)
-post.pa.full.preds.plot <- plot(w.post.pa.result, title = "Predictor Effects for General Wildlife Conflict")
+c.post.pa.result <- p_direction(c.post.pa.full)
+post.pa.full.preds.plot <- plot(c.post.pa.result, title = "Predictor Effects for General Wildlife Conflict")
 # this is the max probability of effect (MPE), showing the probability of a predictor having a positive or negative effect
 
 gen_conf_coef_plot <- plot(post.pa.full, pars = c("dist.2.pa.ps","human.dens.ps",

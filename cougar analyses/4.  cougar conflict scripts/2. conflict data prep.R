@@ -59,12 +59,12 @@ str(conflict.data.reproj)
   # Include confirmed, probable, and not noted:
 conflict.data.alt <- dplyr::filter(conflict.data.reproj, OCC_VALIDITY_INFORMATION == "CONFIRMED" | OCC_VALIDITY_INFORMATION == "PROBABLE" | OCC_VALIDITY_INFORMATION == "")
 
-sum(conflict.data.alt$OCC_SPECIES == "WOLF") # 99 wolf
+sum(conflict.data.alt$OCC_SPECIES == "COUGAR") # 437 COUGAR
 
   # Or just validated:
 conflict.data.conf <- dplyr::filter(conflict.data.reproj, OCC_VALIDITY_INFORMATION == "CONFIRMED" | OCC_VALIDITY_INFORMATION == "PROBABLE")
 
-sum(conflict.data.conf$OCC_SPECIES == "WOLF") # 21 wolf , 1179 total
+sum(conflict.data.conf$OCC_SPECIES == "COUGAR") # 39 COUGAR , 1179 total
 
 
 # Filter to only columns we need:
@@ -85,50 +85,13 @@ st_crs(conflict.reproj) == st_crs(bhb.50k.buf) #TRUE
 conflict.bhb.50k.buf <- st_intersection(conflict.reproj, bhb.50k.buf) # This gives 2057 total reports
 conflict.bhb.50k.buf <- conflict.bhb.50k.buf %>% distinct(OCC_FILE_NUMBER, .keep_all = TRUE) #rid of duplicates
 
-sum(conflict.bhb.50k.buf$OCC_SPECIES == "WOLF") # 21 wolf
+sum(conflict.bhb.50k.buf$OCC_SPECIES == "COUGAR") # 36 wolf
 
 conflict.conf.bhb <- conflict.bhb.50k.buf %>% 
   dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
                      'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION',  'OCC_OCCURRENCE_TMST', 'SITE_NAME', 'bears', 'wolves', 'cougars', 'AREA_HA', 'geometry'))
 
 head(conflict.conf.bhb) #1086 observations
-
-
-# Add in the Depredation Reports ------------------------------------------
-depred <- read_csv("data/original/wolf depredation reports.csv")
-
-# Making Conflict Data a Spatial Dataframe 
-xy2<-depred[,c(6,5)]
-depred.spdf<-SpatialPointsDataFrame(coords = xy2,data = depred,
-                                      proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
-
-# Ensure this is a sf data frame:
-# conflict.data.sf <- as(conflict.spdf, "sf")
-depred.data.sf <- st_as_sf(depred.spdf)
-
-depred.reproj <- depred.data.sf %>% st_transform(., crs(temp.rast))
-head(depred.reproj)
-depred.reproj <- mutate(depred.reproj, id = row_number())
-depred.reproj <- depred.reproj %>%           # Reorder data frame
-  dplyr::select("id", everything())
-depred.reproj$id <- as.numeric(depred.reproj$id)
-
-# Drop to columns we need:
-depred.filt <- depred.reproj %>% 
-  dplyr::select(., c('id', 'OCC_FILE_NUMBER', 'OCCURRENCE_TYPE_DESC', 'ACTION_TYPE_DESCRIPTION', 'OCC_CITY', 'OCC_POSTAL_CODE', 'OCC_WMU_CODE', 'OCC_SPECIES',
-                     'OCC_NUMBER_ANIMALS', 'OCC_PRIMARY_ATTRACTANT', 'OCC_VALIDITY_INFORMATION',  'OCC_OCCURRENCE_TMST', 'SITE_NAME', 'geometry'))
-#Add the missing columns:
-depred.filt['bears'] <- 0
-depred.filt['wolves'] <- 1
-depred.filt['cougars'] <- 0  
-depred.filt['AREA_HA'] <- NA
-
-# Reorder the columns to match:
-depred.sf <- depred.filt[ , c(1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,14)]
-# Join our reports together:
-depred.reproj <- st_transform(depred.sf, st_crs(conflict.conf.bhb))
-conf.conflict.all <- rbind(conflict.conf.bhb, depred.reproj)
-
 
 # Add in the census regions for varying intercept: ------------------
 
@@ -151,7 +114,7 @@ ab.ccs.reproj <- st_transform(ab.ccs, st_crs(bhb.50k.buf))
 # Check to see if the projections match:
 st_crs(ab.ccs.reproj) == st_crs(bhb.50k.buf) # [TRUE] 
 
-st_crs(conf.conflict.all) == st_crs(ab.ccs.reproj) # [TRUE] 
+st_crs(conflict.conf.bhb) == st_crs(ab.ccs.reproj) # [TRUE] 
 
 # Plot these together to make sure:
 plot(st_geometry(ab.ccs.reproj))
@@ -161,7 +124,7 @@ plot(st_geometry(bhb.50k.buf), add=TRUE)
 bhw.ccs.crop <- st_intersection(ab.ccs.reproj, bhb.50k.buf)
 
 plot(st_geometry(bhw.ccs.crop))
-plot(st_geometry(conf.conflict.all), add=TRUE)
+plot(st_geometry(conflict.conf.bhb), add=TRUE)
 
 # Write this as a .shp for later:
 st_write(bhw.ccs.crop, "data/processed/bhw_CCS_50km.shp", append=FALSE)
@@ -171,16 +134,16 @@ st_write(bhw.ccs.crop, "data/processed/bhw_CCS_50km.shp", append=FALSE)
 #  make sure this is a factor, to fit this as a varying intercept
 
 # Assign our points to a CCS category:
-conflict.ccs.join <- st_join(conf.conflict.all, left = TRUE, ab.ccs.reproj) # join points
+conflict.ccs.join <- st_join(conflict.conf.bhb, left = TRUE, ab.ccs.reproj) # join points
 
 head(conflict.ccs.join) # Assigned points to a CCS category
 
 conflict.ccs.join <- conflict.ccs.join %>% 
   dplyr::select(., -c(22,21,19))
 
-head(conflict.ccs.join)
+head(conflict.ccs.join) # 1086 total
 
 # Save conflict df: -------------------------------------------------------
 
-st_write(conflict.ccs.join, "data/processed/wolf_conflict_confirmed_dataframe.shp", append = FALSE)
+st_write(conflict.ccs.join, "data/processed/cougar_conflict_confirmed_dataframe.shp", append = FALSE)
 

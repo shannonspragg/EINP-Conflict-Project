@@ -11,7 +11,7 @@ library(dismo)
 
 # Bring in Data: ----------------------------------------------------------
 bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
-conflict.wolf <-st_read("data/processed/wolf_conflict_confirmed_dataframe.shp") 
+conflict.cougar <-st_read("data/processed/cougar_conflict_confirmed_dataframe.shp") 
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
 # Mask our temp rast to the bhb boundary:
@@ -20,11 +20,11 @@ temp.rast.bhb <- terra::mask(temp.rast, bhb.50km.v)
 
 # Plot our points and BHB watershed:
 plot(st_geometry(bhb.50k.buf))
-plot(st_geometry(conflict.wolf, add=TRUE)) #1087 reports
+plot(st_geometry(conflict.cougar, add=TRUE)) #1086 reports
 
 # Generate Random Points for Pseudo-absences: -----------------------------
 set.seed(2345)
-p.abs.pts <- randomPoints(raster(temp.rast.bhb), 2175) # double the conflict reports was too much, trying 1.5x
+p.abs.pts <- randomPoints(raster(temp.rast.bhb), 2175) # double the conflict reports
 
 # Make this a data frame:
 abs.pts.df <- data.frame(p.abs.pts)
@@ -75,19 +75,19 @@ presabs.ccs.join <- presabs.ccs.join %>%
 presabs.ccs.join$cnflct_ <- 0
 presabs.ccs.join <- presabs.ccs.join[, c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,21,20)]
 
-conflict.wolf$cnflct_ <- 1
+conflict.cougar$cnflct_ <- 1
 
 # Restructure Data frame: --------------------------------------------------
 ## Here we add our presence points to our absences
 # Join our all species presence points with the absence points:
-st_crs(conflict.wolf) == st_crs(presabs.ccs.join)
+st_crs(conflict.cougar) == st_crs(presabs.ccs.join)
 
-conf.conflict.pts.w.abs <- rbind(conflict.wolf, presabs.ccs.join) # 3262 points total
+conf.conflict.pts.w.abs <- rbind(conflict.cougar, presabs.ccs.join) # 3261 points total
 
 # Plot these to check:
 plot(st_geometry(bhb.50k.buf))
 plot(st_geometry(conf.conflict.pts.w.abs), add=TRUE)
 
 # Save as New Df: ---------------------------------------------------------
-st_write(conf.conflict.pts.w.abs, "Data/processed/wolf_conflict_pres_abs_df.shp", append=FALSE)
+st_write(conf.conflict.pts.w.abs, "Data/processed/cougar_conflict_pres_abs_df.shp", append=FALSE)
 

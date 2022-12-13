@@ -10,10 +10,10 @@ library(terra)
 
 
 # Bring in Data: ----------------------------------------------------------
-w.post.pa.full <- readRDS("Data/w_processed/post_pa_full.rds")
-w.pres.abs.scl <- readRDS("w_data/processed/pres_abs_scl.rds")
+c.post.pa.full <- readRDS("Data/w_processed/post_pa_full.rds")
+c.pres.abs.scl <- readRDS("w_data/processed/pres_abs_scl.rds")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
-bhw.v <- vect(bhw)
+bhc.v <- vect(bhw)
 
 # Generating raster predictions -------------------------------------------
 fixed.effects <- fixef(post.pa.full)
@@ -50,7 +50,7 @@ dist.2.pa.scl <- (dist.2.pa - attributes(pres.abs.scl$dist.2.pa.ps)[[2]])/attrib
 ndvi.scl <- (ndvi.r - attributes(pres.abs.scl$ndvi.ps)[[2]])/attributes(pres.abs.scl$ndvi.ps)[[3]]
 pop.dens.scl <- (hum.dens.r - attributes(pres.abs.scl$human.dens.ps)[[2]])/attributes(pres.abs.scl$human.dens.ps)[[3]]
 animal.dens.scl <- (animal.dens - attributes(pres.abs.scl$animal.farm.dens.ps)[[2]])/attributes(pres.abs.scl$animal.farm.dens.ps)[[3]]
-row.crop.dens.scl <- (ground.dens - attributes(pres.abs.scl$ground.crop.dens.ps)[[2]])/attributes(pres.abs.scl$ground.crop.dens.ps)[[3]]
+roc.crop.dens.scl <- (ground.dens - attributes(pres.abs.scl$ground.crop.dens.ps)[[2]])/attributes(pres.abs.scl$ground.crop.dens.ps)[[3]]
 ghm.scl <- (ghm.r - attributes(pres.abs.scl$gHM.ps)[[2]])/attributes(pres.abs.scl$gHM.ps)[[3]]
 agno.bio.scl <- (agnostic_bio_cumcurrmap - attributes(pres.abs.scl$agno.biophys.ps)[[2]])/attributes(pres.abs.scl$agno.biophys.ps)[[3]]
 
@@ -58,7 +58,7 @@ dist.2.pa.pred <- dist.2.pa.scl * fixed.effects[['dist.2.pa.ps']]
 ndvi.pred <- ndvi.scl * fixed.effects[['ndvi.ps']]
 pop.dens.pred <- pop.dens.scl * fixed.effects[['human.dens.ps']]
 animal.dens.pred <- animal.dens.scl * fixed.effects[['animal.farm.dens.ps']]
-rowcrop.dens.pred <- row.crop.dens.scl * fixed.effects[['ground.crop.dens.ps']]
+rowcrop.dens.pred <- roc.crop.dens.scl * fixed.effects[['ground.crop.dens.ps']]
 ghm.pred <- ghm.scl * fixed.effects[['gHM.ps']]
 agno.bio.pred <- agno.bio.scl * fixed.effects[['agno.biophys.ps']]
 
@@ -68,8 +68,8 @@ linpred.rast <- sum(pred.stack)
 prob.rast <- (exp(linpred.rast))/(1 + exp(linpred.rast))
 
 # Crop to BHW Boundary:
-prob.rast.bhw <- mask(prob.rast, bhw.v)
+prob.rast.bhw <- mask(prob.rast, bhc.v)
 
 # Save these:
 writeRaster(prob.rast, "Data/processed/prob_conflict_all.tif", overwrite=TRUE)
-writeRaster(prob.rast.bhw, "Data/processed/prob_conflict_all_bhw.tif", overwrite=TRUE)
+writeRaster(prob.rast.bhw, "Data/processed/prob_conflict_all_bhc.tif", overwrite=TRUE)
