@@ -19,7 +19,7 @@ theme_set(bayesplot::theme_default(base_family = "sans"))
 
 
 # Bring in Data: ----------------------------------------------------------
-w.conf.pres.abs <- st_read(here::here("./Data/processed/pres_abs_full_df.shp")) %>% st_drop_geometry()
+w.conf.pres.abs <- st_read(here::here("./Data/processed/wolf_pres_abs_df.shp")) %>% st_drop_geometry()
 
 
 #filter some of the absences

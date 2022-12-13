@@ -5,7 +5,7 @@
 library(rstanarm)
 library(tidyverse)
 library(sf)
-options(mc.cores = parallel::detectCores())
+options(mw.cores = parallel::detectCores())
 library(loo)
 library(bayesplot)
 library(tidybayes)

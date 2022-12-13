@@ -6,7 +6,7 @@
 library(rstanarm)
 library(tidyverse)
 library(sf)
-options(mc.cores = parallel::detectCores())
+options(mw.cores = parallel::detectCores())
 library(loo)
 library(bayesplot)
 library(tidybayes)
@@ -74,9 +74,9 @@ par(pty = "s")
 pROC::roc(pres.abs.scl$conflict_presence_ps, w.post.pa.full$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
           xlab= "False Positive Percentage", ylab= "True Positive Percentage",
           col="#377eb8", lwd=4, print.auc=TRUE)
-pROC::plot.roc(pres.abs.scl$conflict_presence_ps, w.post.int.only$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=35)
-pROC::plot.roc(pres.abs.scl$conflict_presence_ps, w.w.post.pa.full.quad$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=45)
-pROC::plot.roc(pres.abs.scl$conflict_presence_ps, w.post.pa.partial$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=40)
+pROC::plot.roc(pres.abs.scl$conflict_presence_ps, w.post.int.only$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auw.y=35)
+pROC::plot.roc(pres.abs.scl$conflict_presence_ps, w.w.post.pa.full.quad$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auw.y=45)
+pROC::plot.roc(pres.abs.scl$conflict_presence_ps, w.post.pa.partial$fitted.values, percent=TRUE, col='#FFAA00', lwd=4, print.auc=TRUE, add=TRUE, print.auw.y=40)
 
 legend("bottomright", legend=c("Full Model", "Full Model + Quadratic Pop Dens","Partial Model", "Varying Intercept-only Model"),
        col=c("#377eb8", "#B090D0", "#FFAA00", "#4daf4a"), lwd = 4)
