@@ -46,9 +46,15 @@ gen_focal_norm <- rast("data/processed/general_focal_normalized_cum_currmap.tif"
 forest_sp_cumcurr <- rast("data/processed/forest_specialist_cum_currmap.tif")
 forest_sp_norm <- rast("data/processed/forest_specialist_normalized_cum_currmap.tif")
 
+bbear_valid_integrated_biophys_cumcurr <- rast("data/processed/bbear_val_int_biophys_cum_currmap.tif")
+bbear_valid_integrated_biophys_norm <- rast("data/processed/bbear_val_int_biophys_normalized_cum_currmap.tif")
+
 # Conflict connectivity outputs: (you won't have these until after conflict analysis)
 bbear_conflict_cumcurr <- rast("data/processed/bbear_conflict_cum_currmap.tif")
 bbear_conflict_norm <- rast("data/processed/bbear_conflict_normalized_cum_currmap.tif")
+
+bbear_conflict_val_integrated_cumcurr <- rast("data/processed/bbear_val_int_conflict_cum_currmap.tif")
+bbear_conflict_val_integrated_norm <- rast("data/processed/bbear_val_int_conflict_normalized_cum_currmap.tif")
 
 # Make these vectors:
 bhb.50km.v <- vect(bhb.50km.boundary)
@@ -80,8 +86,14 @@ gfocal_norm.bhw <- terra::mask(gen_focal_norm, bhw.v)
 forest_sp_cumcurr.bhw <- terra::mask(forest_sp_cumcurr, bhw.v)
 forest_sp_norm.bhw <- terra::mask(forest_sp_norm, bhw.v)
 
+bbear_val_int_bio_cumcurr.bhw <- terra::mask(bbear_valid_integrated_biophys_cumcurr, bhw.v)
+bbear_val_int_bio_norm.bhw <- terra::mask(bbear_valid_integrated_biophys_norm, bhw.v)
+
 bbear_conflict_cumcurr.bhw <- terra::mask(bbear_conflict_cumcurr, bhw.v)
 bbear_conflict_norm.bhw <- terra::mask(bbear_conflict_norm, bhw.v)
+
+bbear_conflict_val_int_cumcurr.bhw <- terra::mask(bbear_conflict_val_integrated_cumcurr, bhw.v)
+bbear_conflict_val_int_norm.bhw <- terra::mask(bbear_conflict_val_integrated_norm, bhw.v)
 
 # Variables with 50km buffer of BHW:
 writeRaster(agno_cumcurr.bhb, "data/processed/bhw_agno_cumcurr_50km.tif", overwrite=TRUE)
@@ -106,7 +118,12 @@ writeRaster(gfocal_norm.bhw, "data/processed/bhw_gfocal_norm.tif", overwrite=TRU
 writeRaster(forest_sp_cumcurr.bhw, "data/processed/bhw_forest_sp_cumcurr.tif", overwrite=TRUE)
 writeRaster(forest_sp_norm.bhw, "data/processed/bhw_forest_sp_norm.tif", overwrite=TRUE)
 
+writeRaster(bbear_val_int_bio_cumcurr.bhw, "data/processed/bhw_bbear_val_int_bio_cumcurr.tif", overwrite=TRUE)
+writeRaster(bbear_val_int_bio_norm.bhw, "data/processed/bhw_bbear_val_int_bio_norm.tif", overwrite=TRUE)
+
 writeRaster(bbear_conflict_cumcurr.bhw, "data/processed/bhw_bbear_conflict_cumcurr.tif", overwrite=TRUE)
 writeRaster(bbear_conflict_norm.bhw, "data/processed/bhw_bbear_conflict_norm.tif", overwrite=TRUE)
 
+writeRaster(bbear_conflict_val_int_cumcurr.bhw, "data/processed/bhw_bbear_val_int_conflict_cumcurr.tif", overwrite=TRUE)
+writeRaster(bbear_conflict_val_int_norm.bhw, "data/processed/bhw_bbear_val_int_conflict_norm.tif", overwrite=TRUE)
 
