@@ -37,6 +37,7 @@ bh.lake <- rast("data/processed/beaverhills_lake.tif")
 recent.wildfires <- rast("data/processed/bhb_fire_history.tif")
 rocky <- rast("data/processed/bhb_rocky_land.tif")
 exposed <- rast("data/processed/bhb_exposed_land.tif")
+snow.ice <- rast("data/processed/bhb_glacial_land.tif")
 
 bhb.buf.vect <- vect(bhb.50km.boundary)
 bhw.v <- vect(bhb.watershed)
@@ -95,27 +96,28 @@ ag.land.pred <- -2.303 * ag.land
 bh.lake.pred <- -6.0 * bh.lake
 recent.wildfires.pred <- -1.1 * recent.wildfires
 
-# Trying a slightly less vaired model:
-private.land.pred2 <- -0.55 * private.land.rast
-elevation.pred2 <- -0.10 * elevation 
-slope.pred2 <- -0.15 * slope.a
+# Trying a slightly less varied model / integrating validated model:
+private.land.pred2 <- -0.15 * private.land.rast
+elevation.pred2 <- 0.90 * elevation 
+slope.pred2 <- 0.15 * slope.a
 #roads.pred2 <- -0.75 * roads.adjust # don't use this AND dist to roads
-dist2roads.pred2 <- 0.80 * dist2roads.a
-pop.dens.pred2 <- -0.55 * pop.dens.a
+dist2roads.pred2 <- 0.10 * dist2roads.a
+pop.dens.pred2 <- -0.15 * pop.dens.a
 shrubland.pred2 <- -0.35 * shrubland
-grassland.pred2 <- -0.45 * grassland
+grassland.pred2 <- -0.15 * grassland
 rocky.pred2 <- 0.10 * rocky
-exposed.pred2 <- -0.35 * exposed
-coniferous.forest.pred2 <- 1.50 * coniferous.forest
-broadleaf.forest.pred2 <- 1.65 * broadleaf.forest
-alpine.mixed.forest.pred2 <- 1.95 * alpine.mixed.forest
-waterways.pred2 <- -0.15 * waterways
+snow.ice.pred2 <- 1.25 * snow.ice
+exposed.pred2 <- -0.45 * exposed
+coniferous.forest.pred2 <- 1.20 * coniferous.forest
+broadleaf.forest.pred2 <- 0.65 * broadleaf.forest
+alpine.mixed.forest.pred2 <- 1.55 * alpine.mixed.forest
+waterways.pred2 <- -1.55 * waterways
 dist2water.pred2 <- -0.10 * dist2water.a
 dist2wb.pred2 <- -0.10 * dist2wb.a
-human.development.pred2 <- -1.15 * human.development
-ag.land.pred2 <- -0.95 * ag.land
-bh.lake.pred2 <- -2.0 * bh.lake
-recent.wildfires.pred2 <- -0.60 * recent.wildfires
+human.development.pred2 <- -0.65 * human.development
+ag.land.pred2 <- -1.05 * ag.land
+bh.lake.pred2 <- -1.5 * bh.lake
+recent.wildfires.pred2 <- -0.30 * recent.wildfires
 
 # Stack Precictor Rasters -------------------------------------------------
 
@@ -124,7 +126,7 @@ bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pr
                     grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
                     dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred, recent.wildfires.pred)
 
-bear.hab.stack2 <- c(private.land.pred2, elevation.pred2, slope.pred2, dist2roads.pred2, shrubland.pred2, rocky.pred2, exposed.pred2, waterways.pred2,
+bear.hab.stack2 <- c(private.land.pred2, elevation.pred2, slope.pred2, dist2roads.pred2, shrubland.pred2, rocky.pred2, snow.ice.pred2, exposed.pred2, waterways.pred2,
                     grassland.pred2, coniferous.forest.pred2, broadleaf.forest.pred2, alpine.mixed.forest.pred2,
                     dist2water.pred2, dist2wb.pred2, human.development.pred2, ag.land.pred2, bh.lake.pred2, recent.wildfires.pred2)
 
@@ -168,5 +170,7 @@ writeRaster(bear.habitat.bhw.50km, "data/processed/bbear_habitat_bhw_50km.tif", 
 writeRaster(bear.habitat.bhw, "data/processed/bbear_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed
 
 
+writeRaster(habitat.prob.rast.2, "data/processed/bbear_integrated_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
+writeRaster(bear.habitat2.bhw, "data/processed/bbear_integrated_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed
 
 
