@@ -127,7 +127,7 @@ depred.filt['AREA_HA'] <- NA
 depred.sf <- depred.filt[ , c(1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,14)]
 # Join our reports together:
 depred.reproj <- st_transform(depred.sf, st_crs(conflict.conf.bhb))
-conf.conflict.all <- rbind(conflict.conf.bhb, depred.reproj)
+conf.conflict.all <- rbind(conflict.conf.bhb, depred.reproj) # now 1092 reports
 
 
 # Add in the census regions for varying intercept: ------------------
@@ -179,6 +179,7 @@ conflict.ccs.join <- conflict.ccs.join %>%
   dplyr::select(., -c(22,21,19))
 
 head(conflict.ccs.join)
+sum(conflict.ccs.join$OCC_SPECIES == "WOLF") # 27 wolf now
 
 # Save conflict df: -------------------------------------------------------
 
