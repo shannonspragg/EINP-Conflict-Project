@@ -181,6 +181,14 @@ conflict.ccs.join <- conflict.ccs.join %>%
 head(conflict.ccs.join)
 sum(conflict.ccs.join$OCC_SPECIES == "WOLF") # 27 wolf now
 
+# # Crop to buffer:
+# bhw.wolf.crop <- st_intersection(conflict.ccs.join, bhb.50k.buf)
+# wolf.bhb.50k.buf <- bhw.wolf.crop %>% distinct(OCC_FILE_NUMBER, .keep_all = TRUE) #rid of duplicates
+# 
+# plot(st_geometry(wolf.bhb.50k.buf))
+# plot(st_geometry(bhb.50k.buf), add=TRUE)
+# 
+
 # Save conflict df: -------------------------------------------------------
 
 st_write(conflict.ccs.join, "data/processed/wolf_conflict_confirmed_dataframe.shp", append = FALSE)

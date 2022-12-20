@@ -29,6 +29,8 @@ ghm.rast <- rast("data/processed/bhw_ghm.tif")
 whs <- rast("data/processed/wolf_habitat_suitability.tif")
 wolf.inc <- rast("data/processed/bhw_wolf_increase.tif") # STILL NEED
 wolf_bio_cumcurrmap <- rast("data/processed/wolf_biophys_cum_currmap.tif")
+bhw  <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
+bhw.50km <- st_read("data/processed/bhb_50km.shp")
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------
 # Here we buffer the conflict and pres-abs points by 5000m (5km) before extracting the attributes from the farm polygons
@@ -47,9 +49,10 @@ w.pres.abs.reproj <- st_make_valid(pres.abs.buf) %>%
 
 
 # Make the buffered points spat vectors:
-wolf.con.buf.v <- vect(w.w.conflict.reproj)
-pres.abs.buf.v <- vect(w.w.pres.abs.reproj)
-
+wolf.con.buf.v <- vect(w.conflict.reproj)
+pres.abs.buf.v <- vect(w.pres.abs.reproj)
+bhw.v <- vect(bhw)
+bhw.50km.v <- vect(bhw.50km)
 crs(wolf.con.buf.v) == crs(ungulate.dens.rast) #TRUE
 
 
@@ -101,27 +104,35 @@ w.pres.abs.reproj$wolf_biophys <- pa.bio.ext[,2]
 w.pres.abs.reproj$wolf_inc <- pa.wolf.inc.ext[,2]
 
 # Check for NA's:
-which(is.na(w.conflict.reproj$dist2pa_km)) #none
-which(is.na(w.conflict.reproj$hum_dens)) #none
-which(is.na(w.conflict.reproj$animal_farms)) #none
-which(is.na(w.conflict.reproj$ground_crops)) #none
-which(is.na(w.conflict.reproj$ungulate_dens)) #none
-which(is.na(w.conflict.reproj$road_dens)) #none
-which(is.na(w.conflict.reproj$gHM)) #none
-which(is.na(w.conflict.reproj$whs)) #none
-which(is.na(w.conflict.reproj$wolf_biophys)) #none
-which(is.na(w.conflict.reproj$wolf_inc)) #none
+which(is.na(w.conflict.reproj$dist2pa_km)) #one
+which(is.na(w.conflict.reproj$hum_dens)) #one
+which(is.na(w.conflict.reproj$animal_farms)) #one
+which(is.na(w.conflict.reproj$ground_crops)) #one
+which(is.na(w.conflict.reproj$ungulate_dens)) # one
+which(is.na(w.conflict.reproj$road_dens)) #one
+which(is.na(w.conflict.reproj$gHM)) #one
+which(is.na(w.conflict.reproj$whs)) #one
+which(is.na(w.conflict.reproj$wolf_biophys)) #one
+which(is.na(w.conflict.reproj$wolf_inc)) #
+
+# plot our NA point:
+plot(st_geometry(bhw.50km))
+plot(st_geometry(subset(w.conflict.reproj, id == "1130") ), col= "red", add=TRUE) # not sure why this isn't extracting, we can drop it
+
+# Remove 1130th row
+w.conflict.reproj <- w.conflict.reproj[-c(1130), ]
 
 which(is.na(w.pres.abs.reproj$dist2pa_km)) #none
 which(is.na(w.pres.abs.reproj$hum_dens)) #none
 which(is.na(w.pres.abs.reproj$animal_farms)) #none
 which(is.na(w.pres.abs.reproj$ground_crops)) #none
-which(is.na(w.pres.abs.reproj$ungulate_dens)) #none
+which(is.na(w.pres.abs.reproj$ungulate_dens)) # none
 which(is.na(w.pres.abs.reproj$road_dens)) #none
 which(is.na(w.pres.abs.reproj$gHM)) #none
 which(is.na(w.pres.abs.reproj$whs)) #none
 which(is.na(w.pres.abs.reproj$wolf_biophys)) #none
 which(is.na(w.pres.abs.reproj$wolf_inc)) #none
+
 
 # Save this as new file ---------------------------------------------------
 
@@ -132,7 +143,7 @@ st_write(w.pres.abs.reproj, "Data/processed/wolf_pres_abs_full_df.shp", append=F
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 wolf.reports <- w.conflict.reproj %>% filter(w.conflict.reproj$wolves == "1")
 wr.reproj <- st_transform(wolf.reports, st_crs(bhw))
-wolf.reports.bhw <- st_intersection(br.reproj, bhw) # This gives 2057 total reports
+wolf.reports.bhw <- st_intersection(wr.reproj, bhw.50km) # This gives 21 total reports
 wolf.reports.bhw <- wolf.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
 st_write(wolf.reports.bhw, "Data/processed/confirmed_wolf_reports.shp", append = FALSE)
 

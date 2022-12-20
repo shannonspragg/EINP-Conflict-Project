@@ -111,12 +111,26 @@ total.muledeer.rast <- terra::rasterize(mule.v, temp.rast, field = "Total_mule_d
 total.whitetailed.deer.rast <- terra::rasterize(wtd.v, temp.rast, field = "Total_wt_deer_per_sq_km")
 total.moose.rast <- terra::rasterize(moose.v, temp.rast, field = "Total_moose_per_sq_km")
 
+total.ung.raster <- raster(total.ungulate.rast)
+total.ung.raster[is.na(total.ung.raster[])] <- 0 
+
+total.elk.raster <- raster(total.elk.rast)
+total.elk.raster[is.na(total.elk.raster[])] <- 0 
+
+total.muledeer.raster <- raster(total.muledeer.rast)
+total.muledeer.raster[is.na(total.muledeer.raster[])] <- 0 
+
+total.wtd.raster <- raster(total.whitetailed.deer.rast)
+total.wtd.raster[is.na(total.wtd.raster[])] <- 0 
+
+total.moose.raster <- raster(total.moose.rast)
+total.moose.raster[is.na(total.moose.raster[])] <- 0 
 
 # Save these: -------------------------------------------------------------
-writeRaster(total.ungulate.rast, "data/processed/total_ungulate_density.tif", overwrite=TRUE)
-writeRaster(total.elk.rast, "data/processed/total_elk_density.tif", overwrite=TRUE)
-writeRaster(total.muledeer.rast, "data/processed/total_muledeer_density.tif", overwrite=TRUE)
-writeRaster(total.whitetailed.deer.rast, "data/processed/total_white_tailed_deer_density.tif", overwrite=TRUE)
-writeRaster(total.moose.rast, "data/processed/total_moose_density.tif", overwrite=TRUE)
+writeRaster(total.ung.raster, "data/processed/total_ungulate_density.tif", overwrite=TRUE)
+writeRaster(total.elk.raster, "data/processed/total_elk_density.tif", overwrite=TRUE)
+writeRaster(total.muledeer.raster, "data/processed/total_muledeer_density.tif", overwrite=TRUE)
+writeRaster(total.wtd.raster, "data/processed/total_white_tailed_deer_density.tif", overwrite=TRUE)
+writeRaster(total.moose.raster, "data/processed/total_moose_density.tif", overwrite=TRUE)
 st_write(wmu.density.join, "data/processed/ungulate_density_per_wmu.shp", append = FALSE)
 
