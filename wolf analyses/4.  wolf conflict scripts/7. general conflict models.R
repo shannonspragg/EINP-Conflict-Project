@@ -42,8 +42,8 @@ t_prior <- student_t(df = 7, location = 0, scale = 1.5)
 SEED<-14124869
 
 # Full Model:
-w.post.pa.full <- stan_glmer(conflict_presence_ps ~ dist.2.pa.ps + human.dens.ps + animal.farm.dens.ps + ground.crop.dens.ps + ndvi.ps + gHM.ps + agno.biophys.ps + (1 | CCSNAME.ps), 
-                           data = pres.abs.scl,
+w.post.pa.full <- stan_glmer(conflict_presence_ps ~ dist.2.pa.ps + human.dens.ps + animal.farm.dens.ps + ground.crop.dens.ps + wolf.biophys.ps + gHM.ps + (1 | CCSNAME.ps), 
+                           data = w.pres.abs.scl,
                            family = binomial(link = "logit"), # define our binomial glm
                            prior = t_prior, prior_intercept = t_prior, QR=TRUE,
                            iter = 3000, chains=5,
