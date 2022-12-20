@@ -19,22 +19,22 @@ theme_set(bayesplot::theme_default(base_family = "sans"))
 
 
 # Bring in Data: ----------------------------------------------------------
-w.conf.pres.abs <- st_read(here::here("./Data/processed/wolf_pres_abs_df.shp")) %>% st_drop_geometry()
+w.conf.pres.abs <- st_read(here::here("./Data/processed/wolf_pres_abs_full_df.shp")) %>% st_drop_geometry()
 
 
 #filter some of the absences
-w.pres.abs.filter <- conf.pres.abs %>% 
-  dplyr::select(., c(cnflct_, dst2p_k, hum_dns, anml_fr, grnd_cr, ndvi, gHM, agn_bph, gfcl_bp, frst_s_, CCSNAME)) 
+w.pres.abs.filter <- w.conf.pres.abs %>% 
+  dplyr::select(., c(cnflct_, dst2p_k, hum_dns, anml_fr, grnd_cr, wlf_bph, gHM, CCSNAME)) 
 
-colnames(w.pres.abs.filter) <- c("conflict_presence_ps", "dist.2.pa.ps", "human.dens.ps", "animal.farm.dens.ps", "ground.crop.dens.ps", "ndvi.ps", 
-                               "gHM.ps", "agno.biophys.ps", "gen.focal.biophys.ps", "forest.sp.biophys.ps",  "CCSNAME.ps")
+colnames(w.pres.abs.filter) <- c("conflict_presence_ps", "dist.2.pa.ps", "human.dens.ps", "animal.farm.dens.ps", "ground.crop.dens.ps", "wolf.biophys.ps", 
+                               "gHM.ps", "CCSNAME.ps")
 
 
 # Scale Data for Analysis: ------------------------------------------------
 ## Here we scale the predictors for analysis
 w.pres.abs.scl <- w.pres.abs.filter %>% 
-  mutate_at(c("dist.2.pa.ps", "human.dens.ps", "animal.farm.dens.ps", "ground.crop.dens.ps", "ndvi.ps", 
-              "gHM.ps", "agno.biophys.ps", "gen.focal.biophys.ps", "forest.sp.biophys.ps"), scale)
+  mutate_at(c("dist.2.pa.ps", "human.dens.ps", "animal.farm.dens.ps", "ground.crop.dens.ps", "wolf.biophys.ps", 
+              "gHM.ps"), scale)
 saveRDS(w.pres.abs.scl, "data/processed/wolf_pres_abs_scl.rds")
 
 # Run General Conflict Models: --------------------------------------------
