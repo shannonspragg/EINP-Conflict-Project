@@ -102,16 +102,7 @@ bhb.generalist.rast <- terra::rasterize(bhb.generalist.crop, template.rast, fiel
 bhb.shrubland.rast[bhb.shrubland.rast == 50] <- 1
 bhb.shrubland.raster <- raster(bhb.shrubland.rast)
 bhb.shrubland.raster[is.na(bhb.shrubland.raster[])] <- 0 
-
-# 
-# bhb.shrubland.rast[0] <- 1
-# bhb.shrubland.rast[bhb.shrubland.rast == 0] <- 1
-# 
-# bhb.rast <- terra::rasterize(bhb.v, template.rast, field = "OBJECTID")
-# 
-# shrubland.r <- terra::mask(bhb.rast, bhb.shrubland.rast, updatevalue=0)
 names(bhb.shrubland.raster)[names(bhb.shrubland.raster) == "LC_class"] <- "shrubland"
-#bhb.shrub.rast <- terra::mask(shrubland.r, bhb.v)
 
 # Make grassland a continuous raster:
 bhb.grassland.rast[bhb.grassland.rast == 110] <- 1
