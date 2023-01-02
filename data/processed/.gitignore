@@ -508,3 +508,7 @@ wolf_pres_abs_full_df.shp
 wolf_pres_abs_full_df.shx
 wolf_pres_abs_scl.rds
 wolf_post_pa_full.rds
+conflict_conf_full_dataframe.dbf
+conflict_conf_full_dataframe.prj
+conflict_conf_full_dataframe.shp
+conflict_conf_full_dataframe.shx
