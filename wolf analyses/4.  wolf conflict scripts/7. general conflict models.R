@@ -49,18 +49,18 @@ w.post.pa.full <- stan_glmer(conflict_presence_ps ~ dist.2.pa.ps + human.dens.ps
                            iter = 3000, chains=5,
                            seed = SEED) # we add seed for reproducibility
 # Partial Model:
-w.post.pa.partial <- stan_glmer(conflict_presence_ps ~ animal.farm.dens.ps + ground.crop.dens.ps + ndvi.ps + gHM.ps + agno.biophys.ps + (1 | CCSNAME.ps), 
-                           data = pres.abs.scl,
+w.post.pa.partial <- stan_glmer(conflict_presence_ps ~ animal.farm.dens.ps + ground.crop.dens.ps + gHM.ps + wolf.biophys.ps + (1 | CCSNAME.ps), 
+                           data = w.pres.abs.scl,
                            family = binomial(link = "logit"), # define our binomial glm
                            prior = t_prior, prior_intercept = t_prior, QR=TRUE,
                            iter = 3000, chains=5,
                            seed = SEED) # we add seed for reproducibility
 
 # Full Model + Quadratic for Pop Dens:
-w.post.pa.full.quad <- update(post.pa.full, formula = conflict_presence_ps ~ I(human.dens.ps^2) + dist.2.pa.ps + animal.farm.dens.ps + ground.crop.dens.ps + ndvi.ps + gHM.ps + agno.biophys.ps + (1 | CCSNAME.ps), QR = TRUE)
+w.post.pa.full.quad <- update(w.post.pa.full, formula = conflict_presence_ps ~ I(human.dens.ps^2) + dist.2.pa.ps + animal.farm.dens.ps + ground.crop.dens.ps + gHM.ps + wolf.biophys.ps + (1 | CCSNAME.ps), QR = TRUE)
 
 # Intercept-only model:
-w.post.int.only <-  update(post.pa.full, formula = conflict_presence_ps ~ 1+ (1 | CCSNAME.ps), QR = FALSE)
+w.post.int.only <-  update(w.post.pa.full, formula = conflict_presence_ps ~ 1+ (1 | CCSNAME.ps), QR = FALSE)
 
 saveRDS(w.post.pa.full, "data/processed/wolf_post_pa_full.rds")
 saveRDS(w.post.pa.partial, "data/processed/wolf_post_pa_partial.rds")
