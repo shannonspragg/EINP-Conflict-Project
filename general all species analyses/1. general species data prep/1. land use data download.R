@@ -12,6 +12,14 @@ options(
   gargle_oauth_email = TRUE
 )
 
+# BHB Subwatershed boundary:
+folder_url <- "https://drive.google.com/drive/u/0/folders/1KPP40pBp5vFG0NOyR-VA5nRWXX4F3k0m" # bhb subwatershed boundary data
+folder <- drive_get(as_id(folder_url))
+gdrive_files <- drive_ls(folder)
+#have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
+lapply(gdrive_files$id, function(x) drive_download(as_id(x),
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+
 # Landcover:
 folder_url <- "https://drive.google.com/drive/u/0/folders/17dnk1EGflfjieLTm5FqlRpg0mTS7cGIN" # NDVI data
 folder <- drive_get(as_id(folder_url))
@@ -53,16 +61,24 @@ gdrive_files <- drive_ls(folder)
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/original/CPCAD-BDCAPC_Dec2020.gdb/ "), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
-# BHB watershed boundary:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1KPP40pBp5vFG0NOyR-VA5nRWXX4F3k0m" # bbh watershed boundary data
+# Human pop density:
+folder_url <- "https://drive.google.com/drive/u/0/folders/1iu0qivB35FBkdGd-bV4yqkV5UTXvMEt_" # beaver hills watershed data
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
 lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
-# Human pop density:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1iu0qivB35FBkdGd-bV4yqkV5UTXvMEt_" # beaver hills watershed data
+# Agriculture Census:
+folder_url <- "https://drive.google.com/drive/u/0/folders/1Ld354pG-79SNjh4In7SPBEqQLpRsDUJ1" # beaver hills watershed data
+folder <- drive_get(as_id(folder_url))
+gdrive_files <- drive_ls(folder)
+#have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
+lapply(gdrive_files$id, function(x) drive_download(as_id(x),
+                                                   path = paste0(here::here("data/original/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
+
+# Consolidated Census Subdivision Regions:
+folder_url <- "https://drive.google.com/drive/u/0/folders/1daTiZfnGEY8ylY7BQMA8lI4fk-msiutH" # canada CCS regions
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
