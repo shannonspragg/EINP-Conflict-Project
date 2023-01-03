@@ -31,6 +31,7 @@ ground.dens <- rast("data/processed/ground_crop_density_raster.tif")
 ndvi.r <- rast("data/processed/bhb_ndvi.tif")
 ghm.r <- rast("data/processed/bhw_ghm.tif")
 agnostic_bio_cumcurrmap <- rast("data/processed/agnostic_cum_currmap.tif")
+#gen_focal_bio_cumcurrmap <- rast("data/processed/general_focal_cum_currmap.tif")
 
 # Mask to 50km buffer
 # pop.d.crop <- crop(pop.dens, animal.dens)
@@ -53,6 +54,7 @@ animal.dens.scl <- (animal.dens - attributes(pres.abs.scl$animal.farm.dens.ps)[[
 row.crop.dens.scl <- (ground.dens - attributes(pres.abs.scl$ground.crop.dens.ps)[[2]])/attributes(pres.abs.scl$ground.crop.dens.ps)[[3]]
 ghm.scl <- (ghm.r - attributes(pres.abs.scl$gHM.ps)[[2]])/attributes(pres.abs.scl$gHM.ps)[[3]]
 agno.bio.scl <- (agnostic_bio_cumcurrmap - attributes(pres.abs.scl$agno.biophys.ps)[[2]])/attributes(pres.abs.scl$agno.biophys.ps)[[3]]
+#gfocal.bio.scl <- (gen_focal_bio_cumcurrmap - attributes(pres.abs.scl$gen.focal.biophys.ps)[[2]])/attributes(pres.abs.scl$gen.focal.biophys.ps)[[3]]
 
 dist.2.pa.pred <- dist.2.pa.scl * fixed.effects[['dist.2.pa.ps']]
 ndvi.pred <- ndvi.scl * fixed.effects[['ndvi.ps']]
@@ -61,6 +63,7 @@ animal.dens.pred <- animal.dens.scl * fixed.effects[['animal.farm.dens.ps']]
 rowcrop.dens.pred <- row.crop.dens.scl * fixed.effects[['ground.crop.dens.ps']]
 ghm.pred <- ghm.scl * fixed.effects[['gHM.ps']]
 agno.bio.pred <- agno.bio.scl * fixed.effects[['agno.biophys.ps']]
+#gfocal.bio.pred <- gfocal.bio.scl * fixed.effects[['gen.focal.biophys.ps']]
 
 # Combine our Rasters:
 pred.stack <- c(global.int, ccs.int, dist.2.pa.pred, ndvi.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ghm.pred, agno.bio.pred)

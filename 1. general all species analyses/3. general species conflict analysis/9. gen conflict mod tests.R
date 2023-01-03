@@ -43,8 +43,8 @@ pr <- as.integer(pred >= 0.5)
 pr2 <- as.integer(pred2 >= 0.5)
 pr3 <- as.integer(pred3 >= 0.5)
 pr0 <- as.integer(pred0 >=0.5)
-round(mean(xor(pr,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
-round(mean(xor(pr2,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
+round(mean(xor(pr,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.75
+round(mean(xor(pr2,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
 round(mean(xor(pr3,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
 round(mean(xor(pr0,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.71
 
@@ -60,8 +60,8 @@ saveRDS(loo0, "Data/processed/post_int_only_loo.rds")
 saveRDS(post_pa_loo_comp, "Data/processed/post_pa_loo_comp.rds")
 
 # LOO classification accuracy
-round(mean(xor(ploo>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
-round(mean(xor(ploo2>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.72
+round(mean(xor(ploo>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.75
+round(mean(xor(ploo2>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.74
 round(mean(xor(ploo3>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.73
 round(mean(xor(ploo0>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.71
 
@@ -81,5 +81,5 @@ pROC::plot.roc(pres.abs.scl$conflict_presence_ps, post.pa.partial$fitted.values,
 legend("bottomright", legend=c("Full Model", "Full Model + Quadratic Pop Dens","Partial Model", "Varying Intercept-only Model"),
        col=c("#377eb8", "#B090D0", "#FFAA00", "#4daf4a"), lwd = 4)
 
-# Full model has 81.4% AUC, Quad model has 80.6% AUC, partial has 80.0% AUC, and intercept only has 77.8%
+# Full model has 81.6% AUC, Quad model has 81.1% AUC, partial has 6% AUC, and intercept only has 77.8%
 # We will use full model without quadratic term as their predictive accuracy is similar and the predictor estimates seem more stable
