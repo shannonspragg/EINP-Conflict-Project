@@ -19,8 +19,6 @@ forests <- rast("data/processed/bhb_forest_land.tif")
 
 forest.edge <- terra::boundaries(forests, classes = TRUE)
 
-
-
 # Save --------------------------------------------------------------------
 
 terra::writeRaster(forest.edge, "data/processed/forest_edge_habitats.tif")
