@@ -48,13 +48,14 @@ p <- mcmc_intervals(posterior,
                              "human.dens.ps",
                              "animal.farm.dens.ps",
                              "ground.crop.dens.ps",
-                             "ndvi.ps", "gHM.ps", "agno.biophys.ps"),
+                             "ndvi.ps", "gHM.ps", "agno.biophys.ps", "gen.focal.biophys.ps"),
                     prob = 0.8) +
   scale_y_discrete(labels = c("dist.2.pa.ps" = "Dist. to PA",
                               "human.dens.ps" = "Population Density",
                               "animal.farm.dens.ps" = "Dens. of livestock ops.",
                               "ground.crop.dens.ps" = "Dens. of row-crop ops.",
-                              "ndvi.ps" = "NDVI", "gHM.ps" = "Human Modification", "agno.biophys.ps" = "Agnostic Biophys. Connectivity")) 
+                              "ndvi.ps" = "NDVI", "gHM.ps" = "Human Modification", "agno.biophys.ps" = "Agnostic Biophys. Connectivity",
+                              "gen.focal.biophys.ps" = "General Focal Species Biophys. Connectivity")) 
 
 # Prep plot for Dist 2 PAs:
 
@@ -65,7 +66,8 @@ simdata <- pres.abs.scl %>%
                     ground.crop.dens.ps = mean(ground.crop.dens.ps),
                     ndvi.ps = mean(ndvi.ps),
                     gHM.ps = mean(gHM.ps),
-                    agno.biophys.ps = mean(agno.biophys.ps))
+                    agno.biophys.ps = mean(agno.biophys.ps),
+                    gen.focal.biophys.ps = mean(gen.focal.biophys.ps))
 
 postdraws <- tidybayes::add_epred_draws(post.pa.full, 
                                         newdata=simdata,
@@ -104,7 +106,8 @@ simdata <- pres.abs.scl %>%
                     ground.crop.dens.ps = mean(ground.crop.dens.ps),
                     ndvi.ps = mean(ndvi.ps),
                     gHM.ps = mean(gHM.ps),
-                    agno.biophys.ps = mean(agno.biophys.ps))
+                    agno.biophys.ps = mean(agno.biophys.ps),
+                    gen.focal.biophys.ps = mean(gen.focal.biophys.ps))
 
 postdraws <- tidybayes::add_epred_draws(post.pa.full, 
                                         newdata=simdata,
@@ -157,7 +160,8 @@ simdata <- pres.abs.scl %>%
                     ground.crop.dens.ps = seq_range(ground.crop.dens.ps, n=300),
                     ndvi.ps = mean(ndvi.ps),
                     gHM.ps = mean(gHM.ps),
-                    agno.biophys.ps = mean(agno.biophys.ps))
+                    agno.biophys.ps = mean(agno.biophys.ps),
+                    gen.focal.biophys.ps = mean(gen.focal.biophys.ps))
 
 postdraws <- tidybayes::add_epred_draws(post.pa.full, 
                                         newdata=simdata,
@@ -194,7 +198,8 @@ simdata <- pres.abs.scl %>%
                     ground.crop.dens.ps = mean(ground.crop.dens.ps),
                     ndvi.ps = seq_range(ndvi.ps, n=300),
                     gHM.ps = mean(gHM.ps),
-                    agno.biophys.ps = mean(agno.biophys.ps))
+                    agno.biophys.ps = mean(agno.biophys.ps),
+                    gen.focal.biophys.ps = mean(gen.focal.biophys.ps))
 
 postdraws <- tidybayes::add_epred_draws(post.pa.full, 
                                         newdata=simdata,
@@ -231,7 +236,8 @@ simdata <- pres.abs.scl %>%
                     ground.crop.dens.ps = mean(ground.crop.dens.ps),
                     ndvi.ps = mean(ndvi.ps),
                     gHM.ps = seq_range(gHM.ps, n=300),
-                    agno.biophys.ps = mean(agno.biophys.ps))
+                    agno.biophys.ps = mean(agno.biophys.ps),
+                    gen.focal.biophys.ps = mean(gen.focal.biophys.ps))
 
 postdraws <- tidybayes::add_epred_draws(post.pa.full, 
                                         newdata=simdata,
@@ -240,7 +246,7 @@ postdraws <- tidybayes::add_epred_draws(post.pa.full,
 
 postdraws$gHM.ps <- (postdraws$gHM.ps * attributes(pres.abs.scl$gHM.ps)[[3]])+attributes(pres.abs.scl$gHM.ps)[[2]]
 
-# Plotting Dist 2 PA's:
+# Plotting gHM's:
 plot.df <- postdraws %>% 
   mutate_at(., vars(human.dens.ps), as.factor) %>% 
   group_by(gHM.ps, human.dens.ps) %>% 
@@ -260,7 +266,7 @@ gHM.plot <- ggplot(data=plot.df) +
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(gHM.plot, "data/processed/gHM_mixe_plot.rds")
 
-# Prep Biophysical connectivity plot:
+# Prep Species Agnostic Biophysical connectivity plot:
 simdata <- pres.abs.scl %>%
   modelr::data_grid(dist.2.pa.ps = mean(dist.2.pa.ps),
                     human.dens.ps = quantile(pres.abs.scl$human.dens.ps, probs = c(0.1, 0.5, 0.9)),
@@ -268,7 +274,8 @@ simdata <- pres.abs.scl %>%
                     ground.crop.dens.ps = mean(ground.crop.dens.ps),
                     ndvi.ps = mean(ndvi.ps),
                     gHM.ps = mean(gHM.ps),
-                    agno.biophys.ps = seq_range(agno.biophys.ps, n=300))
+                    agno.biophys.ps = seq_range(agno.biophys.ps, n=300),
+                    gen.focal.biophys.ps = mean(gen.focal.biophys.ps))
 
 postdraws <- tidybayes::add_epred_draws(post.pa.full, 
                                         newdata=simdata,
@@ -277,7 +284,7 @@ postdraws <- tidybayes::add_epred_draws(post.pa.full,
 
 postdraws$agno.biophys.ps <- (postdraws$agno.biophys.ps * attributes(pres.abs.scl$agno.biophys.ps)[[3]])+attributes(pres.abs.scl$agno.biophys.ps)[[2]]
 
-# Plotting Dist 2 PA's:
+# Plotting Species Agno's:
 plot.df <- postdraws %>% 
   mutate_at(., vars(human.dens.ps), as.factor) %>% 
   group_by(agno.biophys.ps, human.dens.ps) %>% 
@@ -297,6 +304,43 @@ agno.biophys.plot <- ggplot(data=plot.df) +
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(agno.biophys.plot, "data/processed/agno_bio_mixe_plot.rds")
 
+# Prep Gen Focal Biophysical connectivity plot:
+simdata <- pres.abs.scl %>%
+  modelr::data_grid(dist.2.pa.ps = mean(dist.2.pa.ps),
+                    human.dens.ps = quantile(pres.abs.scl$human.dens.ps, probs = c(0.1, 0.5, 0.9)),
+                    animal.farm.dens.ps = mean(animal.farm.dens.ps),
+                    ground.crop.dens.ps = mean(ground.crop.dens.ps),
+                    ndvi.ps = mean(ndvi.ps),
+                    gHM.ps = mean(gHM.ps),
+                    agno.biophys.ps = mean(agno.biophys.ps),
+                    gen.focal.biophys.ps = seq_range(gen.focal.biophys.ps, n=300))
+
+postdraws <- tidybayes::add_epred_draws(post.pa.full, 
+                                        newdata=simdata,
+                                        ndraws=1000,
+                                        re_formula=NA)
+
+postdraws$gen.focal.biophys.ps <- (postdraws$gen.focal.biophys.ps * attributes(pres.abs.scl$gen.focal.biophys.ps)[[3]])+attributes(pres.abs.scl$gen.focal.biophys.ps)[[2]]
+
+# Plotting Dist 2 PA's:
+plot.df <- postdraws %>% 
+  mutate_at(., vars(human.dens.ps), as.factor) %>% 
+  group_by(gen_focal_bio_cumcurrmap, human.dens.ps) %>% 
+  summarise(., mean = mean(.epred),
+            lo = quantile(.epred, 0.2),
+            hi = quantile(.epred, 0.8))
+
+levels(plot.df$human.dens.ps) <-  c("Lower 10%", "Mean", "Upper 10%")
+gfocal.biophys.plot <- ggplot(data=plot.df) +
+  geom_line(aes(x = gen.focal.biophys.ps, y = mean, colour =human.dens.ps), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=gen.focal.biophys.ps, fill = human.dens.ps), alpha = 0.2) +
+  scale_colour_viridis(discrete = "TRUE", option="C","Population Density")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "Population Density") +
+  ylab("Probability of Conflict") + 
+  xlab("General Focal Species Biophysical Connectivity")+
+  # guides(fill=guide_legend(title="Population Density"))+
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(gfocal.biophys.plot, "data/processed/gen_focal_bio_mixe_plot.rds")
 
 p.all <- animal.dens.plot + ground.dens.plot + ndvi.plot + dist2pa.plot + gHM.plot + agno.biophys.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
