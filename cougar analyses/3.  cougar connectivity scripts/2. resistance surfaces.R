@@ -20,28 +20,12 @@ bhb.buf <- st_read("data/processed/bhb_50km.shp")
 bh.lake <- rast("data/processed/beaverhills_lake.tif")
 cougar.specialist <- rast("data/processed/cougar_specialist_habitat_resist.tif")
 slope <- rast("data/processed/slope_bhb.tif")
+elev.can.crop <- rast("data/processed/elevation_bhw.tif")
+rough.proj <- rast("data/processed/topo_roughness_bhw.tif")
 
 # Prep gHM and elevation data:
 ghm1.crp <- terra::project(ghm1, temp.rast) # crop to bhw buffer
 ghm.conv <- ghm1.crp/65536
-
-# Prep gHM and elevation data ---------------------------------------------
-bhw.bound <- st_read("data/original/BHB_Subwatershed_Boundary.shp") %>% # MAKE SURE FILE IS UPDATED
-  st_buffer(., 500000) %>% st_transform(., crs=crs(temp.rast)) %>% 
-  as(., "SpatVector")
-bhb.buf.v <- vect(bhb.buf)
-elev.can <- rast(raster::getData('alt', country = 'CAN'))
-elev.can.crop <- crop(elev.can, terra::project(bhw.bound, elev.can)) #crop to bhw
-
-rough <- terrain(elev.can.crop, v="TRI")
-rough.max <-  global(rough, "max", na.rm=TRUE)[1,]
-rough.min <-  global(rough, "min", na.rm=TRUE)[1,]
-rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
-rough.proj <- terra::project(rough.rescale, temp.rast)
-
-# Save elev and ruggedness:
-writeRaster(elev.can.crop, "data/processed/elevation_bhw.tif")
-writeRaster(rough.proj, "data/processed/topo_roughness_bhw.tif")
 
 
 # Adjust rasters for resistance input: ------------------------------------
@@ -74,7 +58,7 @@ fuzzysum4 <- function(r1, r2, r3, r4) {
 cougar_biophys_fuzsum <- fuzzysum4(ghm.conv, rough.inv, cougar.specialist, bh.lake)
 writeRaster(cougar_biophys_fuzsum,"data/processed/cougar_biophys_fuzsum_bhb.tif", overwrite=TRUE)
 
-# generalist focal species resistance:
+# cougar resistance:
 cougar_biophys_resistance <- (1+cougar_biophys_fuzsum)^10
 
 writeRaster(cougar_biophys_resistance, "data/processed/cougar_biophys_resist.tif", overwrite=TRUE)
@@ -96,5 +80,5 @@ fuzzysum6 <- function(r1, r2, r3, r4, r5, r6) {
 bio_social_fuzzysum <- fuzzysum5(ghm.conv, rough.inv, bh.lake, prob.cougar.conf)
 biosocial_resistance <- (1+bio_social_fuzzysum)^10
 
-writeRaster(bio_social_fuzzysum, "data/processed/biosocial_fuzsum.tif",overwrite=TRUE)
-writeRaster(biosocial_resistance, "data/processed/biosocial_resist.tif", overwrite=TRUE)
+writeRaster(bio_social_fuzzysum, "data/processed/cougar_biosocial_fuzsum.tif",overwrite=TRUE)
+writeRaster(biosocial_resistance, "data/processed/cougar_biosocial_resist.tif", overwrite=TRUE)

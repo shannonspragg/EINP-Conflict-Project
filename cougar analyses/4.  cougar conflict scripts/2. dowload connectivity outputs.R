@@ -22,7 +22,7 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/processed/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 # Conflict Connectivity Models: (completed after conflict analysis)
-folder_url <- "https://drive.google.com/drive/u/0/folders/1uTsMaX2p__Z0FrkKu9JemxlbpVREVm37" # biophys outputs male b bears 
+folder_url <- "https://drive.google.com/drive/u/0/folders/1uTsMaX2p__Z0FrkKu9JemxlbpVREVm37" # conflict outputs cougars
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
