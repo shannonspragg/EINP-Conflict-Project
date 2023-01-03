@@ -44,6 +44,11 @@ broadleaf <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Broadleaf F
 alpine.mixed <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Mixed Forest")
 water <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Water")
 agriculture <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Agriculture")
+forest.cover <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Coniferous Forest" | ab_landcover$LC_DESCRIPTION == "Broadleaf Forest" | ab_landcover$LC_DESCRIPTION == "Mixed Forest")
+exposed <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Exposed Land")
+glacial <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Snow/Ice")
+rocky <- ab_landcover %>% filter(ab_landcover$LC_DESCRIPTION == "Rock/Rubble")
+
 # Subset forest, alpine, shrub, grassland for generalist species resistance:
 generalist_habitat <- dplyr::filter(ab_landcover, LC_DESCRIPTION == "Shrubland" | LC_DESCRIPTION == "Grassland" | LC_DESCRIPTION == "Coniferous Forest"
                                     | LC_DESCRIPTION == "Broadleaf Forest" | LC_DESCRIPTION == "Mixed Forest")
@@ -65,6 +70,7 @@ temp.rast.ab <- rast(res=c(250,250), ext=ext(landcover.v)) # Let's do a 250x250 
 crs(temp.rast.ab) <- "epsg:32612" # UTM zone 12N for AB
 values(temp.rast.ab) <- rep(1, ncell(temp.rast.ab))
 
+# Make spat vectors
 bhb.v <- vect(bhb.buf)
 landcover.v <- vect(ab_landcover)
 shrubland.v <- vect(shrubland)
@@ -76,6 +82,10 @@ water.v <- vect(water)
 agriculture.v <- vect(agriculture)
 generalist.v <- vect(generalist_habitat)
 wb.v <- vect(wb.bhb)
+forest.v <- vect(forest.cover)
+exposed.v <- vect(exposed)
+glacial.v <- vect(glacial)
+rocky.v <- vect(rocky)
 
 bhb.landcover.crop <- crop(landcover.v, template.rast)
 bhb.shrub.crop <- crop(shrubland.v, template.rast)
@@ -86,7 +96,12 @@ bhb.alpine.crop <- crop(alpinemix.v, template.rast)
 bhb.water.crop <- crop(water.v, template.rast)
 bhb.ag.crop <- crop(agriculture.v, template.rast)
 bhb.generalist.crop <- crop(generalist.v, template.rast)
+bhb.forest.crop <- crop(forest.v, template.rast)
+bhb.exposed.crop <- crop(exposed.v, template.rast)
+bhb.glacial.crop <- crop(glacial.v, template.rast)
+bhb.rocky.crop <- crop(rocky.v, template.rast)
 
+# Rasterize each cover type
 ab.landcover.rast <- terra::rasterize(landcover.v, temp.rast.ab, field = "LC_DESCRIPTION")
 bhb.landcover.type.rast <- terra::rasterize(bhb.landcover.crop, template.rast, field = "LC_DESCRIPTION")
 bhb.shrubland.rast <- terra::rasterize(bhb.shrub.crop, template.rast, field = "LC_class")
@@ -97,6 +112,10 @@ bhb.alpinemix.rast <- terra::rasterize(bhb.alpine.crop, template.rast, field = "
 bhb.water.rast <- terra::rasterize(bhb.water.crop, template.rast, field = "LC_class")
 bhb.ag.rast <- terra::rasterize(bhb.ag.crop, template.rast, field = "LC_class")
 bhb.generalist.rast <- terra::rasterize(bhb.generalist.crop, template.rast, field = "LC_class")
+bhb.forest.rast <- terra::rasterize(bhb.forest.crop, template.rast, field = "LC_class")
+bhb.exposed.rast <- terra::rasterize(bhb.exposed.crop, template.rast, field = "LC_class")
+bhb.glacial.rast <- terra::rasterize(bhb.glacial.crop, template.rast, field = "LC_class")
+bhb.rocky.rast <- terra::rasterize(bhb.rocky.crop, template.rast, field = "LC_class")
 
 # Make shrubland a continuous raster:
 bhb.shrubland.rast[bhb.shrubland.rast == 50] <- 1
@@ -167,6 +186,23 @@ bhb.generalist.rast[bhb.generalist.rast >= 50] <- 1
 bhb.generalist.raster <- raster(bhb.generalist.rast)
 bhb.generalist.raster[is.na(bhb.generalist.raster[])] <- 0 
 
+# Make exposed land a continuous raster:
+bhb.exposed.rast[bhb.exposed.rast == 33] <- 1
+bhb.exposed.raster <- raster(bhb.exposed.rast)
+bhb.exposed.raster[is.na(bhb.exposed.raster[])] <- 0 
+names(bhb.exposed.raster)[names(bhb.exposed.raster) == "LC_class"] <- "exposed"
+
+# Make glacial land a continuous raster:
+bhb.glacial.rast[bhb.glacial.rast == 31] <- 1
+bhb.glacial.raster <- raster(bhb.glacial.rast)
+bhb.glacial.raster[is.na(bhb.glacial.raster[])] <- 0 
+names(bhb.glacial.raster)[names(bhb.glacial.raster) == "LC_class"] <- "glacial"
+
+# Make rocky land a continuous raster:
+bhb.rocky.rast[bhb.rocky.rast == 32] <- 1
+bhb.rocky.raster <- raster(bhb.rocky.rast)
+bhb.rocky.raster[is.na(bhb.rocky.raster[])] <- 0 
+names(bhb.rocky.raster)[names(bhb.rocky.raster) == "LC_class"] <- "rocky"
 
 # CHECK FOR NA'S:
 table(is.na(bhb.generalist.raster[])) # FALSE
@@ -179,9 +215,13 @@ terra::writeRaster(bhb.grassland.raster, "data/processed/bhb_grassland.tif", ove
 terra::writeRaster(bhb.conifer.raster, "data/processed/bhb_conifer_mix.tif", overwrite=TRUE)
 terra::writeRaster(bhb.broadleaf.raster, "data/processed/bhb_broadleaf_mix.tif", overwrite=TRUE)
 terra::writeRaster(bhb.alpinemix.raster, "data/processed/bhb_alpine_mix.tif", overwrite=TRUE)
-writeRaster(dist2drainage.km, "data/processed/dist2drainage_km_bhb.tif", overwrite=TRUE)
-writeRaster(dist2waterbodies.km, "data/processed/dist2waterbodies_km_bhb.tif", overwrite=TRUE)
 writeRaster(bhb.water.r, "data/processed/bhb_water_areas.tif", overwrite=TRUE)
 writeRaster(bhb.ag.raster, "data/processed/bhb_agriculture.tif", overwrite=TRUE)
-#writeRaster(evergreen.500m, "data/processed/bhb_evergreen_500m.tif", overwrite = TRUE)
 writeRaster(bhb.generalist.raster, "data/processed/bhb_generalist_lc.tif", overwrite = TRUE)
+terra::writeRaster(bhb.forest.raster, "data/processed/bhb_forest_land.tif", overwrite=TRUE)
+terra::writeRaster(bhb.exposed.raster, "data/processed/bhb_exposed_land.tif", overwrite=TRUE)
+terra::writeRaster(bhb.glacial.raster, "data/processed/bhb_glacial_land.tif", overwrite=TRUE)
+terra::writeRaster(bhb.rocky.raster, "data/processed/bhb_rocky_land.tif", overwrite=TRUE)
+
+writeRaster(dist2drainage.km, "data/processed/dist2drainage_km_bhb.tif", overwrite=TRUE)
+writeRaster(dist2waterbodies.km, "data/processed/dist2waterbodies_km_bhb.tif", overwrite=TRUE)
