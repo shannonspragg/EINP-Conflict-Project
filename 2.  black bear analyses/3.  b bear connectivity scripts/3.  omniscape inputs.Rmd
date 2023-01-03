@@ -1,0 +1,73 @@
+---
+title: "omniscape inputs"
+output: html_document
+date: '2022-10-05'
+---
+
+## Running Biophysical Omniscape Models:
+
+In order to produce the biophysical connectivity models, we will use an external software called Julia 1.7 to implement Omniscape. We must prep an .ini file as well as obtain a source and resistance input for each model.
+
+Source input: bbear habitat suitability.tif
+
+Resistance input: agnostic_biophys_resist.tif
+
+.ini file format: we use a text editor to produce an .ini file with the information below:
+
+NOTE: Block size and radius must be selected. Typically, radius is roughly the home range of an individual in the species of interest. Block size must be an odd number, but is typically selected to be about 1/10 of the radius (Phillips et al., 2021; McClure et al., 2016).
+
+Because male and female black bears have such different home range sizes, we will run 2 different models in omniscape, and will adjust the radius and block size for gender below. Home range estimates taken from Karelus et al., 2016.
+
+##MALE black bear .ini inputs:
+[Required]
+resistance_file = agnostic_biophys_resist.tif
+project_name = Biophysical BBear Male
+
+[Options]
+radius = 230 # home range for black bear males is typically around 220 km^2, +/- 28 km
+block_size = 23 # this is 1/10 the block size
+source_threshold = 0
+source_from_resistance = false
+source_file = bbear_habitat_suitability.tif
+
+r_cutoff = 50
+precision = double
+solver = cholmod
+calc_normalized_current = true
+calc_flow_potential = true
+mask_nodata = true
+parallelize = true
+parallel_batch_size = 20
+
+[Output options]
+write_raw_currmap = true
+write_as_tif = true
+
+
+## FEMALE black bear .ini inputs:
+[Required]
+resistance_file = agnostic_biophys_resist.tif
+project_name = Biophysical BBear Male
+
+[Options]
+radius = 35 # home range for black bear males is typically around 31 km^2, +/- 8 km
+block_size = 3 # this is close to 1/10 the block size, remaining an odd number
+source_threshold = 0
+source_from_resistance = false
+source_file = bbear_habitat_suitability.tif
+
+r_cutoff = 50
+precision = double
+solver = cholmod
+calc_normalized_current = true
+calc_flow_potential = true
+mask_nodata = true
+parallelize = true
+parallel_batch_size = 20
+
+[Output options]
+write_raw_currmap = true
+write_as_tif = true
+
+
+
