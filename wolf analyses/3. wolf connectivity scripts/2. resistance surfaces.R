@@ -20,28 +20,12 @@ bhb.buf <- st_read("data/processed/bhb_50km.shp")
 bh.lake <- rast("data/processed/beaverhills_lake.tif")
 wolf.specialist <- rast("data/processed/wolf_specialist_habitat.tif")
 ag.land <- rast("data/processed/bhb_agriculture.tif")
+elev.can.crop <- rast("data/processed/elevation_bhw.tif")
+rough.proj <- rast("data/processed/topo_roughness_bhw.tif")
 
 # Prep gHM and elevation data:
 ghm1.crp <- terra::project(ghm1, temp.rast) # crop to bhw buffer
 ghm.conv <- ghm1.crp/65536
-
-# Prep gHM and elevation data ---------------------------------------------
-bhw.bound <- st_read("data/original/BHB_Subwatershed_Boundary.shp") %>% # MAKE SURE FILE IS UPDATED
-  st_buffer(., 500000) %>% st_transform(., crs=crs(temp.rast)) %>% 
-  as(., "SpatVector")
-bhb.buf.v <- vect(bhb.buf)
-elev.can <- rast(raster::getData('alt', country = 'CAN'))
-elev.can.crop <- crop(elev.can, terra::project(bhw.bound, elev.can)) #crop to bhw
-
-rough <- terrain(elev.can.crop, v="TRI")
-rough.max <-  global(rough, "max", na.rm=TRUE)[1,]
-rough.min <-  global(rough, "min", na.rm=TRUE)[1,]
-rough.rescale <- (rough - rough.min)/(rough.max - rough.min)
-rough.proj <- terra::project(rough.rescale, temp.rast)
-
-# Save elev and ruggedness:
-writeRaster(elev.can.crop, "data/processed/elevation_bhw.tif")
-writeRaster(rough.proj, "data/processed/topo_roughness_bhw.tif")
 
 
 # Adjust rasters for resistance input: ------------------------------------

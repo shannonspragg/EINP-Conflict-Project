@@ -15,8 +15,7 @@ library(raster)
 # Bring in Data: ----------------------------------------------------------
 
 # Conflict Data:
-conflict.wolf.df <- st_read("data/processed/conflict_conf_iem_dataframe.shp")
-w.pres.abs.df <- st_read("data/processed/wolf_conflict_pres_abs_df.shp")
+conflict.wolf.df <- st_read("data/processed/conflict_conf_full_dataframe.shp")
 
 # Predictor Rasters:
 dist2pa.rast <- rast("data/processed/dist2pa_km_bhb.tif")
@@ -27,7 +26,7 @@ ungulate.dens.rast <- rast("data/processed/total_ungulate_density.tif")
 road.dens <- rast("data/processed/bhb_road_density_250m.tif")
 ghm.rast <- rast("data/processed/bhw_ghm.tif")
 whs <- rast("data/processed/wolf_habitat_suitability.tif")
-wolf.inc <- rast("data/processed/bhw_wolf_increase.tif") # STILL NEED
+#wolf.inc <- rast("data/processed/bhw_wolf_increase.tif") # STILL NEED
 wolf_bio_cumcurrmap <- rast("data/processed/wolf_biophys_cum_currmap.tif")
 bhw  <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.50km <- st_read("data/processed/bhb_50km.shp")
@@ -38,19 +37,11 @@ conflict.buf <- conflict.wolf.df %>%
   st_buffer(., 5000)
 plot(st_geometry(conflict.buf)) # Check the buffers
 
-pres.abs.buf <- w.pres.abs.df %>% 
-  st_buffer(., 5000)
-plot(st_geometry(pres.abs.buf)) # Check the buffers
-
 w.conflict.reproj <- st_make_valid(conflict.buf) %>% 
     st_transform(crs=crs(dist2pa.rast))
-w.pres.abs.reproj <- st_make_valid(pres.abs.buf) %>% 
-  st_transform(crs=crs(dist2pa.rast))
-
 
 # Make the buffered points spat vectors:
 wolf.con.buf.v <- vect(w.conflict.reproj)
-pres.abs.buf.v <- vect(w.pres.abs.reproj)
 bhw.v <- vect(bhw)
 bhw.50km.v <- vect(bhw.50km)
 crs(wolf.con.buf.v) == crs(ungulate.dens.rast) #TRUE
@@ -67,18 +58,8 @@ conf.road.dens.ext <- terra::extract(road.dens, wolf.con.buf.v, mean, na.rm = TR
 conf.ghm.ext <- terra::extract(ghm.rast, wolf.con.buf.v, mean, na.rm = TRUE)
 conf.whs.ext <- terra::extract(whs, wolf.con.buf.v, mean, na.rm = TRUE)
 conf.bio.ext <- terra::extract(wolf_bio_cumcurrmap, wolf.con.buf.v, mean, na.rm = TRUE)
-conf.wolf.inc.ext <- terra::extract(wolf.inc, wolf.con.buf.v, mean, na.rm = TRUE)
+#conf.wolf.inc.ext <- terra::extract(wolf.inc, wolf.con.buf.v, mean, na.rm = TRUE)
 
-pa.d2pa.ext <- terra::extract(dist2pa.rast, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.humdens.ext <- terra::extract(hum.dens.rast, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.animal.prod.ext <- terra::extract(animal.prod.rast, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.ground.crop.ext <- terra::extract(ground.crop.rast, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.ungulate.dens.ext <- terra::extract(ungulate.dens.rast, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.road.dens.ext <- terra::extract(road.dens, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.ghm.ext <- terra::extract(ghm.rast, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.whs.ext <- terra::extract(whs, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.bio.ext <- terra::extract(wolf_bio_cumcurrmap, pres.abs.buf.v, mean, na.rm = TRUE)
-pa.wolf.inc.ext <- terra::extract(wolf.inc, pres.abs.buf.v, mean, na.rm = TRUE)
 
 # Create New Column(s) for Extracted Values:
 w.conflict.reproj$dist2pa_km <- conf.d2pa.ext[,2]
@@ -90,18 +71,7 @@ w.conflict.reproj$road_dens <- conf.road.dens.ext[,2]
 w.conflict.reproj$gHM <- conf.ghm.ext[,2]
 w.conflict.reproj$whs <- conf.whs.ext[,2]
 w.conflict.reproj$wolf_biophys <- conf.bio.ext[,2]
-w.conflict.reproj$wolf_inc <- conf.wolf.inc.ext[,2]
-
-w.pres.abs.reproj$dist2pa_km <- pa.d2pa.ext[,2]
-w.pres.abs.reproj$hum_dens <- pa.humdens.ext[,2]
-w.pres.abs.reproj$animal_farms <- pa.animal.prod.ext[,2]
-w.pres.abs.reproj$ground_crop <- pa.ground.crop.ext[,2]
-w.pres.abs.reproj$ungulate_dens <- pa.ungulate.dens.ext[,2]
-w.pres.abs.reproj$road_dens <- pa.road.dens.ext[,2]
-w.pres.abs.reproj$gHM <- pa.ghm.ext[,2]
-w.pres.abs.reproj$whs <- pa.whs.ext[,2]
-w.pres.abs.reproj$wolf_biophys <- pa.bio.ext[,2]
-w.pres.abs.reproj$wolf_inc <- pa.wolf.inc.ext[,2]
+#w.conflict.reproj$wolf_inc <- conf.wolf.inc.ext[,2]
 
 # Check for NA's:
 which(is.na(w.conflict.reproj$dist2pa_km)) #one
@@ -113,7 +83,7 @@ which(is.na(w.conflict.reproj$road_dens)) #one
 which(is.na(w.conflict.reproj$gHM)) #one
 which(is.na(w.conflict.reproj$whs)) #one
 which(is.na(w.conflict.reproj$wolf_biophys)) #one
-which(is.na(w.conflict.reproj$wolf_inc)) #
+#which(is.na(w.conflict.reproj$wolf_inc)) #
 
 # plot our NA point:
 plot(st_geometry(bhw.50km))
@@ -122,22 +92,9 @@ plot(st_geometry(subset(w.conflict.reproj, id == "1130") ), col= "red", add=TRUE
 # Remove 1130th row
 w.conflict.reproj <- w.conflict.reproj[-c(1130), ]
 
-which(is.na(w.pres.abs.reproj$dist2pa_km)) #none
-which(is.na(w.pres.abs.reproj$hum_dens)) #none
-which(is.na(w.pres.abs.reproj$animal_farms)) #none
-which(is.na(w.pres.abs.reproj$ground_crops)) #none
-which(is.na(w.pres.abs.reproj$ungulate_dens)) # none
-which(is.na(w.pres.abs.reproj$road_dens)) #none
-which(is.na(w.pres.abs.reproj$gHM)) #none
-which(is.na(w.pres.abs.reproj$whs)) #none
-which(is.na(w.pres.abs.reproj$wolf_biophys)) #none
-which(is.na(w.pres.abs.reproj$wolf_inc)) #none
-
-
 # Save this as new file ---------------------------------------------------
 
 st_write(w.conflict.reproj, "Data/processed/wolf_confirmed_reports_full_df.shp", append = FALSE)
-st_write(w.pres.abs.reproj, "Data/processed/wolf_pres_abs_full_df.shp", append=FALSE)
 
 # Pull out just wolf reports (for mapping purposes):
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")

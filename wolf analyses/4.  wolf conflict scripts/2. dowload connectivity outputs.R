@@ -14,7 +14,7 @@ options(
 )
 
 # Biophysical Connectivity Models:
-folder_url <- "https://drive.google.com/drive/u/0/folders/1nA45dcS9BW6JvW6fQaHgJqGSEd4AkJ-j" # biophys outputs male b bears 
+folder_url <- "https://drive.google.com/drive/u/0/folders/1nA45dcS9BW6JvW6fQaHgJqGSEd4AkJ-j" # biophys outputs wolves 
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
