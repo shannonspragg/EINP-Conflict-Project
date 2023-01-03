@@ -37,12 +37,6 @@ bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
 bhb.watershed <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
-sp_agnostic_cumcurr <- rast("data/processed/agnostic_cum_currmap.tif")
-sp_agnostic_norm <- rast("data/processed/agnostic_normalized_cum_currmap.tif")
-
-gen_focal_cumcurr <- rast("data/processed/general_focal_cum_currmap.tif")
-gen_focal_norm <- rast("data/processed/general_focal_normalized_cum_currmap.tif")
-
 forest_sp_cumcurr <- rast("data/processed/forest_specialist_cum_currmap.tif")
 forest_sp_norm <- rast("data/processed/forest_specialist_normalized_cum_currmap.tif")
 
@@ -63,13 +57,6 @@ bhw.v <- vect(bhb.watershed)
 # Mask layers to the BHW buffer and boundary line -------------------------
 
 # Crop our rasters to the BH watershed 50km buffer shape:
-
-agno_cumcurr.bhb <- terra::mask(sp_agnostic_cumcurr, bhb.50km.v)
-agno_norm.bhb <- terra::mask(sp_agnostic_norm, bhb.50km.v)
-
-gfocal_cumcurr.bhb <- terra::mask(gen_focal_cumcurr, bhb.50km.v)
-gfocal_norm.bhb <- terra::mask(gen_focal_norm, bhb.50km.v)
-
 forest_sp_cumcurr.bhb <- terra::mask(forest_sp_cumcurr, bhb.50km.v)
 forest_sp_norm.bhb <- terra::mask(forest_sp_norm, bhb.50km.v)
 
@@ -77,12 +64,6 @@ bbear_conflict_cumcurr.bhb <- terra::mask(bbear_conflict_cumcurr, bhb.50km.v)
 bbear_conflict_norm.bhb <- terra::mask(bbear_conflict_norm, bhb.50km.v)
 
 # Crop to BHW boundary:
-agno_cumcurr.bhw <- terra::mask(sp_agnostic_cumcurr, bhw.v)
-agno_norm.bhw <- terra::mask(sp_agnostic_norm, bhw.v)
-
-gfocal_cumcurr.bhw <- terra::mask(gen_focal_cumcurr, bhw.v)
-gfocal_norm.bhw <- terra::mask(gen_focal_norm, bhw.v)
-
 forest_sp_cumcurr.bhw <- terra::mask(forest_sp_cumcurr, bhw.v)
 forest_sp_norm.bhw <- terra::mask(forest_sp_norm, bhw.v)
 
@@ -96,12 +77,6 @@ bbear_conflict_val_int_cumcurr.bhw <- terra::mask(bbear_conflict_val_integrated_
 bbear_conflict_val_int_norm.bhw <- terra::mask(bbear_conflict_val_integrated_norm, bhw.v)
 
 # Variables with 50km buffer of BHW:
-writeRaster(agno_cumcurr.bhb, "data/processed/bhw_agno_cumcurr_50km.tif", overwrite=TRUE)
-writeRaster(agno_norm.bhb, "data/processed/bhw_agno_norm_50km.tif", overwrite=TRUE)
-
-writeRaster(gfocal_cumcurr.bhb, "data/processed/bhw_gfocal_cumcurr_50km.tif", overwrite=TRUE)
-writeRaster(gfocal_norm.bhb, "data/processed/bhw_gfocal_norm_50km.tif", overwrite=TRUE)
-
 writeRaster(forest_sp_cumcurr.bhb, "data/processed/bhw_forest_sp_cumcurr_50km.tif", overwrite=TRUE)
 writeRaster(forest_sp_norm.bhb, "data/processed/bhw_forest_sp_norm_50km.tif", overwrite=TRUE)
 
@@ -109,13 +84,7 @@ writeRaster(bbear_conflict_cumcurr.bhb, "data/processed/bhw_bbear_conflict_cumcu
 writeRaster(bbear_conflict_norm.bhb, "data/processed/bhw_bbear_conflict_norm_50km.tif", overwrite=TRUE)
 
 # Variables with boundary of BHW:
-writeRaster(agno_cumcurr.bhw, "data/processed/bhw_agno_cumcurr.tif", overwrite=TRUE)
-writeRaster(agno_norm.bhw, "data/processed/bhw_agno_norm.tif", overwrite=TRUE)
-
-writeRaster(gfocal_cumcurr.bhw, "data/processed/bhw_gfocal_cumcurr.tif", overwrite=TRUE)
-writeRaster(gfocal_norm.bhw, "data/processed/bhw_gfocal_norm.tif", overwrite=TRUE)
-
-writeRaster(forest_sp_cumcurr.bhw, "data/processed/bhw_forest_sp_cumcurr.tif", overwrite=TRUE)
+riteRaster(forest_sp_cumcurr.bhw, "data/processed/bhw_forest_sp_cumcurr.tif", overwrite=TRUE)
 writeRaster(forest_sp_norm.bhw, "data/processed/bhw_forest_sp_norm.tif", overwrite=TRUE)
 
 writeRaster(bbear_val_int_bio_cumcurr.bhw, "data/processed/bhw_bbear_val_int_bio_cumcurr.tif", overwrite=TRUE)
