@@ -97,24 +97,24 @@ bh.lake.pred <- -6.0 * bh.lake
 recent.wildfires.pred <- -1.1 * recent.wildfires
 
 # Trying a slightly less varied model / integrating validated model:
-private.land.pred2 <- -0.15 * private.land.rast
+private.land.pred2 <- -0.35 * private.land.rast
 elevation.pred2 <- 0.90 * elevation 
 slope.pred2 <- 0.15 * slope.a
 #roads.pred2 <- -0.75 * roads.adjust # don't use this AND dist to roads
 dist2roads.pred2 <- 0.10 * dist2roads.a
-pop.dens.pred2 <- -0.15 * pop.dens.a
+pop.dens.pred2 <- -0.95 * pop.dens.a
 shrubland.pred2 <- -0.35 * shrubland
-grassland.pred2 <- -0.15 * grassland
+grassland.pred2 <- -0.25 * grassland
 rocky.pred2 <- 0.10 * rocky
 snow.ice.pred2 <- 1.25 * snow.ice
-exposed.pred2 <- -0.45 * exposed
+exposed.pred2 <- -0.65 * exposed
 coniferous.forest.pred2 <- 1.20 * coniferous.forest
 broadleaf.forest.pred2 <- 0.65 * broadleaf.forest
 alpine.mixed.forest.pred2 <- 1.55 * alpine.mixed.forest
 waterways.pred2 <- -1.55 * waterways
 dist2water.pred2 <- -0.10 * dist2water.a
 dist2wb.pred2 <- -0.10 * dist2wb.a
-human.development.pred2 <- -0.65 * human.development
+human.development.pred2 <- -1.55 * human.development
 ag.land.pred2 <- -1.05 * ag.land
 bh.lake.pred2 <- -1.5 * bh.lake
 recent.wildfires.pred2 <- -0.30 * recent.wildfires
