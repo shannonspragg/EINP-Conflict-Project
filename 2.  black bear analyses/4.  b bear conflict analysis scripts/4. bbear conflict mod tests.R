@@ -26,7 +26,7 @@ bear.no.conf <- readRDS("data/processed/bear_no_conf.rds")
 bear.conflict.df.scl <- readRDS("data/processed/bear_conf_df_scl.rds")
 
 # Model Comparison: -------------------------------------------------------
-loo1b <- loo(bear.full.mod, save_psis = TRUE, k_threshold = 0.7) # there is one point that has a poor loo value
+loo1b <- loo(bear.full.mod, save_psis = TRUE , k_threshold = 0.7) # there is one point that has a poor loo value
 loo2b <- loo(bear.full.mod.quad, save_psis = TRUE, k_threshold = 0.7)
 loo3b <- loo(bear.no.conf, save_psis = TRUE, k_threshold = 0.7)
 loo0b <- loo(bear.int.only, save_psis = TRUE, k_threshold = 0.7)
@@ -42,7 +42,7 @@ saveRDS(loo0b, "Data/processed/bear_int_only_loo.rds")
 # loo3b <- readRDS("Data/processed/bear_no_conf_loo.rds")
 # loo0b <- readRDS("Data/processed/bear_int_only_loo.rds")
 
-bear.loo.comp <- loo_compare(loo1b, loo2b, loo3b, loo0b)
+bear.loo.comp <- loo_compare(loo1b, loo2b, loo3b, loo0b) # NOTE: This is showing the no conf model as best.. discuss with Matt / Ramona
 saveRDS(bear.loo.comp, "data/processed/bear_loo_comp.rds")
 
 plot(
@@ -66,7 +66,7 @@ pr1 <- as.integer(pred1 >= 0.5)
 pr0 <- as.integer(pred0 >=0.5)
 
 round(mean(xor(pr3,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
-round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.84
+round(mean(xor(pr2,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #.85
 round(mean(xor(pr1,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.84
 round(mean(xor(pr0,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) #0.81
 
@@ -89,7 +89,7 @@ round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) 
     # Here we try model averaging and stacking to differentiate the full model from the full model + quad (both with delta LOOIC < -2:
 lpd_point <- cbind(
   loo1b$pointwise[,"elpd_loo"], 
-  loo2b$pointwise[,"elpd_loo"]
+  loo3b$pointwise[,"elpd_loo"]
 )
 pbma_wts <- pseudobma_weights(lpd_point, BB=FALSE)
 pbma_BB_wts <- pseudobma_weights(lpd_point) # default is BB=TRUE
@@ -98,8 +98,8 @@ round(cbind(pbma_wts, pbma_BB_wts, stacking_wts), 2)
 # This shows us that the first model (bear.full.model) is holding the majority of the weight
 
 # Apply these weights to the posterior predictions:
-yrep1 <- posterior_predict(bear.full.mod, draws=(0.91*7500)) # 6825 draws
-yrep2 <- posterior_predict(bear.full.mod.quad, draws=round(0.09*7500)) # only 675 draws
+yrep1 <- posterior_predict(bear.full.mod, draws=(0.27*7500)) # 6825 draws
+yrep2 <- posterior_predict(bear.no.conf, draws=round(0.73*7500)) # only 675 draws
 
 yrep <- c(yrep1, yrep2)
 

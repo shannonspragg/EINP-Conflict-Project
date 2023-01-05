@@ -20,7 +20,7 @@ theme_set(bayesplot::theme_default(base_family = "sans"))
 
 
 # Bring in Data & Prep: ----------------------------------------------------------
-bear.conflict <- st_read("data/processed/confirmed_reports_full_df.shp") %>% 
+bear.conflict <- st_read("data/processed/bbear_confirmed_reports_full_df.shp") %>% 
   st_buffer(., 5000)
 
 # Add General Conflict into Bear Data:
