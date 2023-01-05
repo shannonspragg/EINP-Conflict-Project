@@ -24,7 +24,7 @@ animal.prod.rast <- rast("data/processed/animal_production_density_raster.tif")
 ground.crop.rast <- rast("data/processed/ground_crop_density_raster.tif")
 ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
 ghm.rast <- rast("data/processed/bhw_ghm.tif")
-bhs <- rast("data/processed/bbear_habitat_suitability.tif")
+bhs <- rast("data/processed/bbear_integrated_habitat_suitability.tif")
 forest_specialist_bio_cumcurrmap <- rast("data/processed/forest_specialist_cum_currmap.tif")
 
 
@@ -76,11 +76,10 @@ which(is.na(conflict.reproj$forest_sp_biophys)) #none
 
 # remove the NA quick:
 conflict.reproj <- conflict.reproj[-c(1130), ]  
-pres.abs.reproj <- pres.abs.reproj[-c(1130), ]  
 
 # Save this as new file ---------------------------------------------------
 
-st_write(conflict.reproj, "Data/processed/confirmed_reports_full_df.shp", append = FALSE)
+st_write(conflict.reproj, "Data/processed/bbear_confirmed_reports_full_df.shp", append = FALSE)
 
 # Pull out just bear reports (for mapping purposes):
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")

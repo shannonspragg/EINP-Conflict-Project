@@ -115,7 +115,7 @@ waterways.pred2 <- -1.55 * waterways
 dist2water.pred2 <- -0.10 * dist2water.a
 dist2wb.pred2 <- -0.10 * dist2wb.a
 human.development.pred2 <- -1.55 * human.development
-ag.land.pred2 <- -1.05 * ag.land
+ag.land.pred2 <- -1.45 * ag.land
 bh.lake.pred2 <- -1.5 * bh.lake
 recent.wildfires.pred2 <- -0.30 * recent.wildfires
 
