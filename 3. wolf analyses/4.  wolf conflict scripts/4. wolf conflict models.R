@@ -30,13 +30,13 @@ wolf.conflict$genconflictprob <- gen.prob.conflict[,2]
 
 wolf.conflict.df <- wolf.conflict %>% 
   st_drop_geometry() %>% 
-  dplyr::select(., bears, CCSNAME, dst2p_k, hum_dns, anml_fr, grnd_cr, ung_dens, gHM, whs, biophys, wolf_inc, road_dens, genconflictprob)
+  dplyr::select(., wolves, CCSNAME, dst2p_k, hum_dns, anml_fr, grnd_cr, unglt_d, gHM, whs, wlf_bph, rod_dns, genconflictprob) # wolf_inc, need to add wolf inc back in!
 
-colnames(wolf.conflict.df) <- c("wolf_conflict", "CCSNAME.ps", "dist2pa", "humandens", "livestockOps", "rowcropOps", "ungulatedens", "gHM", "habsuit", "connectivity", "wolfincrease", "roaddens", "conflictprob")
+colnames(wolf.conflict.df) <- c("wolf_conflict", "CCSNAME.ps", "dist2pa", "humandens", "livestockOps", "rowcropOps", "ungulatedens", "gHM", "habsuit", "connectivity", "roaddens", "conflictprob")
 
 # Scale Data:
 wolf.conflict.df.scl <- wolf.conflict.df %>% 
-  mutate_at(c("dist2pa", "humandens", "livestockOps", "rowcropOps", "ungulate_dens", "gHM", "habsuit", "connectivity", "wolfincrease", "roaddens", "conflictprob"), scale) 
+  mutate_at(c("dist2pa", "humandens", "livestockOps", "rowcropOps", "ungulatedens", "gHM", "habsuit", "connectivity", "roaddens", "conflictprob"), scale) # "wolfincrease",
 saveRDS(wolf.conflict.df.scl, "data/processed/wolf_conf_df_scl.rds")
 
 # Run Bear Conflict Models: -----------------------------------------------
@@ -46,7 +46,7 @@ int_prior <- normal(location = 0, scale = NULL, autoscale = FALSE)
 SEED<-14124869
 
 # Full Model:
-wolf.full.mod <- stan_glmer(wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
+wolf.full.mod <- stan_glmer(wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ungulatedens + gHM + habsuit + connectivity + roaddens +  conflictprob + (1 | CCSNAME.ps), 
                             data = wolf.conflict.df.scl,
                             family = binomial(link = "logit"), # define our binomial glm
                             prior = t_prior, prior_intercept = int_prior, QR=TRUE,

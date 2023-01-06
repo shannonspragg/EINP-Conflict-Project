@@ -33,11 +33,11 @@ bhw.50km <- st_read("data/processed/bhb_50km.shp")
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------
 # Here we buffer the conflict and pres-abs points by 5000m (5km) before extracting the attributes from the farm polygons
-conflict.buf <- conflict.wolf.df %>% 
+w.conflict.buf <- conflict.wolf.df %>% 
   st_buffer(., 5000)
-plot(st_geometry(conflict.buf)) # Check the buffers
+plot(st_geometry(w.conflict.buf)) # Check the buffers
 
-w.conflict.reproj <- st_make_valid(conflict.buf) %>% 
+w.conflict.reproj <- st_make_valid(w.conflict.buf) %>% 
     st_transform(crs=crs(dist2pa.rast))
 
 # Make the buffered points spat vectors:
