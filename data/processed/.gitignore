@@ -520,3 +520,8 @@ bbear_confirmed_reports_full_df.shp
 bbear_confirmed_reports_full_df.prj
 bbear_confirmed_reports_full_df.dbf
 wolf_conf_df_scl.rds
+conflict_conf_comp_dataframe.dbf
+conflict_conf_comp_dataframe.prj
+conflict_conf_comp_dataframe.shp
+conflict_conf_comp_dataframe.shx
+cougar_habitat_bhw.tif.aux.xml
