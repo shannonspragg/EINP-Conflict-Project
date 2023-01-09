@@ -25,7 +25,7 @@ ground.crop.rast <- rast("data/processed/ground_crop_density_raster.tif")
 ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
 ghm.rast <- rast("data/processed/bhw_ghm.tif")
 agnostic_bio_cumcurrmap <- rast("data/processed/agnostic_cum_currmap.tif")
-gen_focal_bio_cumcurrmap <- rast("data/processed/general_focal_cum_currmap.tif")
+#gen_focal_bio_cumcurrmap <- rast("data/processed/general_focal_cum_currmap.tif") # I don't think we need this since we have species agnostic biophys 
 
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------
@@ -53,7 +53,7 @@ pa.ground.crop.ext <- terra::extract(ground.crop.rast, pres.abs.sv.buf, mean, na
 pa.ndvi.ext <- terra::extract(ndvi.rast, pres.abs.sv.buf, mean, na.rm = TRUE)
 pa.ghm.ext <- terra::extract(ghm.rast, pres.abs.sv.buf, mean, na.rm = TRUE)
 pa.agno.ext <- terra::extract(agnostic_bio_cumcurrmap, pres.abs.sv.buf, mean, na.rm = TRUE)
-pa.gfocal.ext <- terra::extract(gen_focal_bio_cumcurrmap, pres.abs.sv.buf, mean, na.rm = TRUE)
+#pa.gfocal.ext <- terra::extract(gen_focal_bio_cumcurrmap, pres.abs.sv.buf, mean, na.rm = TRUE)
 
 # Create New Column(s) for Extracted Values:
 pres.abs.reproj$dist2pa_km <- pa.d2pa.ext[,2]
@@ -63,7 +63,7 @@ pres.abs.reproj$ground_crop <- pa.ground.crop.ext[,2]
 pres.abs.reproj$ndvi <- pa.ndvi.ext[,2]
 pres.abs.reproj$gHM <- pa.ghm.ext[,2]
 pres.abs.reproj$agno_biophys <- pa.agno.ext[,2]
-pres.abs.reproj$gfocal_biophys <- pa.gfocal.ext[,2]
+#pres.abs.reproj$gfocal_biophys <- pa.gfocal.ext[,2]
 
 
 # Check for NA's:
@@ -74,7 +74,7 @@ which(is.na(pres.abs.reproj$ground_crops)) #none
 which(is.na(pres.abs.reproj$ndvi)) #none
 which(is.na(pres.abs.reproj$gHM)) #none
 which(is.na(pres.abs.reproj$agno_biophys)) #none
-which(is.na(pres.abs.reproj$gfocal_biophys)) #none
+#which(is.na(pres.abs.reproj$gfocal_biophys)) #none
 
 # remove the NA quick:
 pres.abs.reproj <- pres.abs.reproj[-c(1130), ]  

@@ -24,17 +24,17 @@ conf.pres.abs <- st_read(here::here("./Data/processed/pres_abs_full_df.shp")) %>
 
 #filter some of the absences
 pres.abs.filter <- conf.pres.abs %>% 
-  dplyr::select(., c(cnflct_, dst2p_k, hum_dns, anml_fr, grnd_cr, ndvi, gHM, agn_bph, gfcl_bp, CCSNAME)) 
+  dplyr::select(., c(cnflct_, dst2p_k, hum_dns, anml_fr, grnd_cr, ndvi, gHM, agn_bph, CCSNAME)) 
 
 colnames(pres.abs.filter) <- c("conflict_presence_ps", "dist.2.pa.ps", "human.dens.ps", "animal.farm.dens.ps", "ground.crop.dens.ps", "ndvi.ps", 
-                               "gHM.ps", "agno.biophys.ps", "gen.focal.biophys.ps",  "CCSNAME.ps")
+                               "gHM.ps", "agno.biophys.ps",  "CCSNAME.ps")
 
 
 # Scale Data for Analysis: ------------------------------------------------
 ## Here we scale the predictors for analysis
 pres.abs.scl <- pres.abs.filter %>% 
   mutate_at(c("dist.2.pa.ps", "human.dens.ps", "animal.farm.dens.ps", "ground.crop.dens.ps", "ndvi.ps", 
-              "gHM.ps", "agno.biophys.ps", "gen.focal.biophys.ps"), scale)
+              "gHM.ps", "agno.biophys.ps"), scale)
 
 saveRDS(pres.abs.scl, "data/processed/pres_abs_scl.rds")
 
