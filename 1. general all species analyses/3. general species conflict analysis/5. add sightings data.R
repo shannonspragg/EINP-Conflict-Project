@@ -93,6 +93,12 @@ head(upd.conflict)
 # Join our reports together:
 conf.conflict.comp <- rbind(upd.conflict, sight.ccs.join) # now 1136 reports
 
+# Let's look at our counts:
+table(conf.conflict.comp$OCC_SPE)
+sum(conf.conflict.comp$bears) # 219 bbear
+sum(conf.conflict.comp$wolves) # 56 wolf
+sum(conf.conflict.comp$cougars) # 49 cougar
+
 # Update our file
 st_write(conf.conflict.comp, "data/processed/conflict_conf_comp_dataframe.shp", append = FALSE)
 # NOTE: this df now has provincial conflict reports, IEM bear reports, roadkill bears, predator compensations, wolf depred claims, and sightings 

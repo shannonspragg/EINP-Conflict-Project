@@ -12,7 +12,7 @@ library(dismo)
 
 # Bring in Data: ----------------------------------------------------------
 bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
-conflict.conf <-st_read("data/processed/conflict_conf_full_dataframe.shp") 
+conflict.conf <-st_read("data/processed/conflict_conf_comp_dataframe.shp") 
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
 # Mask our temp rast to the bhb boundary:

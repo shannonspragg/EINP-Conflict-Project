@@ -15,7 +15,7 @@ library(raster)
 # Bring in Data: ----------------------------------------------------------
 
 # Conflict Data:
-conflict.conf.df <- st_read("data/processed/conflict_conf_full_dataframe.shp")
+conflict.conf.df <- st_read("data/processed/conflict_conf_comp_dataframe.shp")
 
 # Predictor Rasters:
 dist2pa.rast <- rast("data/processed/dist2pa_km_bhb.tif")

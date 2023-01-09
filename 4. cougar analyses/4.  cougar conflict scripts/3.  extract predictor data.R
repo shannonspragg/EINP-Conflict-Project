@@ -15,7 +15,7 @@ library(raster)
 # Bring in Data: ----------------------------------------------------------
 
 # Conflict Data:
-conflict.cougar.df <- st_read("data/processed/conflict_conf_full_dataframe.shp")
+conflict.cougar.df <- st_read("data/processed/conflict_conf_comp_dataframe.shp")
 
 # Predictor Rasters:
 dist2water.rast <- rast("data/processed/dist2drainage_km_bhb.tif")
