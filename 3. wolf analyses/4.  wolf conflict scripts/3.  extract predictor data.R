@@ -60,7 +60,6 @@ conf.whs.ext <- terra::extract(whs, wolf.con.buf.v, mean, na.rm = TRUE)
 conf.bio.ext <- terra::extract(wolf_bio_cumcurrmap, wolf.con.buf.v, mean, na.rm = TRUE)
 #conf.wolf.inc.ext <- terra::extract(wolf.inc, wolf.con.buf.v, mean, na.rm = TRUE)
 
-
 # Create New Column(s) for Extracted Values:
 w.conflict.reproj$dist2pa_km <- conf.d2pa.ext[,2]
 w.conflict.reproj$hum_dens <- conf.humdens.ext[,2]

@@ -288,7 +288,7 @@ postdraws <- tidybayes::add_epred_draws(bear.full.mod,
 
 postdraws$ndvi <- (postdraws$ndvi * attributes(bear.conflict.df.scl$ndvi)[[3]]) + attributes(bear.conflict.df.scl$ndvi)[[2]]
 
-# Plot GrizzInc:
+# Plot NDVI:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
   group_by(ndvi, conflictprob) %>% 
@@ -369,7 +369,7 @@ postdraws <- tidybayes::add_epred_draws(bear.full.mod,
 
 postdraws$ghm <- (postdraws$gHM * attributes(bear.conflict.df.scl$gHM)[[3]])+attributes(bear.conflict.df.scl$gHM)[[2]]
 
-# Plot Pop Dens:
+# Plot gHM:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
   group_by(gHM, conflictprob) %>% 
