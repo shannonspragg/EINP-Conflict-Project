@@ -21,9 +21,9 @@ bhw.v <- vect(bhw)
 fixed.effects <- fixef(cougar.full.mod)
 var.int <- ranef(cougar.no.conf)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
 
-
-ccs.sf <- st_read("Data/processed/bhw_CCS_50km.shp")
-ccs.sf.join <- ccs.sf %>% left_join(., var.int)
+ccs.sf <- st_read("Data/processed/AB_CCS.shp")
+ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
+ccs.sf.join <- ccs.reproj %>% left_join(., var.int)
 ccs.sf.join[ccs.sf$CCSNAME == "Lesser Slave River No. 124",]$`(Intercept)` <- 0 #no points from this CCS; setting to 0 results in use of global intercept
 
 #load predictor rasters
@@ -41,12 +41,6 @@ conflict <- rast("Data/processed/prob_conflict_all.tif") # Only need this if usi
 
 cougar.conf.pred.stack <- c(dist.2.pa, hum.dens.r, animal.dens, ground.dens, ungulate.r, ghm.r, whs, road.dens.r , cougar.inc.r ,biophys, conflict)
 
-# pop.d.crop <- crop(pop.dens, animal.dens)
-# pop.dens <- mask(pop.d.crop, animal.dens)
-# bhs <- crop(bhs, animal.dens)
-# grizinc <- crop(grizinc, animal.dens)
-# writeRaster(bhs, "Data/processed/bhs_SOI_10km.tif", overwrite=TRUE)
-# writeRaster(grizinc, "Data/processed/grizinc_SOI_10km.tif")
 
 #Create global intercept raster
 global.int <- dist.2.pa
@@ -55,6 +49,9 @@ global.int[!is.na(global.int)] <- fixed.effects[[1]]
 #create var int raster
 ccs.vect <- vect(ccs.sf.join)
 ccs.int <- rasterize(ccs.vect, dist.2.pa, field='(Intercept)')
+ccs.int <- raster(ccs.int)
+ccs.int[is.na(ccs.int[])] <- 0 
+ccs.int <- rast(ccs.int)
 
 #scale predictor values based on dataframe
 dist.2.pa.scl <- (dist.2.pa - attributes(cougar.conflict.df.scl$dist2pa)[[2]])/attributes(cougar.conflict.df.scl$dist2pa)[[3]]

@@ -12,18 +12,18 @@ library(terra)
 # Bring in Data: ----------------------------------------------------------
 #bear.full.mod.quad <- readRDS("Data/processed/bear_quad_reg.rds")
 # bear.int.only <- readRDS("Data/processed/bear_int_only.rds")
- bear.full.mod <- readRDS("Data/processed/bear_full_mod.rds")
-#bear.no.conf <- readRDS("Data/processed/bear_no_conf.rds")
+bear.full.mod <- readRDS("Data/processed/bear_full_mod.rds")
+bear.conflict.df.scl <- readRDS("Data/processed/bear_conf_df_scl.rds")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
 
 # generate spatial pred ---------------------------------------------------
 fixed.effects <- fixef(bear.full.mod)
-var.int <- ranef(bear.no.conf)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
+var.int <- ranef(bear.full.mod)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
 
-
-ccs.sf <- st_read("Data/processed/bhw_CCS_50km.shp")
-ccs.sf.join <- ccs.sf %>% left_join(., var.int)
+ccs.sf <- st_read("Data/processed/AB_CCS.shp")
+ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
+ccs.sf.join <- ccs.reproj %>% left_join(., var.int)
 ccs.sf.join[ccs.sf$CCSNAME == "Lesser Slave River No. 124",]$`(Intercept)` <- 0 #no points from this CCS; setting to 0 results in use of global intercept
 
 #load predictor rasters
@@ -39,12 +39,6 @@ conflict <- rast("Data/processed/prob_conflict_all.tif") # Only need this if usi
 
 bbear.conf.pred.stack <- c(dist.2.pa, hum.dens.r, animal.dens, ground.dens, ndvi.r, ghm.r, bhs, biophys, conflict)
 
-# pop.d.crop <- crop(pop.dens, animal.dens)
-# pop.dens <- mask(pop.d.crop, animal.dens)
-# bhs <- crop(bhs, animal.dens)
-# grizinc <- crop(grizinc, animal.dens)
-# writeRaster(bhs, "Data/processed/bhs_SOI_10km.tif", overwrite=TRUE)
-# writeRaster(grizinc, "Data/processed/grizinc_SOI_10km.tif")
 
 #Create global intercept raster
 global.int <- dist.2.pa
@@ -53,6 +47,9 @@ global.int[!is.na(global.int)] <- fixed.effects[[1]]
 #create var int raster
 ccs.vect <- vect(ccs.sf.join)
 ccs.int <- rasterize(ccs.vect, dist.2.pa, field='(Intercept)')
+ccs.int <- raster(ccs.int)
+ccs.int[is.na(ccs.int[])] <- 0 
+ccs.int <- rast(ccs.int)
 
 #scale predictor values based on dataframe
 dist.2.pa.scl <- (dist.2.pa - attributes(bear.conflict.df.scl$dist2pa)[[2]])/attributes(bear.conflict.df.scl$dist2pa)[[3]]
@@ -86,10 +83,11 @@ conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
 # Add our Rasters:
-bear.pred.stack <- c(dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ndvi.pred, bhs.pred, ghm.pred, biophys.pred) #, conflict.pred, conflict.quad.prd)
+bear.pred.stack <- c(global.int, ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ndvi.pred, bhs.pred, ghm.pred, biophys.pred) #, conflict.pred, conflict.quad.prd)
 
 bear.linpred.rst <- sum(bear.pred.stack)
 bear.prob.rast <- (exp(bear.linpred.rst))/(1 + exp(bear.linpred.rst))
+plot(bear.prob.rast)
 
 # Crop to BHW Boundary:
 bear.prob.rast.bhw <- mask(bear.prob.rast, bhw.v)
