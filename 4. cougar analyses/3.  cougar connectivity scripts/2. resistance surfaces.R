@@ -3,8 +3,8 @@
     # Here we construct a cougar biophysical resistance surface, including cougar specialized habitat (forest/shrubland), 
 # preference for higher elevations and slope, and resistance of agriculture land (due to depredation) / large lakes
 
-## NOTE FOR OMNISCAPE: cougar home range is variable, with recovering populations ranging from 259 to 1,676 km^2. Because of this, I am selecting
-#  a home range size of 1,000km^2 for our models, which will require a radius input of ~18 and a block size of 1.7 (~1/10 of 18, odd)
+## NOTE FOR OMNISCAPE: cougar home range is variable, with recovering populations ranging from 50 to 350 km^2. Because of this, I am selecting
+#  a home range size of 140km^2 for our models, which will require a radius input of 8 and a block size of 0.7 (~1/10 of 18, odd)
 
 # Load Packages: ----------------------------------------------------------
 library(terra)
