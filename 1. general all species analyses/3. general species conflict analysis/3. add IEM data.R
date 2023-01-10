@@ -165,10 +165,3 @@ conf.conflict.all$conflict_pres <- 1
 st_write(conf.conflict.all, "data/processed/conflict_conf_iem_dataframe.shp", append = FALSE)
 
 
-# Crop to BHW for mapping later: ------------------------------------------
-conf.reproj <- st_transform(conf.conflict.all, st_crs(bhw))
-conf.reports.bhw <- st_intersection(conf.reproj, bhw) 
-conf.reports.bhw <- conf.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
-st_write(conf.reports.bhw, "data/processed/conflict_conf_iem_bhw.shp", append = FALSE)
-
-

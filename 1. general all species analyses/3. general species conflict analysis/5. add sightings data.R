@@ -104,4 +104,10 @@ st_write(conf.conflict.comp, "data/processed/conflict_conf_comp_dataframe.shp", 
 # NOTE: this df now has provincial conflict reports, IEM bear reports, roadkill bears, predator compensations, wolf depred claims, and sightings 
 
 
+# Crop to BHW for mapping later: ------------------------------------------
+conf.reproj <- st_transform(conf.conflict.comp, st_crs(bhw))
+conf.reports.bhw <- st_intersection(conf.reproj, bhw) 
+conf.reports.bhw <- conf.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
+st_write(conf.reports.bhw, "data/processed/conflict_conf_comp_bhw.shp", append = FALSE)
+
 

@@ -551,3 +551,7 @@ wolf_ungulatedensity_mixe_plot.rds
 wolf_biosocial_fuzsum.tif
 wolf_biosocial_resist.tif
 varying_intercept_ccs.tif
+conflict_conf_comp_bhw.dbf
+conflict_conf_comp_bhw.prj
+conflict_conf_comp_bhw.shp
+conflict_conf_comp_bhw.shx
