@@ -31,10 +31,10 @@ loo2w <- loo(wolf.full.mod.quad, save_psis = TRUE, k_threshold = 0.7)
 loo3w <- loo(wolf.no.conf, save_psis = TRUE, k_threshold = 0.7)
 loo0w <- loo(wolf.int.only, save_psis = TRUE, k_threshold = 0.7)
 
-saveRDS(loo1b, "Data/processed/wolf_full_loo.rds")
-saveRDS(loo2b, "Data/processed/wolf_full_quad_loo.rds")
-saveRDS(loo3b, "Data/processed/wolf_no_conf_loo.rds")
-saveRDS(loo0b, "Data/processed/wolf_int_only_loo.rds")
+saveRDS(loo1w, "Data/processed/wolf_full_loo.rds")
+saveRDS(loo2w, "Data/processed/wolf_full_quad_loo.rds")
+saveRDS(loo3w, "Data/processed/wolf_no_conf_loo.rds")
+saveRDS(loo0w, "Data/processed/wolf_int_only_loo.rds")
 
 # Bring back in later:
 # loo1w <- readRDS("Data/processed/wolf_full_loo.rds")
@@ -88,8 +88,8 @@ round(mean(xor(ploo0>0.5,as.integer(wolf.conflict.df.scl$wolf_conflict==0))),2) 
     ## It looks like there is uncertainty with model selection due to the similarity of the models. 
     # Here we try model averaging and stacking to differentiate the full model from the full model + quad (both with delta LOOIC < -2:
 lpd_point <- cbind(
-  loo1b$pointwise[,"elpd_loo"], 
-  loo2b$pointwise[,"elpd_loo"]
+  loo1w$pointwise[,"elpd_loo"], 
+  loo2w$pointwise[,"elpd_loo"]
 )
 pbma_wts <- pseudobma_weights(lpd_point, BB=FALSE)
 pbma_BB_wts <- pseudobma_weights(lpd_point) # default is BB=TRUE
@@ -121,4 +121,4 @@ pROC::plot.roc(wolf.conflict.df.scl$wolf_conflict, wolf.int.only$fitted.values, 
 legend("bottomright", legend=c("Full Model", "Quad Model",  "No Conflict Model", "Varying Intercept-only Model"),
        col=c("#4daf4a","#377eb8", "#B090D0", "#FFAA00"), lwd = 4)
 
-# We will use the full model, as it has the lowest LOOIC, the best AUC, and seems to be stable.
+# We will use the full quad model, as it has the lowest LOOIC, the best AUC, and seems to be decent

@@ -54,10 +54,10 @@ wolf.full.mod <- stan_glmer(wolf_conflict ~ dist2pa + humandens + livestockOps +
                             seed = SEED)
 
 # Full Model + Quadratic for GenConf:
-wolf.full.mod.quad <- update(wolf.full.mod, formula = wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + conflictprob + I(conflictprob^2) + (1 | CCSNAME.ps), QR=TRUE)
+wolf.full.mod.quad <- update(wolf.full.mod, formula = wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ungulatedens + gHM + habsuit + connectivity + roaddens +  conflictprob + I(conflictprob^2) + (1 | CCSNAME.ps), QR=TRUE)
 
 # Full Model - GenConf:
-wolf.no.conf <- update(wolf.full.mod, formula = wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ndvi + gHM + habsuit + connectivity + (1 | CCSNAME.ps), QR=TRUE)
+wolf.no.conf <- update(wolf.full.mod, formula = wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + + ungulatedens + gHM + habsuit + connectivity + roaddens + (1 | CCSNAME.ps), QR=TRUE)
 
 # Intercept Only Model: 
 wolf.int.only <- update(wolf.full.mod, formula = wolf_conflict ~ 1 + (1 | CCSNAME.ps) , QR = FALSE)
