@@ -41,8 +41,8 @@ wolf_biophys_cumcurr <- rast("data/processed/wolf_biophys_cum_currmap.tif")
 wolf_biophys_norm <- rast("data/processed/wolf_biophys_normalized_cum_currmap.tif")
 
 # Conflict connectivity outputs: (you won't have these until after conflict analysis)
-wolf_conflict_cumcurr <- rast("data/processed/bbear_conflict_cum_currmap.tif")
-wolf_conflict_norm <- rast("data/processed/bbear_conflict_normalized_cum_currmap.tif")
+wolf_conflict_cumcurr <- rast("data/processed/wolf_conf_cum_currmap.tif")
+wolf_conflict_norm <- rast("data/processed/wolf_conf_normalized_cum_currmap.tif")
 
 # Make these vectors:
 bhb.50km.v <- vect(bhb.50km.boundary)

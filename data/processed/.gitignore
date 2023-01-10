@@ -555,3 +555,8 @@ conflict_conf_comp_bhw.dbf
 conflict_conf_comp_bhw.prj
 conflict_conf_comp_bhw.shp
 conflict_conf_comp_bhw.shx
+bhw_wolf_conflict_cumcurr.tif
+bhw_wolf_conflict_norm.tif
+wolf_conf_cum_currmap.tif
+wolf_conf_flow_potential.tif
+wolf_conf_normalized_cum_currmap.tif
