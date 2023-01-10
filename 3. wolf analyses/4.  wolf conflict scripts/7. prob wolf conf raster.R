@@ -18,9 +18,9 @@ bhw.v <- vect(bhw)
 fixed.effects <- fixef(wolf.full.mod.quad)
 var.int <- ranef(wolf.no.conf)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
 
-
-ccs.sf <- st_read("Data/processed/bhw_CCS_50km.shp")
-ccs.sf.join <- ccs.sf %>% left_join(., var.int)
+ccs.sf <- st_read("Data/processed/AB_CCS.shp")
+ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
+ccs.sf.join <- ccs.reproj %>% left_join(., var.int)
 ccs.sf.join[ccs.sf$CCSNAME == "Lesser Slave River No. 124",]$`(Intercept)` <- 0 #no points from this CCS; setting to 0 results in use of global intercept
 
 #load predictor rasters
@@ -35,6 +35,7 @@ biophys <- rast("data/processed/wolf_biophys_cum_currmap.tif")
 #wolf.inc.r <- rast("data/processed/wolf_increase_bhw.tif")
 road.dens.r <- rast("data/processed/bhb_road_density_250m.tif")
 conflict <- rast("Data/processed/prob_conflict_all.tif") # Only need this if using model with conflict
+ccs.int <- rast("data/processed/varying_intercept_ccs.tif")
 
 wolf.conf.pred.stack <- c(dist.2.pa, hum.dens.r, animal.dens, ground.dens, ungulate.r, ghm.r, whs, road.dens.r ,biophys, conflict) #, wolf.inc.r 
 
@@ -52,6 +53,9 @@ global.int[!is.na(global.int)] <- fixed.effects[[1]]
 #create var int raster
 ccs.vect <- vect(ccs.sf.join)
 ccs.int <- rasterize(ccs.vect, dist.2.pa, field='(Intercept)')
+ccs.int <- raster(ccs.int)
+ccs.int[is.na(ccs.int[])] <- 0 
+ccs.int <- rast(ccs.int)
 
 #scale predictor values based on dataframe
 dist.2.pa.scl <- (dist.2.pa - attributes(wolf.conflict.df.scl$dist2pa)[[2]])/attributes(wolf.conflict.df.scl$dist2pa)[[3]]
@@ -90,8 +94,8 @@ road.dens.pred <- road.dens.scl * fixed.effects[['roaddens']]
 conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
-# Add our Rasters:
-wolf.pred.stack <- c(dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
+# Add our Rasters: NOTE: including intercept (which is very high), messes this up
+wolf.pred.stack <- c( dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
 
 wolf.linpred.rst <- sum(wolf.pred.stack)
 wolf.prob.rast <- (exp(wolf.linpred.rst))/(1 + exp(wolf.linpred.rst))

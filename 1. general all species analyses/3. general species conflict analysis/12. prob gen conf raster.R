@@ -19,8 +19,9 @@ bhw.v <- vect(bhw)
 fixed.effects <- fixef(post.pa.full)
 var.int <- ranef(post.pa.full)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
 
-ccs.sf <- st_read("Data/processed/bhw_CCS_50km.shp")
-ccs.sf.join <- ccs.sf %>% left_join(., var.int)
+ccs.sf <- st_read("Data/processed/AB_CCS.shp")
+ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
+ccs.sf.join <- ccs.reproj %>% left_join(., var.int)
 ccs.sf.join[ccs.sf$CCSNAME == "Lesser Slave River No. 124",]$`(Intercept)` <- 0 #no points from this CCS; setting to 0 results in use of global intercept
 
 # Load predictor rasters:
@@ -45,6 +46,9 @@ global.int[!is.na(global.int)] <- fixed.effects[[1]]
 # Create var int raster
 ccs.vect <- vect(ccs.sf.join)
 ccs.int <- rasterize(ccs.vect, dist.2.pa, field='(Intercept)')
+ccs.int <- raster(ccs.int)
+ccs.int[is.na(ccs.int[])] <- 0 
+ccs.int <- rast(ccs.int)
 
 # Scale predictor values based on dataframe
 dist.2.pa.scl <- (dist.2.pa - attributes(pres.abs.scl$dist.2.pa.ps)[[2]])/attributes(pres.abs.scl$dist.2.pa.ps)[[3]]
@@ -69,6 +73,7 @@ agno.bio.pred <- agno.bio.scl * fixed.effects[['agno.biophys.ps']]
 pred.stack <- c(global.int, ccs.int, dist.2.pa.pred, ndvi.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ghm.pred, agno.bio.pred)
 linpred.rast <- sum(pred.stack)
 prob.rast <- (exp(linpred.rast))/(1 + exp(linpred.rast))
+plot(prob.rast)
 
 # Crop to BHW Boundary:
 prob.rast.bhw <- mask(prob.rast, bhw.v)

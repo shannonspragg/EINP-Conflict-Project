@@ -31,6 +31,14 @@ wolf_bio_cumcurrmap <- rast("data/processed/wolf_biophys_cum_currmap.tif")
 bhw  <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.50km <- st_read("data/processed/bhb_50km.shp")
 
+# Pull out just wolf reports (for mapping purposes):
+bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
+wolf.reports <- conflict.wolf.df %>% filter(conflict.wolf.df$wolves == "1")
+wr.reproj <- st_transform(wolf.reports, st_crs(bhw))
+wolf.reports.bhw <- st_intersection(wr.reproj, bhw) # This gives 21 total reports
+wolf.reports.bhw <- wolf.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
+st_write(wolf.reports.bhw, "Data/processed/confirmed_wolf_reports.shp", append = FALSE)
+
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------
 # Here we buffer the conflict and pres-abs points by 5000m (5km) before extracting the attributes from the farm polygons
 w.conflict.buf <- conflict.wolf.df %>% 
@@ -94,12 +102,3 @@ w.conflict.reproj <- w.conflict.reproj[-c(1130), ]
 # Save this as new file ---------------------------------------------------
 
 st_write(w.conflict.reproj, "Data/processed/wolf_confirmed_reports_full_df.shp", append = FALSE)
-
-# Pull out just wolf reports (for mapping purposes):
-bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
-wolf.reports <- w.conflict.reproj %>% filter(w.conflict.reproj$wolves == "1")
-wr.reproj <- st_transform(wolf.reports, st_crs(bhw))
-wolf.reports.bhw <- st_intersection(wr.reproj, bhw.50km) # This gives 21 total reports
-wolf.reports.bhw <- wolf.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
-st_write(wolf.reports.bhw, "Data/processed/confirmed_wolf_reports.shp", append = FALSE)
-
