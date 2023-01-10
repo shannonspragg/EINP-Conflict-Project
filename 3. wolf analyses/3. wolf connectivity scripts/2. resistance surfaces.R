@@ -73,5 +73,5 @@ fuzzysum6 <- function(r1, r2, r3, r4, r5, r6) {
 bio_social_fuzzysum <- fuzzysum5(ghm.conv, rough.inv, ag.land, bh.lake, prob.wolf.conf)
 biosocial_resistance <- (1+bio_social_fuzzysum)^10
 
-writeRaster(bio_social_fuzzysum, "data/processed/biosocial_fuzsum.tif",overwrite=TRUE)
-writeRaster(biosocial_resistance, "data/processed/biosocial_resist.tif", overwrite=TRUE)
+writeRaster(bio_social_fuzzysum, "data/processed/wolf_biosocial_fuzsum.tif",overwrite=TRUE)
+writeRaster(biosocial_resistance, "data/processed/wolf_biosocial_resist.tif", overwrite=TRUE)
