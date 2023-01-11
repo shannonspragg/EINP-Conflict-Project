@@ -77,7 +77,7 @@ fuzzysum6 <- function(r1, r2, r3, r4, r5, r6) {
   fuz.sum <- 1-(rc1.1m*rc2.1m*rc3.1m*rc4.1m*rc5.1m*rc6.1m)
 }
 # # Add together our biophys attributes + grizz inc resist: gHM, and roughness + grizz resist
-bio_social_fuzzysum <- fuzzysum5(ghm.conv, rough.inv, bh.lake, prob.cougar.conf)
+bio_social_fuzzysum <- fuzzysum5(ghm.conv, rough.inv, bh.lake, cougar.specialist, prob.cougar.conf)
 biosocial_resistance <- (1+bio_social_fuzzysum)^10
 
 writeRaster(bio_social_fuzzysum, "data/processed/cougar_biosocial_fuzsum.tif",overwrite=TRUE)
