@@ -42,7 +42,7 @@ cougar.mod.preds.plot
 cougar.coef.plot <- plot(cougar.full.mod, pars = c("dist2wetland","humandens",
                                               "edge_habitat",
                                               "pipeline_dens",
-                                              "ungulatedens", "gHM", "habsuit", "connectivity", "conflictprob"), main = "Predictor Effects for Black Cougar Conflict") # "cougarincrease",
+                                              "ungulatedens","road_dens", "gHM", "habsuit", "connectivity", "conflictprob"), main = "Predictor Effects for Black Cougar Conflict") # "cougarincrease",
 
 saveRDS(cougar.mod.preds.plot, "data/processed/cougar_noconf_predsplot.rds")
 saveRDS(cougar.coef.plot, "data/processed/cougar_coef_plot.rds")
@@ -59,6 +59,7 @@ p <- mcmc_intervals(posterior,
                               "edge_habitat" = "Edge Habitats",
                               "pipeline_dens" = "Pipeline Density",
                               "ungulatedens" = "Ungulate Density",
+                              "road_dens" = "Road Density",
                                "gHM" = "Human modification" ,
                               "habsuit" = "Cougar habitat suitability",
                             #  "cougarincrease" = "Public Support of cougar Population Increase",
@@ -74,6 +75,7 @@ simdata <- cougar.conflict.df.scl %>%
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
                     ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
                     gHM = mean(gHM),
                     habsuit = mean(habsuit),
                  #   cougarincrease = mean(cougarincrease),
@@ -116,6 +118,7 @@ simdata <- cougar.conflict.df.scl %>%
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
                     ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
                     gHM = mean(gHM),
                     habsuit = mean(habsuit),
                     #   cougarincrease = mean(cougarincrease),
@@ -157,6 +160,7 @@ simdata <- cougar.conflict.df.scl %>%
                     edge_habitat = seq_range(edge_habitat, n=300),
                     pipeline_dens = mean(pipeline_dens),
                     ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
                     gHM = mean(gHM),
                     habsuit = mean(habsuit),
                     #   cougarincrease = mean(cougarincrease),
@@ -198,6 +202,7 @@ simdata <- cougar.conflict.df.scl %>%
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = seq_range(pipeline_dens, n=300),
                     ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
                     gHM = mean(gHM),
                     habsuit = mean(habsuit),
                     #   cougarincrease = mean(cougarincrease),
@@ -239,6 +244,7 @@ simdata <- cougar.conflict.df.scl %>%
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
                     ungulatedens = seq_range(ungulatedens, n=300),
+                    road_dens = mean(road_dens),
                     gHM = mean(gHM),
                     habsuit = mean(habsuit),
                     #   cougarincrease = mean(cougarincrease),
@@ -272,6 +278,46 @@ ungulate.plot.c <- ggplot(data=plot.df) +
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(ungulate.plot.c, "data/processed/cougar_ungulate_density_mixe_plot.rds")
 
+# Prep road dens Plot -----------------------------------------------------------
+simdata <- cougar.conflict.df.scl %>%
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
+                    humandens = mean(humandens),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    ungulatedens = mean(ungulatedens),
+                    road_dens = seq_range(road_dens, n = 300),
+                    gHM = mean(gHM),
+                    habsuit = mean(habsuit),
+                    #   cougarincrease = mean(cougarincrease),
+                    connectivity = mean(connectivity),
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+                                        newdata=simdata,
+                                        ndraws=1000,
+                                        re_formula=NA)
+
+postdraws$road_dens <- (postdraws$road_dens * attributes(cougar.conflict.df.scl$road_dens)[[3]])+attributes(cougar.conflict.df.scl$road_dens)[[2]]
+
+# Plot Pop Dens:
+plot.df <- postdraws %>% 
+  mutate_at(., vars(conflictprob), as.factor) %>% 
+  group_by(road_dens, conflictprob) %>% 
+  summarise(., mean = mean(.epred),
+            lo = quantile(.epred, 0.2),
+            hi = quantile(.epred, 0.8))
+
+levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
+road.dens.plot.c <- ggplot(data=plot.df) +
+  geom_line(aes(x = road_dens, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=road_dens, fill = conflictprob), alpha = 0.2) +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
+  ylab("Probability of Cougar Conflict") + 
+  xlab(expression("Road Density per"~km^{2}))+
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(road.dens.plot.c, "data/processed/cougar_road_density_mixe_plot.rds")
+
 
 # Prep gHM Plot -----------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -280,6 +326,7 @@ simdata <- cougar.conflict.df.scl %>%
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
                     ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
                     gHM = seq_range(gHM, n=300),
                     habsuit = mean(habsuit),
                     #   cougarincrease = mean(cougarincrease),
@@ -312,13 +359,14 @@ human.mod.plot.c <- ggplot(data=plot.df) +
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(human.mod.plot.c, "data/processed/cougar_gHM_mixe_plot.rds")
 
-# Prep WHS Plot -----------------------------------------------------------
+# Prep CHS Plot -----------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2wetland = mean(dist2wetland),
                     humandens = mean(humandens),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
                     ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
                     gHM = mean(gHM),
                     habsuit = seq_range(habsuit, n=300),
                     #   cougarincrease = mean(cougarincrease),
@@ -359,6 +407,7 @@ simdata <- cougar.conflict.df.scl %>%
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
                     ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
                     gHM = mean(gHM),
                     habsuit = mean(habsuit),
                     #   cougarincrease = mean(cougarincrease),
@@ -400,6 +449,7 @@ simdata <- cougar.conflict.df.scl %>%
                     rowcropOps = mean(rowcropOps),
                     connectivity = mean(connectivity),
                     ungulate_dens = mean(ungulate_dens),
+                    road_dens = mean(road_dens),
                     habsuit = mean(habsuit),
                     gHM = mean(gHM),
                     cougarincrease = seq_range(cougarincrease, n=300),
@@ -413,7 +463,7 @@ postdraws <- tidybayes::add_epred_draws(cougar.full.mod,
 
 postdraws$cougarinc <- (postdraws$cougarinc * attributes(cougar.conflict.df.scl$cougarinc)[[3]])+attributes(cougar.conflict.df.scl$cougarinc)[[2]]
 
-# Plot Pop Dens:
+# Plot Cougar Inc:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
   group_by(cougarinc, conflictprob) %>% 
@@ -436,9 +486,9 @@ saveRDS(cougar.increase.plot, "data/processed/cougar_increase_mixe_plot.rds")
 # Add Plots together:
 biophys.p.c <-  dist2wetland.plot + edge.hab.plot + habsuit.plot.c + ungulate.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         
 
-social.p.c <-  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
+social.p.c <-  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + road.dens.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
 
-cougar.plot.all <- dist2wetland.plot + edge.hab.plot + habsuit.plot.c + ungulate.plot.c +  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
+cougar.plot.all <- dist2wetland.plot + edge.hab.plot + habsuit.plot.c + ungulate.plot.c +  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + road.dens.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
 
 saveRDS(biophys.p.c, "data/processed/biophys_cougar_conf_plots.rds")
 saveRDS(social.p.c, "data/processed/social_cougar_conf_plots.rds")
