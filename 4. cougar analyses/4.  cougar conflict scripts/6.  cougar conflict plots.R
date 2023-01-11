@@ -35,14 +35,14 @@ library(insight)
 library(ggplot2)
 
 cougar.full.result <- p_direction(cougar.full.mod)
-cougar.mod.preds.plot <- plot(cougar.full.result, title = "Predictor Effects for Bear Conflict")
+cougar.mod.preds.plot <- plot(cougar.full.result, title = "Predictor Effects for Cougar Conflict")
 cougar.mod.preds.plot
 # this is the max probability of effect (MPE), showing the probability of a predictor having a positive or negative effect
 
-cougar.coef.plot <- plot(cougar.full.mod, pars = c("dist2pa","humandens",
-                                              "livestockOps",
-                                              "rowcropOps",
-                                              "ungulate_dens", "gHM", "habsuit", "connectivity", "cougarincrease", "roaddens", "conflictprob"), main = "Predictor Effects for Black Bear Conflict")
+cougar.coef.plot <- plot(cougar.full.mod, pars = c("dist2wetland","humandens",
+                                              "edge_habitat",
+                                              "pipeline_dens",
+                                              "ungulatedens", "gHM", "habsuit", "connectivity", "conflictprob"), main = "Predictor Effects for Black Cougar Conflict") # "cougarincrease",
 
 saveRDS(cougar.mod.preds.plot, "data/processed/cougar_noconf_predsplot.rds")
 saveRDS(cougar.coef.plot, "data/processed/cougar_coef_plot.rds")
@@ -54,32 +54,30 @@ parnames <- names(fixef(cougar.full.mod))[2:9] # change range based on model var
 p <- mcmc_intervals(posterior,
                     pars = parnames,
                     prob = 0.8) +
-  scale_y_discrete(labels = c("dist2pa" = "Dist. to PA",
+  scale_y_discrete(labels = c("dist2wetland" = "Dist. to Wetlands",
                               "humandens" = "Human Population Density",
-                              "livestockOps" = "Dens. of livestock ops.",
-                              "rowcropOps" = "Dens. of row-crop ops.",
-                              "connectivity" = "Bear Biophysical Connectivity",
-                              "ungulate_dens" = "Ungulate Density",
-                              "habsuit" = "Black bear habitat suitability",
+                              "edge_habitat" = "Edge Habitats",
+                              "pipeline_dens" = "Pipeline Density",
+                              "ungulatedens" = "Ungulate Density",
                                "gHM" = "Human modification" ,
-                              "cougarincrease" = "Public Support of cougar Population Increase",
-                              "roaddens" = "Road Density",
-                               "conflictprob" = "Prob of wildlife conflict"))
+                              "habsuit" = "Cougar habitat suitability",
+                            #  "cougarincrease" = "Public Support of cougar Population Increase",
+                            "connectivity" = "Cougar Biophysical Connectivity",
+                            "conflictprob" = "Prob of wildlife conflict"))
                               # "I(conflictprob^2)" = expression("Prob of wildlife conflict"^2))) # only use these if using conflict model
 
 
-# Prep Dist to PA Plot ----------------------------------------------------
+# Prep Dist to Wetland Plot ----------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = seq_range(dist2pa, n=300),
+  modelr::data_grid(dist2wetland = seq_range(dist2wetland, n=300),
                     humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
-                    connectivity = mean(connectivity),
-                    ungulate_dens = mean(ungulate_dens),
-                    habsuit = mean(habsuit),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    ungulatedens = mean(ungulatedens),
                     gHM = mean(gHM),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = mean(roaddens),
+                    habsuit = mean(habsuit),
+                 #   cougarincrease = mean(cougarincrease),
+                    connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
 postdraws <- tidybayes::add_epred_draws(cougar.full.mod, # changing to add_elpd_draws from add_fitted_draws
@@ -87,44 +85,41 @@ postdraws <- tidybayes::add_epred_draws(cougar.full.mod, # changing to add_elpd_
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$dist2pa_un <- (postdraws$dist2pa * attributes(cougar.conflict.df.scl$dist2pa)[[3]])+attributes(cougar.conflict.df.scl$dist2pa)[[2]]
+postdraws$dist2wetland <- (postdraws$dist2wetland * attributes(cougar.conflict.df.scl$dist2wetland)[[3]])+attributes(cougar.conflict.df.scl$dist2wetland)[[2]]
 
-# Plot Dist to PA:
+# Plot Dist to Wetland:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(dist2pa_un, conflictprob) %>% # if using conflict model, this is conflictprob
+  group_by(dist2wetland, conflictprob) %>% # if using conflict model, this is conflictprob
   summarise(., mean = mean(.epred),
             lo = quantile(.epred, 0.2),
             hi = quantile(.epred, 0.8))
 
 levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
 
-dist2pa.plot.w <- ggplot(data=plot.df) +
-  geom_line(aes(x = dist2pa_un, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=dist2pa_un, fill = conflictprob), alpha = 0.2) +
+dist2wetland.plot <- ggplot(data=plot.df) +
+  geom_line(aes(x = dist2wetland, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=dist2wetland, fill = conflictprob), alpha = 0.2) +
   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
-  xlab("Distance to Protected Areas (km)")+
+  ylab("Probability of Cougar Conflict") + 
+  xlab("Distance to Wetland Areas (km)")+
   # guides(fill=guide_legend(title="Population Density"))+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(dist2pa.plot.w, "data/processed/cougar_dist2pa_mixe_plot.rds")
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(dist2wetland.plot, "data/processed/cougar_dist2wetland_mixe_plot.rds")
 
 
 # Prep Human Density Plot: ----------------------------------------------------
-
-
 simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
                     humandens = seq_range(humandens, n=300),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
-                    connectivity = mean(connectivity),
-                    ungulate_dens = mean(ungulate_dens),
-                    habsuit = mean(habsuit),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    ungulatedens = mean(ungulatedens),
                     gHM = mean(gHM),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = mean(roaddens),
+                    habsuit = mean(habsuit),
+                    #   cougarincrease = mean(cougarincrease),
+                    connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
 postdraws <- tidybayes::add_epred_draws(cougar.full.mod,
@@ -143,30 +138,29 @@ plot.df <- postdraws %>%
             hi = quantile(.epred, 0.8))
 
 levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-pop.dens.plot <- ggplot(data=plot.df) +
+pop.dens.plot.c <- ggplot(data=plot.df) +
   geom_line(aes(x = humandens, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=humandens, fill = conflictprob), alpha = 0.2) +
   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") +
+  ylab("Probability of Cougar Conflict") +
   xlab("Human Population Density")+
   # guides(fill=guide_legend(title="Population Density"))+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(pop.dens.plot, "data/processed/cougar_popdens_mixe_plot.rds")
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(pop.dens.plot.c, "data/processed/cougar_popdens_mixe_plot.rds")
 
 
-# Prep Livestock plot: ----------------------------------------------------
+# Prep Edge Habitat plot: ----------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
                     humandens = mean(humandens),
-                    livestockOps = seq_range(livestockOps, n=300),
-                    rowcropOps = mean(rowcropOps),
+                    edge_habitat = seq_range(edge_habitat, n=300),
+                    pipeline_dens = mean(pipeline_dens),
+                    ungulatedens = mean(ungulatedens),
+                    gHM = mean(gHM),
+                    habsuit = mean(habsuit),
+                    #   cougarincrease = mean(cougarincrease),
                     connectivity = mean(connectivity),
-                    ungulate_dens = mean(ungulate_dens),
-                    habsuit = mean(habsuit),
-                    gHM = mean(gHM),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = mean(roaddens),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
 postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
@@ -174,42 +168,40 @@ postdraws <- tidybayes::add_epred_draws(cougar.full.mod,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$livestockOps_un <- (postdraws$livestockOps * attributes(cougar.conflict.df.scl$livestockOps)[[3]])+attributes(cougar.conflict.df.scl$livestockOps)[[2]]
+postdraws$edge_habitat <- (postdraws$edge_habitat * attributes(cougar.conflict.df.scl$edge_habitat)[[3]])+attributes(cougar.conflict.df.scl$edge_habitat)[[2]]
 
-# Plot Livestock Dens:
+# Plot Edge habitat:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(livestockOps_un, conflictprob) %>% 
+  group_by(edge_habitat, conflictprob) %>% 
   summarise(., mean = mean(.epred),
             lo = quantile(.epred, 0.2),
             hi = quantile(.epred, 0.8))
 
 levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-livestockOps.plot.w <- ggplot(data=plot.df) +
-  geom_line(aes(x = livestockOps_un, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=livestockOps_un, fill = conflictprob), alpha = 0.2) +
+edge.hab.plot <- ggplot(data=plot.df) +
+  geom_line(aes(x = edge_habitat, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=edge_habitat, fill = conflictprob), alpha = 0.2) +
   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
-  xlab(expression("Density of Livestock Operations per"~km^{2}))+
+  ylab("Probability of Cougar Conflict") + 
+  xlab("Forest Edge Habitat Coverage")+
   # guides(fill=guide_legend(title="Population Density"))+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(livestockOps.plot.w, "data/processed/cougar_livestockOps_mixe_plot.rds")
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(edge.hab.plot, "data/processed/cougar_edge_hab_mixe_plot.rds")
 
 
-# Prep Row Crop Plot: -----------------------------------------------------
-
+# Prep Pipeline Dens Plot: -----------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
                     humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = seq_range(rowcropOps, n=300),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = seq_range(pipeline_dens, n=300),
+                    ungulatedens = mean(ungulatedens),
+                    gHM = mean(gHM),
+                    habsuit = mean(habsuit),
+                    #   cougarincrease = mean(cougarincrease),
                     connectivity = mean(connectivity),
-                    ungulate_dens = mean(ungulate_dens),
-                    habsuit = mean(habsuit),
-                    gHM = mean(gHM),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = mean(roaddens),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
 postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
@@ -217,125 +209,40 @@ postdraws <- tidybayes::add_epred_draws(cougar.full.mod,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$rowcropOps_un <- (postdraws$rowcropOps * attributes(cougar.conflict.df.scl$rowcropOps)[[3]])+attributes(cougar.conflict.df.scl$rowcropOps)[[2]]
+postdraws$pipeline_dens <- (postdraws$pipeline_dens * attributes(cougar.conflict.df.scl$pipeline_dens)[[3]])+attributes(cougar.conflict.df.scl$pipeline_dens)[[2]]
 
-# Plot Row Crop Dens:
+# Plot Pipeline Dens:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(rowcropOps_un, conflictprob) %>% 
+  group_by(pipeline_dens, conflictprob) %>% 
   summarise(., mean = mean(.epred),
             lo = quantile(.epred, 0.2),
             hi = quantile(.epred, 0.8))
 
 levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-rowcropOps.plot.w <- ggplot(data=plot.df) +
-  geom_line(aes(x = rowcropOps_un, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=rowcropOps_un, fill = conflictprob), alpha = 0.2) +
+pipeline.dens.plot <- ggplot(data=plot.df) +
+  geom_line(aes(x = pipeline_dens, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=pipeline_dens, fill = conflictprob), alpha = 0.2) +
   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
-  xlab(expression("Density of Row-crop Operations per"~km^{2}))+
+  ylab("Probability of Cougar Conflict") + 
+  xlab(expression("Density of Pipelines per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(rowcropOps.plot.w, "data/processed/cougar_rowcrops_mixe_plot.rds")
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(pipeline.dens.plot, "data/processed/cougar_pipeline_dens_mixe_plot.rds")
 
-# Prep Connectivity Plot: -------------------------------------------------
-simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
-                    humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
-                    connectivity = seq_range(connectivity, n=300),
-                    ungulate_dens = mean(ungulate_dens),
-                    habsuit = mean(habsuit),
-                    gHM = mean(gHM),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = mean(roaddens),
-                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
-
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
-                                        newdata=simdata,
-                                        ndraws=1000,
-                                        re_formula=NA)
-
-postdraws$connectivity_un <- (postdraws$connectivity * attributes(cougar.conflict.df.scl$connectivity)[[3]])+attributes(cougar.conflict.df.scl$connectivity)[[2]]
-
-# Plot Biophys Current:
-plot.df <- postdraws %>% 
-  mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(connectivity_un, conflictprob) %>% 
-  summarise(., mean = mean(.epred),
-            lo = quantile(.epred, 0.2),
-            hi = quantile(.epred, 0.8))
-
-levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-connectivity.plot <- ggplot(data=plot.df) +
-  geom_line(aes(x = connectivity_un, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=connectivity_un, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
-  xlab("Cumulative Current Flow (Amperes)")+
-  # guides(fill=guide_legend(title="Population Density"))+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(connectivity.plot, "data/processed/cougar_connectivity_mixe_plot.rds")
 
 # Prep Ungulate density Plot: ---------------------------------------------------------
-
 simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
                     humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
-                    connectivity = mean(connectivity),
-                    ungulate_dens = seq_range(ungulate_dens, n=300),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    ungulatedens = seq_range(ungulatedens, n=300),
+                    gHM = mean(gHM),
                     habsuit = mean(habsuit),
-                    gHM = mean(gHM),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = mean(roaddens),
-                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
-
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
-                                        newdata=simdata,
-                                        ndraws=1000,
-                                        re_formula=NA)
-
-postdraws$ungulate_dens <- (postdraws$ungulate_dens * attributes(cougar.conflict.df.scl$ungulate_dens)[[3]]) + attributes(cougar.conflict.df.scl$ungulate_dens)[[2]]
-
-# Plot GrizzInc:
-plot.df <- postdraws %>% 
-  mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(ungulate_dens, conflictprob) %>% 
-  summarise(., mean = mean(.epred),
-            lo = quantile(.epred, 0.2),
-            hi = quantile(.epred, 0.8))
-
-levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-ungulate.plot.w <- ggplot(data=plot.df) +
-  geom_line(aes(x = ungulate_dens, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=ungulate_dens, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
-  xlab("Ungulate Population Density")+
-  # guides(fill=guide_legend(title="Population Density"))+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(ungulate.plot.w, "data/processed/cougar_ungulate_density_mixe_plot.rds")
-
-
-# Prep WHS Plot -----------------------------------------------------------
-
-simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
-                    humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
+                    #   cougarincrease = mean(cougarincrease),
                     connectivity = mean(connectivity),
-                    ungulate_dens = mean(ungulate_dens),
-                    habsuit = seq_range(habsuit, n=300),
-                    gHM = mean(gHM),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = mean(roaddens),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
 postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
@@ -343,41 +250,40 @@ postdraws <- tidybayes::add_epred_draws(cougar.full.mod,
                                         ndraws=1000,
                                         re_formula=NA)
 
-postdraws$habsuit_un <- (postdraws$habsuit * attributes(cougar.conflict.df.scl$habsuit)[[3]])+attributes(cougar.conflict.df.scl$habsuit)[[2]]
+postdraws$ungulatedens <- (postdraws$ungulatedens * attributes(cougar.conflict.df.scl$ungulatedens)[[3]]) + attributes(cougar.conflict.df.scl$ungulatedens)[[2]]
 
-#Plot wHS:
+# Plot Ungulate Density:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(habsuit_un, conflictprob) %>% 
+  group_by(ungulatedens, conflictprob) %>% 
   summarise(., mean = mean(.epred),
             lo = quantile(.epred, 0.2),
             hi = quantile(.epred, 0.8))
 
 levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-habsuit.plot <- ggplot(data=plot.df) +
-  geom_line(aes(x = habsuit_un, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=habsuit_un, fill = conflictprob), alpha = 0.2) +
+ungulate.plot.c <- ggplot(data=plot.df) +
+  geom_line(aes(x = ungulatedens, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=ungulatedens, fill = conflictprob), alpha = 0.2) +
   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
-  xlab("Predicted Black Bear Habitat Suitability")+
+  ylab("Probability of Cougar Conflict") + 
+  xlab(expression("Ungulate Population Density per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(habsuit.plot, "data/processed/cougar_bhs_mixe_plot.rds")
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(ungulate.plot.c, "data/processed/cougar_ungulate_density_mixe_plot.rds")
+
 
 # Prep gHM Plot -----------------------------------------------------------
-
 simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
                     humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
-                    connectivity = mean(connectivity),
-                    ungulate_dens = mean(ungulate_dens),
-                    habsuit = mean(habsuit),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    ungulatedens = mean(ungulatedens),
                     gHM = seq_range(gHM, n=300),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = mean(roaddens),
+                    habsuit = mean(habsuit),
+                    #   cougarincrease = mean(cougarincrease),
+                    connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
 postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
@@ -396,18 +302,97 @@ plot.df <- postdraws %>%
             hi = quantile(.epred, 0.8))
 
 levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-human.mod.plot <- ggplot(data=plot.df) +
+human.mod.plot.c <- ggplot(data=plot.df) +
   geom_line(aes(x = gHM, y = mean, colour =conflictprob), lwd=1.5) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=gHM, fill = conflictprob), alpha = 0.2) +
   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
+  ylab("Probability of Cougar Conflict") + 
   xlab("Degree of Human Modification (gHM)")+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(human.mod.plot, "data/processed/cougar_gHM_mixe_plot.rds")
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(human.mod.plot.c, "data/processed/cougar_gHM_mixe_plot.rds")
+
+# Prep WHS Plot -----------------------------------------------------------
+simdata <- cougar.conflict.df.scl %>%
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
+                    humandens = mean(humandens),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    ungulatedens = mean(ungulatedens),
+                    gHM = mean(gHM),
+                    habsuit = seq_range(habsuit, n=300),
+                    #   cougarincrease = mean(cougarincrease),
+                    connectivity = mean(connectivity),
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+                                        newdata=simdata,
+                                        ndraws=1000,
+                                        re_formula=NA)
+
+postdraws$habsuit <- (postdraws$habsuit * attributes(cougar.conflict.df.scl$habsuit)[[3]])+attributes(cougar.conflict.df.scl$habsuit)[[2]]
+
+#Plot wHS:
+plot.df <- postdraws %>% 
+  mutate_at(., vars(conflictprob), as.factor) %>% 
+  group_by(habsuit, conflictprob) %>% 
+  summarise(., mean = mean(.epred),
+            lo = quantile(.epred, 0.2),
+            hi = quantile(.epred, 0.8))
+
+levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
+habsuit.plot.c <- ggplot(data=plot.df) +
+  geom_line(aes(x = habsuit, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=habsuit, fill = conflictprob), alpha = 0.2) +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
+  ylab("Probability of Cougar Conflict") + 
+  xlab("Predicted Cougar Habitat Suitability")+
+  # guides(fill=guide_legend(title="Population Density"))+
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(habsuit.plot.c, "data/processed/cougar_chs_mixe_plot.rds")
+
+# Prep Connectivity Plot: -------------------------------------------------
+simdata <- cougar.conflict.df.scl %>%
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
+                    humandens = mean(humandens),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    ungulatedens = mean(ungulatedens),
+                    gHM = mean(gHM),
+                    habsuit = mean(habsuit),
+                    #   cougarincrease = mean(cougarincrease),
+                    connectivity = seq_range(connectivity, n=300),
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+
+postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+                                        newdata=simdata,
+                                        ndraws=1000,
+                                        re_formula=NA)
+
+postdraws$connectivity <- (postdraws$connectivity * attributes(cougar.conflict.df.scl$connectivity)[[3]])+attributes(cougar.conflict.df.scl$connectivity)[[2]]
+
+# Plot Biophys Current:
+plot.df <- postdraws %>% 
+  mutate_at(., vars(conflictprob), as.factor) %>% 
+  group_by(connectivity, conflictprob) %>% 
+  summarise(., mean = mean(.epred),
+            lo = quantile(.epred, 0.2),
+            hi = quantile(.epred, 0.8))
+
+levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
+connectivity.plot.c <- ggplot(data=plot.df) +
+  geom_line(aes(x = connectivity, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=connectivity, fill = conflictprob), alpha = 0.2) +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
+  ylab("Probability of Cougar Conflict") + 
+  xlab("Cumulative Current Flow (Amperes)")+
+  # guides(fill=guide_legend(title="Population Density"))+
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(connectivity.plot.c, "data/processed/cougar_connectivity_mixe_plot.rds")
 
 # Prep cougar inc Plot -----------------------------------------------------------
-
 simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = mean(humandens),
@@ -442,61 +427,20 @@ cougar.increase.plot <- ggplot(data=plot.df) +
   geom_ribbon(aes(ymin=lo, ymax=hi, x=cougarinc, fill = conflictprob), alpha = 0.2) +
   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
+  ylab("Probability of Cougar Conflict") + 
   xlab("Public Support of cougar Population Increase (%)")+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(cougar.increase.plot, "data/processed/cougar_increase_mixe_plot.rds")
-
-# Prep road dens Plot -----------------------------------------------------------
-
-simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
-                    humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
-                    connectivity = mean(connectivity),
-                    ungulate_dens = mean(ungulate_dens),
-                    habsuit = mean(habsuit),
-                    gHM = mean(gHM),
-                    cougarincrease = mean(cougarincrease),
-                    roaddens = seq_range(roaddens, n=300),
-                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
-
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
-                                        newdata=simdata,
-                                        ndraws=1000,
-                                        re_formula=NA)
-
-postdraws$roaddens <- (postdraws$roaddens * attributes(cougar.conflict.df.scl$roaddens)[[3]])+attributes(cougar.conflict.df.scl$roaddens)[[2]]
-
-# Plot Pop Dens:
-plot.df <- postdraws %>% 
-  mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(roaddens, conflictprob) %>% 
-  summarise(., mean = mean(.epred),
-            lo = quantile(.epred, 0.2),
-            hi = quantile(.epred, 0.8))
-
-levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-road.dens.plot <- ggplot(data=plot.df) +
-  geom_line(aes(x = roaddens, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=roaddens, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Bear Conflict") + 
-  xlab("Road Density per km")+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.wackground = element_rect(fill = "white", colour = "grey50"))
-saveRDS(road.dens.plot, "data/processed/cougar_road_density_mixe_plot.rds")
 
 
 # Add Plots together:
-biophys.p <-  connectivity.plot + habsuit.plot + dist2pa.plot.w + ungulate.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         
+biophys.p.c <-  dist2wetland.plot + edge.hab.plot + habsuit.plot.c + ungulate.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         
 
-social.p <-  livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot + road.dens.plot + cougar.increase.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+social.p.c <-  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
 
-cougar.plot.all <- connectivity.plot + habsuit.plot + dist2pa.plot.w + ungulate.plot + livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot + road.dens.plot + cougar.increase.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+cougar.plot.all <- dist2wetland.plot + edge.hab.plot + habsuit.plot.c + ungulate.plot.c +  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
 
-saveRDS(biophys.p, "data/processed/biophys_cougar_conf_plots.rds")
-saveRDS(social.p, "data/processed/social_cougar_conf_plots.rds")
+saveRDS(biophys.p.c, "data/processed/biophys_cougar_conf_plots.rds")
+saveRDS(social.p.c, "data/processed/social_cougar_conf_plots.rds")
 saveRDS(cougar.plot.all, "data/processed/all_cougar_conf_plots.rds")
 

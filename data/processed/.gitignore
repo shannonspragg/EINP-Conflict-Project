@@ -580,3 +580,16 @@ cougar_loo_comp.rds
 cougar_no_conf.rds
 cougar_no_conf_loo.rds
 cougar_quad_reg.rds
+all_cougar_conf_plots.rds
+biophys_cougar_conf_plots.rds
+cougar_chs_mixe_plot.rds
+cougar_coef_plot.rds
+cougar_connectivity_mixe_plot.rds
+cougar_dist2wetland_mixe_plot.rds
+cougar_edge_hab_mixe_plot.rds
+cougar_gHM_mixe_plot.rds
+cougar_noconf_predsplot.rds
+cougar_pipeline_dens_mixe_plot.rds
+cougar_popdens_mixe_plot.rds
+cougar_ungulate_density_mixe_plot.rds
+social_cougar_conf_plots.rds
