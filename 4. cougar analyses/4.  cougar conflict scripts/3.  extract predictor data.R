@@ -26,8 +26,16 @@ pipeline.dens.rast <- rast("data/processed/bhb_pipeline_density_250m.tif")
 edge.hab.rast <- rast("data/processed/forest_edge_habitats.tif")
 ghm.rast <- rast("data/processed/bhw_ghm.tif")
 chs <- rast("data/processed/cougar_habitat_suitability.tif")
-cougar.inc <- rast("data/processed/bhw_cougar_increase.tif") # STILL NEED
+#cougar.inc <- rast("data/processed/bhw_cougar_increase.tif") # STILL NEED
 cougar_bio_cumcurrmap <- rast("data/processed/cougar_biophys_cum_currmap.tif")
+
+# Pull out just cougar reports (for mapping purposes):
+bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
+cougar.reports <- conflict.cougar.df %>% filter(conflict.cougar.df$cougars == "1")
+cr.reproj <- st_transform(cougar.reports, st_crs(bhw))
+cougar.reports.bhw <- st_intersection(cr.reproj, bhw) # This gives 2057 total reports
+cougar.reports.bhw <- cougar.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
+st_write(cougar.reports.bhw, "Data/processed/confirmed_cougar_reports.shp", append = FALSE)
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------
 # Here we buffer the conflict and pres-abs points by 5000m (5km) before extracting the attributes from the farm polygons
@@ -39,7 +47,7 @@ c.conflict.reproj <- st_make_valid(conflict.buf) %>%
     st_transform(crs=crs(dist2water.rast))
 
 # Make the buffered points spat vectors:
-cougar.con.buf.v <- vect(c.c.conflict.reproj)
+cougar.con.buf.v <- vect(c.conflict.reproj)
 
 crs(cougar.con.buf.v) == crs(ungulate.dens.rast) #TRUE
 
@@ -70,27 +78,22 @@ c.conflict.reproj$cougar_biophys <- conf.bio.ext[,2]
 
 
 # Check for NA's:
-which(is.na(c.conflict.reproj$dist2water_km)) #none
-which(is.na(c.conflict.reproj$hum_dens)) #none
-which(is.na(c.conflict.reproj$edge_habitats)) #none
-which(is.na(c.conflict.reproj$pipeline_dens)) #none
-which(is.na(c.conflict.reproj$ungulate_dens)) #none
-which(is.na(c.conflict.reproj$road_dens)) #none
-which(is.na(c.conflict.reproj$gHM)) #none
-which(is.na(c.conflict.reproj$chs)) #none
-which(is.na(c.conflict.reproj$cougar_biophys)) #none
-#which(is.na(c.conflict.reproj$cougar_inc)) #none
+which(is.na(c.conflict.reproj$dist2water_km)) #one
+which(is.na(c.conflict.reproj$hum_dens)) #one
+which(is.na(c.conflict.reproj$edge_habitats)) #one
+which(is.na(c.conflict.reproj$pipeline_dens)) #one
+which(is.na(c.conflict.reproj$ungulate_dens)) #one
+which(is.na(c.conflict.reproj$road_dens)) #one
+which(is.na(c.conflict.reproj$gHM)) #one
+which(is.na(c.conflict.reproj$chs)) #one
+which(is.na(c.conflict.reproj$cougar_biophys)) #one
+#which(is.na(c.conflict.reproj$cougar_inc)) #one
 
+# Remove 1130th row
+c.conflict.reproj <- c.conflict.reproj[-c(1130), ]
 
 # Save this as new file ---------------------------------------------------
 
 st_write(c.conflict.reproj, "Data/processed/cougar_confirmed_reports_full_df.shp", append = FALSE)
 
-# Pull out just cougar reports (for mapping purposes):
-bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
-cougar.reports <- c.conflict.reproj %>% filter(c.conflict.reproj$wolves == "1")
-wr.reproj <- st_transform(cougar.reports, st_crs(bhw))
-cougar.reports.bhw <- st_intersection(br.reproj, bhw) # This gives 2057 total reports
-cougar.reports.bhw <- cougar.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
-st_write(cougar.reports.bhw, "Data/processed/confirmed_cougar_reports.shp", append = FALSE)
 
