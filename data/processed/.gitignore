@@ -571,3 +571,12 @@ cougar_confirmed_reports_full_df.dbf
 cougar_confirmed_reports_full_df.prj
 cougar_confirmed_reports_full_df.shp
 cougar_confirmed_reports_full_df.shx
+cougar_full_loo.rds
+cougar_full_mod.rds
+cougar_full_quad_loo.rds
+cougar_int_only.rds
+cougar_int_only_loo.rds
+cougar_loo_comp.rds
+cougar_no_conf.rds
+cougar_no_conf_loo.rds
+cougar_quad_reg.rds
