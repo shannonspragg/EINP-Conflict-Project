@@ -6,6 +6,8 @@
 # Load Packages -------------------------------------------------------
 library(googledrive)
 library(tidyverse)
+library(sf)
+library(terra)
 
 # Load our Data with GoogleDrive: -----------------------------------------
 options(
@@ -41,8 +43,8 @@ cougar_biophys_cumcurr <- rast("data/processed/cougar_biophys_cum_currmap.tif")
 cougar_biophys_norm <- rast("data/processed/cougar_biophys_normalized_cum_currmap.tif")
 
 # Conflict connectivity outputs: (you won't have these until after conflict analysis)
-cougar_conflict_cumcurr <- rast("data/processed/bbear_conflict_cum_currmap.tif")
-cougar_conflict_norm <- rast("data/processed/bbear_conflict_normalized_cum_currmap.tif")
+cougar_conflict_cumcurr <- rast("data/processed/cougar_conflict_cum_currmap.tif")
+cougar_conflict_norm <- rast("data/processed/cougar_conflict_normalized_cum_currmap.tif")
 
 # Make these vectors:
 bhb.50km.v <- vect(bhb.50km.boundary)
@@ -69,8 +71,8 @@ cougar_conflict_norm.bhw <- terra::mask(cougar_conflict_norm, bhw.v)
 writeRaster(cougar_bio_cumcurr.bhb, "data/processed/bhw_cougar_biophys_cumcurr_50km.tif", overwrite=TRUE)
 writeRaster(cougar_bio_norm.bhb, "data/processed/bhw_cougar_biophys_norm_50km.tif", overwrite=TRUE)
 
-writeRaster(bbear_conflict_cumcurr.bhb, "data/processed/bhw_cougar_conflict_cumcurr_50km.tif", overwrite=TRUE)
-writeRaster(bbear_conflict_norm.bhb, "data/processed/bhw_cougar_conflict_norm_50km.tif", overwrite=TRUE)
+writeRaster(cougar_conflict_cumcurr.bhb, "data/processed/bhw_cougar_conflict_cumcurr_50km.tif", overwrite=TRUE)
+writeRaster(cougar_conflict_norm.bhb, "data/processed/bhw_cougar_conflict_norm_50km.tif", overwrite=TRUE)
 
 # Variables with boundary of BHW:
 writeRaster(cougar_bio_cumcurr.bhw, "data/processed/bhw_cougar_biophys_cumcurr.tif", overwrite=TRUE)
