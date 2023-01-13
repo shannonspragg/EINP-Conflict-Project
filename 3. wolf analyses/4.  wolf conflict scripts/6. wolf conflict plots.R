@@ -25,7 +25,7 @@ library(ggplot2)
 # Bring in Data: ----------------------------------------------------------
 wolf.full.mod.quad <- readRDS("data/processed/wolf_quad_reg.rds")
 #wolf.no.conflict.mod <- readRDS("data/processed/wolf_no_conf.rds")
-
+wolf.conflict.df.scl <- readRDS("data/processed/wolf_conf_df_scl.rds")
 # Plot Effects of Posterior Coefficients:
 library(bayestestR)
 # install.packages("see")
@@ -387,7 +387,7 @@ postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad,
 
 postdraws$ghm <- (postdraws$gHM * attributes(wolf.conflict.df.scl$gHM)[[3]])+attributes(wolf.conflict.df.scl$gHM)[[2]]
 
-# Plot Pop Dens:
+# Plot gHm:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
   group_by(gHM, conflictprob) %>% 
@@ -428,7 +428,7 @@ postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad,
 
 postdraws$wolfinc <- (postdraws$wolfinc * attributes(wolf.conflict.df.scl$wolfinc)[[3]])+attributes(wolf.conflict.df.scl$wolfinc)[[2]]
 
-# Plot Pop Dens:
+# Plot Wolf inc:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
   group_by(wolfinc, conflictprob) %>% 
@@ -469,7 +469,7 @@ postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad,
 
 postdraws$roaddens <- (postdraws$roaddens * attributes(wolf.conflict.df.scl$roaddens)[[3]])+attributes(wolf.conflict.df.scl$roaddens)[[2]]
 
-# Plot Pop Dens:
+# Plot road Dens:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
   group_by(roaddens, conflictprob) %>% 
@@ -492,9 +492,9 @@ saveRDS(road.dens.plot, "data/processed/wolf_road_density_mixe_plot.rds")
 # Add Plots together:
 biophys.p.w <-  connectivity.plot.w + habsuit.plot.w + dist2pa.plot.w + ungulate.plot.w + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         
 
-social.p.w <-  livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot.w + road.dens.plot  + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + wolf.increase.plot
+social.p.w <-  livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot.w + road.dens.plot + pop.dens.plot.w + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + wolf.increase.plot
 
-wolf.plot.all <- connectivity.plot.w + habsuit.plot.w + dist2pa.plot.w + ungulate.plot.w + livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot.w + road.dens.plot +  plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+wolf.plot.all <- connectivity.plot.w + habsuit.plot.w + dist2pa.plot.w + ungulate.plot.w + livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot.w + pop.dens.plot.w + road.dens.plot +  plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
 saveRDS(biophys.p, "data/processed/biophys_wolf_conf_plots.rds")
 saveRDS(social.p, "data/processed/social_wolf_conf_plots.rds")
