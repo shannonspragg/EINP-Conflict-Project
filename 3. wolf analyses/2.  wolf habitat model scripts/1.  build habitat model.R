@@ -80,27 +80,27 @@ slope.adj <- slope / 10
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
   # Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
 
-road.dens.pred <- -1.25 * road.dens.adj
-prey.dens.pred <- 1.45 * ungulate.dens.adj
-forest.pred <- 1.85 * forests
-human.dens.pred <- -1.30 * pop.dens.adj
-livestock.pred <- -0.65 * livestock.density
-shrubland.pred <- 0.95 * shrubland
-grassland.pred <- 0.75 * grassland
-ag.land.pred <- -0.75 * ag.land
+road.dens.pred <- -1.45 * road.dens.adj
+prey.dens.pred <- 1.15 * ungulate.dens.adj
+forest.pred <- 1.65 * forests
+human.dens.pred <- -1.50 * pop.dens.adj
+livestock.pred <- -0.95 * livestock.density
+shrubland.pred <- 0.45 * shrubland
+grassland.pred <- 0.45 * grassland
+ag.land.pred <- -0.95 * ag.land
 waterbodies.pred <- 0.45 * waterways
 dist2water.pred <- -1.2 * dist2waterways.adj
 major.lake.pred <- -2.5 * bh.lake
-recent.burn.pred <- -0.35 * recent.wildfires
+recent.burn.pred <- -0.45 * recent.wildfires
 glacial.pred <- 0.20 * glacial
 rocky.pred <- 0.25 * rocky
 exposed.pred <- 0.35 * exposed
-private.land.pred <- -0.35 * private.land.rast
-dist2pa.pred <- -1.05 * dist2pa.adj
-dist2roads.pred <- 1.35 * dist2roads.adj
-elevation.pred <- 1.15 * elevation
+private.land.pred <- -0.25 * private.land.rast
+dist2pa.pred <- -1.45 * dist2pa.adj
+dist2roads.pred <- 1.25 * dist2roads.adj
+elevation.pred <- 1.35 * elevation
 slope.pred <- 0.95 * slope.adj
-human.dev.pred <- -1.35 * human.development
+human.dev.pred <- -1.95 * human.development
 
 
 # Stack Precictor Rasters -------------------------------------------------

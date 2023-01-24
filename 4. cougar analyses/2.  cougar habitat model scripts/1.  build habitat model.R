@@ -89,24 +89,24 @@ slope.adj <- slope / 10
 
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
   # Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
-edge.hab.pred <- 0.95 * forest.edge.rast
-road.dens.pred <- -0.25 * road.dens.adj
+edge.hab.pred <- 0.70 * forest.edge.rast
+road.dens.pred <- -0.75 * road.dens.adj
 prey.dens.pred <- 0.60 * ungulate.dens.adj
-forest.pred <- 1.25 * forests
-human.dens.pred <- -1.35 * pop.dens.adj
-shrubland.pred <- 1.05 * shrubland
+forest.pred <- 0.80 * forests
+human.dens.pred <- -1.55 * pop.dens.adj
+shrubland.pred <- 0.75 * shrubland
 grassland.pred <- 0.60 * grassland
-ag.land.pred <- -0.75 * ag.land
-wetland.pred <- 1.15 * wetland
-dist2water.pred <- -0.52 * dist2waterways.adj
+ag.land.pred <- -0.95 * ag.land
+wetland.pred <- 0.95 * wetland
+dist2water.pred <- -0.95 * dist2waterways.adj
 major.lake.pred <- -2.0 * bh.lake
-pipeline.dens.pred <- -0.50 * pipe.dens.adj
-developed.pred <- -1.25 * developed
+pipeline.dens.pred <- -0.80 * pipe.dens.adj
+developed.pred <- -1.85 * developed
 exposed.pred <- -0.35 * exposed
-dist2roads.pred <- 1.25 * dist2roads.adj
-ruggedness.pred <- 0.55 * ruggedness
+dist2roads.pred <- 1.35 * dist2roads.adj
+ruggedness.pred <- 0.85 * ruggedness
 slope.pred <- 1.50 * slope.adj
-human.mod.pred <- -1.75 * human.mod
+human.mod.pred <- -1.95 * human.mod
 
 
 # Stack Precictor Rasters -------------------------------------------------
