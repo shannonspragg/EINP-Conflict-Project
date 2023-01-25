@@ -168,5 +168,7 @@ rsf.null <- glm(use ~ 1, family = binomial(link = logit), data = all.cov)
 # AIC
 anova(rsf.all, rsf.simple, rsf.null, test = "LRT")
 
+## NOTE: models are VERY poor due to the very small number of sightings for wolf so far
+
 saveRDS(rsf.all, "data/processed/wolf_ct_RSF.rds")
 

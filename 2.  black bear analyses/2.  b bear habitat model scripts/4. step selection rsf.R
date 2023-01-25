@@ -63,12 +63,12 @@ points(bears, col= bears$animlID)
 # create layers that represent continuous key land cover types w/ moving window
 forests<-land
 values(forests) <- 0
-forests[land == 2 | land == 3 | land == 7] <- 1
+forests[land == 1 | land == 2 | land == 6] <- 1
 
-#forested uplands
+#shrub and grasslands
 shrubgrass <- land
 values(shrubgrass) <- 0 
-shrubgrass[land == 6 | land == 9] <- 1
+shrubgrass[land == 5 | land == 8] <- 1
 
 #/moving window t o get neighborhood proportion
 fw <- focalWeight(land, 5000, 'circle')
