@@ -1,5 +1,6 @@
 
 # Bear HSI Integrated to Validated Sweeping Graph ----------------------------------
+# NOTE: may not be necessary if we use the validated model
 
   # Here we will produce multiple models in between the integrated and validated bbear HSI. We will hold most variables constant,
   # while adjusting only two of the major variables (human modification & pop density), to show how habitat use varies with these 
