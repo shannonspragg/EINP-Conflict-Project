@@ -57,10 +57,9 @@ hab.validated.bhw <- rast("data/processed/bbear_val_habitat_bhw.tif")
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
 
 # Adjust integrated model by moving only key predictors by 25%:
-  # Here we will move pop density DOWN and human mod UP, slightly and 
-  # then slowly reduce the importance of coniferous and alpine forest
+  # Here we will move pop density DOWN and human mod UP, slightly and elevation up
 private.land.pred25 <- -0.35 * private.land.rast
-elevation.pred25 <- 1.20 * elevation 
+elevation.pred25 <- 1.55 * elevation 
 slope.pred25 <- 0.50 * slope.a
 dist2roads.pred25 <- 0.30 * dist2roads.a
 pop.dens.pred25 <- -0.70 * pop.dens.a
@@ -69,9 +68,9 @@ grassland.pred25 <- -0.50 * grassland
 rocky.pred25 <- 0.10 * rocky
 snow.ice.pred25 <- 1.0 * snow.ice
 exposed.pred25 <- -0.65 * exposed
-coniferous.forest.pred25 <- 0.75 * coniferous.forest
+coniferous.forest.pred25 <- 1.0 * coniferous.forest
 broadleaf.forest.pred25 <- 0.85 * broadleaf.forest
-alpine.mixed.forest.pred25 <- 0.75 * alpine.mixed.forest
+alpine.mixed.forest.pred25 <- 1.0 * alpine.mixed.forest
 waterways.pred25 <- 1.55 * waterways
 dist2water.pred25 <- -0.10 * dist2water.a
 dist2wb.pred25 <- -0.10 * dist2wb.a
@@ -82,7 +81,7 @@ recent.wildfires.pred25 <- -0.20 * recent.wildfires
 
 # Here we will move things to ~50% change
 private.land.pred50 <- -0.35 * private.land.rast
-elevation.pred50 <- 1.20 * elevation 
+elevation.pred50 <- 1.90 * elevation 
 slope.pred50 <- 0.50 * slope.a
 dist2roads.pred50 <- 0.30 * dist2roads.a
 pop.dens.pred50 <- -0.45 * pop.dens.a
@@ -91,9 +90,9 @@ grassland.pred50 <- -0.50 * grassland
 rocky.pred50 <- 0.10 * rocky
 snow.ice.pred50 <- 1.0 * snow.ice
 exposed.pred50 <- -0.65 * exposed
-coniferous.forest.pred50 <- 0.5 * coniferous.forest
+coniferous.forest.pred50 <- 1.0 * coniferous.forest
 broadleaf.forest.pred50 <- 0.85 * broadleaf.forest
-alpine.mixed.forest.pred50 <- 0.5 * alpine.mixed.forest
+alpine.mixed.forest.pred50 <- 1.0 * alpine.mixed.forest
 waterways.pred50 <- 1.55 * waterways
 dist2water.pred50 <- -0.10 * dist2water.a
 dist2wb.pred50 <- -0.10 * dist2wb.a
@@ -104,7 +103,7 @@ recent.wildfires.pred50 <- -0.20 * recent.wildfires
 
 # Here we will move pop dens and human mod to ~75% change
 private.land.pred75 <- -0.35 * private.land.rast
-elevation.pred75 <- 1.20 * elevation 
+elevation.pred75 <- 2.25 * elevation 
 slope.pred75 <- 0.50 * slope.a
 dist2roads.pred75 <- 0.30 * dist2roads.a
 pop.dens.pred75 <- -0.20 * pop.dens.a
@@ -113,9 +112,9 @@ grassland.pred75 <- -0.50 * grassland
 rocky.pred75 <- 0.10 * rocky
 snow.ice.pred75 <- 1.0 * snow.ice
 exposed.pred75 <- -0.65 * exposed
-coniferous.forest.pred75 <- 0.25 * coniferous.forest
+coniferous.forest.pred75 <- 1.0 * coniferous.forest
 broadleaf.forest.pred75 <- 0.85 * broadleaf.forest
-alpine.mixed.forest.pred75 <- 0.25 * alpine.mixed.forest
+alpine.mixed.forest.pred75 <- 1.0 * alpine.mixed.forest
 waterways.pred75 <- 1.55 * waterways
 dist2water.pred75 <- -0.10 * dist2water.a
 dist2wb.pred75 <- -0.10 * dist2wb.a
