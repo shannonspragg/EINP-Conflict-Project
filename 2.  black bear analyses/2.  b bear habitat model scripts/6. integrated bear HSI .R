@@ -15,7 +15,6 @@ bhb.watershed <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
 elevation <- rast("data/processed/elevation_km_bhb.tif")
 slope <- rast("data/processed/slope_bhb.tif")
-roads <- rast("data/processed/bhb_roads_adjusted.tif")
 dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
 pop.dens <- rast("data/processed/human_dens_bhb.tif")
 shrubland <- rast("data/processed/bhb_shrubland.tif")
@@ -42,7 +41,6 @@ bhw.v <- vect(bhb.watershed)
 private.land.rast
 elevation
 slope
-roads 
 dist2roads
 pop.dens # might leave this out if using ghm
 shrubland
@@ -72,26 +70,25 @@ slope.a <- slope / 10
 
 # Trying a slightly less varied model / integrating validated model:
 private.land.pred2 <- -0.35 * private.land.rast
-elevation.pred2 <- 0.90 * elevation 
-slope.pred2 <- 0.15 * slope.a
-#roads.pred2 <- -0.75 * roads.adjust # don't use this AND dist to roads
-dist2roads.pred2 <- 0.10 * dist2roads.a
+elevation.pred2 <- 1.20 * elevation 
+slope.pred2 <- 0.50 * slope.a
+dist2roads.pred2 <- 0.30 * dist2roads.a
 pop.dens.pred2 <- -0.95 * pop.dens.a
-shrubland.pred2 <- -0.35 * shrubland
-grassland.pred2 <- -0.25 * grassland
+shrubland.pred2 <- 0.15 * shrubland
+grassland.pred2 <- -0.50 * grassland
 rocky.pred2 <- 0.10 * rocky
-snow.ice.pred2 <- 1.25 * snow.ice
+snow.ice.pred2 <- 1.0 * snow.ice
 exposed.pred2 <- -0.65 * exposed
-coniferous.forest.pred2 <- 1.20 * coniferous.forest
-broadleaf.forest.pred2 <- 0.65 * broadleaf.forest
-alpine.mixed.forest.pred2 <- 1.55 * alpine.mixed.forest
+coniferous.forest.pred2 <- 1.0 * coniferous.forest
+broadleaf.forest.pred2 <- 0.85 * broadleaf.forest
+alpine.mixed.forest.pred2 <- 1.0 * alpine.mixed.forest
 waterways.pred2 <- -1.55 * waterways
 dist2water.pred2 <- -0.10 * dist2water.a
 dist2wb.pred2 <- -0.10 * dist2wb.a
-human.development.pred2 <- -1.55 * human.development
-ag.land.pred2 <- -1.45 * ag.land
+human.development.pred2 <- -2.5 * human.development
+ag.land.pred2 <- -0.95 * ag.land
 bh.lake.pred2 <- -1.5 * bh.lake
-recent.wildfires.pred2 <- -0.30 * recent.wildfires
+recent.wildfires.pred2 <- -0.20 * recent.wildfires
 
 # Stack Precictor Rasters -------------------------------------------------
 

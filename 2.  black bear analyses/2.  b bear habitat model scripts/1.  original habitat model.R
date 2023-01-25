@@ -1,6 +1,6 @@
 
 # Prep Covariate Rasters for HSI: -----------------------------------------
-    # Here we bring in the covariates for our black bear HSI :
+    # Here we bring in the covariates for our black bear HSI based on literature review :
 
 # Load Packages -----------------------------------------------------------
 library(tidyverse)
@@ -18,7 +18,6 @@ bhb.watershed <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
 elevation <- rast("data/processed/elevation_km_bhb.tif")
 slope <- rast("data/processed/slope_bhb.tif")
-roads <- rast("data/processed/bhb_roads.tif")
 dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
 pop.dens <- rast("data/processed/human_dens_bhb.tif")
 shrubland <- rast("data/processed/bhb_shrubland.tif")
@@ -45,7 +44,6 @@ bhw.v <- vect(bhb.watershed)
 private.land.rast
 elevation
 slope
-roads # need to adjust this
 dist2roads
 pop.dens # might leave this out if using ghm
 shrubland
@@ -60,9 +58,9 @@ human.development
 ag.land
 bh.lake
 recent.wildfires
-
-roads.adjust <- roads / 1
-writeRaster(roads.adjust, "data/processed/bhb_roads_adjusted.tif")
+rocky
+exposed
+snow.ice
 
 # Adjust some of these:
 pop.dens.a <- pop.dens / 10000 #making this meters
@@ -75,10 +73,9 @@ slope.a <- slope / 10
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
   # Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
 
-private.land.pred <- -1.7 * private.land.rast
-elevation.pred <- -0.5012 * elevation 
+private.land.pred <- -1. * private.land.rast
+elevation.pred <- 0.5012 * elevation 
 slope.pred <- -0.2058 * slope.a
-#roads.pred <- -0.75 * roads.adjust # don't use this AND dist to roads
 dist2roads.pred <- 0.9 * dist2roads.a
 pop.dens.pred <- -1 * pop.dens.a
 shrubland.pred <- -0.35 * shrubland
@@ -86,20 +83,24 @@ grassland.pred <- -1.5 * grassland
 coniferous.forest.pred <- 1.389 * coniferous.forest
 broadleaf.forest.pred <- 2.101 * broadleaf.forest
 alpine.mixed.forest.pred <- 2.323 * alpine.mixed.forest
+rocky.pred <- 0.30 * rocky
+snow.ice.pred <- 1.25 * snow.ice
+exposed.pred <- -0.95 * exposed
 waterways.pred <- -0.5489 * waterways
 dist2water.pred <- -0.0995 * dist2water.a
 dist2wb.pred <- -0.0995 * dist2wb.a
 human.development.pred <- -3.898 * human.development
 ag.land.pred <- -2.303 * ag.land
-bh.lake.pred <- -6.0 * bh.lake
-recent.wildfires.pred <- -1.1 * recent.wildfires
+bh.lake.pred <- -3.0 * bh.lake
+recent.wildfires.pred <- -0.8 * recent.wildfires
 
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
 bear.hab.stack <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
-                    grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred,
-                    dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred, recent.wildfires.pred)
+                    grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, rocky.pred,
+                    snow.ice.pred, exposed.pred, dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, 
+                    bh.lake.pred, recent.wildfires.pred)
 
 # Convert to Probability Scale (IF NEEDED): -------------------------------
 
@@ -117,6 +118,7 @@ plot(bhb.50km.v, add=TRUE)
 
 # Mask Habitat Model to BHB Watershed -------------------------------------
 bear.habitat.bhw <- terra::mask(habitat.prob.rast, bhw.v)
+plot(bear.habitat.bhw)
 bear.habitat.bhw.50km <- terra::mask(habitat.prob.rast, bhb.50km.v)
 
 # Save habitat model(s): -----------------------------------------------------

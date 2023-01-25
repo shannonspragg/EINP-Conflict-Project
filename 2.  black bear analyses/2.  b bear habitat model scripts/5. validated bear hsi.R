@@ -31,6 +31,7 @@ grassland <- rast("data/processed/bhb_grassland.tif")
 coniferous.forest <- rast("data/processed/bhb_conifer_mix.tif")
 broadleaf.forest <- rast("data/processed/bhb_broadleaf_mix.tif")
 alpine.mixed.forest <- rast("data/processed/bhb_alpine_mix.tif")
+rocky <- rast("data/processed/bhb_rocky_land.tif")
 snow.ice <- rast("data/processed/bhb_glacial_land.tif")
 exposed <- rast("data/processed/bhb_exposed_land.tif")
 waterways <- rast("data/processed/bhb_water_areas.tif")
@@ -91,9 +92,10 @@ grassland.pred <- -0.776574365 * grassland
 coniferous.forest.pred <- -0.004110265 * coniferous.forest
 broadleaf.forest.pred <- 0.828511177 * broadleaf.forest
 alpine.mixed.forest.pred <- 0.155851896 * alpine.mixed.forest
+rocky.pred <- 0 * rocky
 snow.ice.pred <- 0 * snow.ice
 exposed.pred <- 0.773917828 * exposed
-waterways.pred <- -2.003527810 * waterways
+waterways.pred <- 1.828283959 * waterways
 dist2water.pred <- -0.023117239 * dist2water.a
 dist2wb.pred <- -0.046315852 * dist2wb.a
 human.development.pred <- -3.364712453 * human.development
@@ -105,8 +107,9 @@ recent.wildfires.pred <- 0.417258638 * recent.wildfires
 
 # Model 1:
 bear.hab.val <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
-                    grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, snow.ice.pred, exposed.pred,
-                    dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, bh.lake.pred, recent.wildfires.pred)
+                  grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, rocky.pred,
+                  snow.ice.pred, exposed.pred, dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, 
+                  bh.lake.pred, recent.wildfires.pred)
 # Convert to Probability Scale (IF NEEDED): -------------------------------
 
 # Model 1:

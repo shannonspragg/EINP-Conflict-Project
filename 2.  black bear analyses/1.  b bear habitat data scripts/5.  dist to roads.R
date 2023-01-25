@@ -42,3 +42,5 @@ bhb.roads.raster[is.na(bhb.roads.raster[])] <- 0
 writeRaster(dist2roads.km, "data/processed/dist2roads_km_bhb.tif", overwrite=TRUE)
 writeRaster(bhb.roads.raster, "data/processed/bhb_roads.tif", overwrite=TRUE)
 
+roads.adjust <- bhb.roads.raster / 1
+writeRaster(roads.adjust, "data/processed/bhb_roads_adjusted.tif")
