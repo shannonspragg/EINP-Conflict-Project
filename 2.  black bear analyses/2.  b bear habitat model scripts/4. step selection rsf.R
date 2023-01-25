@@ -8,6 +8,7 @@ library(rgdal)
 library(sp)
 library(sf)
 library(terra)
+#install.packages("adehabitatLT")
 
 # Bring in data: ----------------------------------------------------------
 # Landcover:
@@ -58,6 +59,18 @@ bears$animlID <- as.factor(bears$animlID)
 plot(land) 
 points(bears, col= bears$animlID)
 
+# land categories using attributes(land) - it sorts them alphabetically
+# 0. Agriculture
+# 1. Broafleaf
+# 2. Coniferous
+# 3. Developed
+# 4. Exposed
+# 5. Grassland
+# 6. Mixed forest
+# 7. Rock
+# 8. shrubland
+# 9. Snow / Ice
+# 10. water
 
 # Reclassify landcover data for analysis: ---------------------------------
 # create layers that represent continuous key land cover types w/ moving window
@@ -96,7 +109,6 @@ bears.sf$Time <- str_sub(bears.sf$DateTim, 12, 20)
 bears <- as(bears.sf, "Spatial")
 
 # Prep trajectory:
-install.packages("adehabitatLT")
 library(adehabitatLT)
 
 bears.ltraj <- as.ltraj(xy = coordinates(bears), 
@@ -280,21 +292,21 @@ stepdata.final <- data.frame(cbind(stepdata.final, cov))
 # make landcover categories:
 stepdata.final <- stepdata.final %>%
   dplyr::mutate(landcover.desc = 
-                  case_when(stepdata.final$landcover == 11 ~ "Water",
-                            stepdata.final$landcover == 10 ~ "Snow/Ice",
-                            stepdata.final$landcover == 8 ~ "Rock/Rubble",
-                            stepdata.final$landcover == 5 ~ "Exposed Land",
+                  case_when(stepdata.final$landcover == 10 ~ "Water",
+                            stepdata.final$landcover == 9 ~ "Snow/Ice",
+                            stepdata.final$landcover == 7 ~ "Rock/Rubble",
+                            stepdata.final$landcover == 4 ~ "Exposed Land",
                             stepdata.final$landcover == 4 ~ "Developed",
-                            stepdata.final$landcover == 9 ~ "Shrubland",
-                            stepdata.final$landcover == 6 ~ "Grassland", # meadow / grassland
-                            stepdata.final$landcover == 1 ~ "Agriculture",
-                            stepdata.final$landcover == 3 ~ "Coniferous Forest", # conifer mixed forest
-                            stepdata.final$landcover == 2 ~ "Broadleaf Forest", # birch, oak and aspen
-                            stepdata.final$landcover == 7 ~ "Mixed Forest", # alpine mixed forest
+                            stepdata.final$landcover == 8 ~ "Shrubland",
+                            stepdata.final$landcover == 5 ~ "Grassland", # meadow / grassland
+                            stepdata.final$landcover == 0 ~ "Agriculture",
+                            stepdata.final$landcover == 2 ~ "Coniferous Forest", # conifer mixed forest
+                            stepdata.final$landcover == 1 ~ "Broadleaf Forest", # birch, oak and aspen
+                            stepdata.final$landcover == 6 ~ "Mixed Forest", # alpine mixed forest
                   ))
 
 # fit two conditional logit models and contrast to conventional logistic regression RSF:
-install.packages("survival")
+#install.packages("survival")
 library(survival)
 
 # conditional logistic
