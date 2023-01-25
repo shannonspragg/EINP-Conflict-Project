@@ -7,6 +7,7 @@ library(rgdal)
 library(sp)
 library(sf)
 library(terra)
+library(dplyr)
 
 # Bring in data: ----------------------------------------------------------
 # Landcover:
@@ -110,23 +111,17 @@ water[land == 10] <- 1
 fw <- focalWeight(land, 5000, 'circle')
 forest.focal <-focal(forests,w=fw, fun="sum",na.rm=T) 
 shrubgrass.focal <- focal(shrubgrass, w = fw, fun= "sum", na.rm= T)
-ag.focal <- focal(agriculture, w = fw, fun= "sum", na.rm= T)
-developed.focal <- focal(developed, w = fw, fun= "sum", na.rm= T)
-exposed.focal <- focal(exposed, w = fw, fun= "sum", na.rm= T)
-rock.focal <- focal(rock, w = fw, fun= "sum", na.rm= T)
-snow.focal <- focal(snow.ice, w = fw, fun= "sum", na.rm= T)
-water.focal <- focal(water, w = fw, fun= "sum", na.rm= T)
+# ag.focal <- focal(agriculture, w = fw, fun= "sum", na.rm= T)
+# developed.focal <- focal(developed, w = fw, fun= "sum", na.rm= T)
+# exposed.focal <- focal(exposed, w = fw, fun= "sum", na.rm= T)
+# rock.focal <- focal(rock, w = fw, fun= "sum", na.rm= T)
+# snow.focal <- focal(snow.ice, w = fw, fun= "sum", na.rm= T)
+# water.focal <- focal(water, w = fw, fun= "sum", na.rm= T)
 
-#match landcover to other layers
-# land.p <- terra::project(landcover, temp.rast)
-# landcover <- rasterize(land.p)
+layers <- stack(forest.focal, shrubgrass.focal, private, elevation, slope, road.dens, dist2roads, hum.dens, recent.burn, livestock.dens, 
+                dist2drainage, ungulate.dens, dist2pa, hum.dev) #ag.focal, developed.focal, exposed.focal, rock.focal, snow.focal, water.focal,
 
-layers <- stack(land, forest.focal, shrubgrass.focal, ag.focal, developed.focal, exposed.focal, rock.focal, snow.focal, 
-                water.focal, private, elevation, slope, road.dens, dist2roads, hum.dens, recent.burn, livestock.dens, 
-                dist2drainage, ungulate.dens, dist2pa, hum.dev)
-
-names(layers) <- c("landcover", "forested","shrub/grass", "agriculture", "developed", "exposed", "rock", "snow/ice", "water", 
-                   "privateland", "elevation", "slope", "road dens", "dist2roads", "human.dens", "recent.burns",
+names(layers) <- c( "forested","shrub/grass", "privateland", "elevation", "slope", "road dens", "dist2roads", "human.dens", "recent.burns",
                    "livestock.dens", "dist2drainage", "ungulate.dens", "dist2pa", "human.mod") 
 plot(layers)
 
@@ -135,7 +130,24 @@ library(reshape2)
 
 use <- raster::extract(layers, wolves, method = 'bilinear',  na.rm = TRUE)
 use <- data.frame(use)
+use$landcover <- raster::extract(land, wolves,  na.rm = TRUE)
 use$WolfID <- as.factor(wolves$Anml_ID)
+
+# make landcover categories: STILL GETTING NA'S... NEED TO FIX THIS
+use <- use %>%
+  dplyr::mutate(landcover.desc = 
+                  case_when(use$landcover == 10 ~ "Water",
+                            use$landcover == 9 ~ "Snow/Ice",
+                            use$landcover == 7 ~ "Rock/Rubble",
+                            use$landcover == 4 ~ "Exposed Land",
+                            use$landcover == 3 ~ "Developed",
+                            use$landcover == 8 ~ "Shrubland",
+                            use$landcover == 5 ~ "Grassland", # meadow / grassland
+                            use$landcover == 0 ~ "Agriculture",
+                            use$landcover == 2 ~ "Coniferous Forest", # conifer mixed forest
+                            use$landcover == 1 ~ "Broadleaf Forest", # birch, oak and aspen
+                            use$landcover == 6 ~ "Mixed Forest", # alpine mixed forest
+                  ))
 
 # use reshape2. dcast function: let's try to skip this...
 useWolfID <- dcast(use, WolfID ~ landcover, length, value.var = "WolfID")
@@ -145,6 +157,22 @@ useWolfID <- dcast(use, WolfID ~ landcover, length, value.var = "WolfID")
 set.seed(8)
 rand.II <- sampleRandom(layers, size= 1000)
 rand.II.land <- data.frame(rand.II)
+rand.II.land$landcover <- sampleRandom(land, size= 1000)
+
+rand.II.land <- rand.II.land %>%
+  dplyr::mutate(land.desc = 
+                  case_when(rand.II.land$landcover == 10 ~ "Water",
+                            rand.II.land$landcover == 9 ~ "Snow/Ice",
+                            rand.II.land$landcover == 7 ~ "Rock/Rubble",
+                            rand.II.land$landcover == 4 ~ "Exposed Land",
+                            rand.II.land$landcover == 3 ~ "Developed",
+                            rand.II.land$landcover == 8 ~ "Shrubland",
+                            rand.II.land$landcover == 5 ~ "Grassland", # meadow / grassland
+                            rand.II.land$landcover == 0 ~ "Agriculture",
+                            rand.II.land$landcover == 2 ~ "Coniferous Forest", # conifer mixed forest
+                            rand.II.land$landcover == 1 ~ "Broadleaf Forest", # birch, oak and aspen
+                            rand.II.land$landcover == 6 ~ "Mixed Forest", # alpine mixed forest
+                  ))
 
 # sum up counts of each land cover type
 # table(rand.II.land)

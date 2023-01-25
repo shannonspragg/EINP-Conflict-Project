@@ -66,11 +66,6 @@ bhb.reproj<- st_transform(bhb.buf, st_crs(ab_landcover))
 # Try this in terra:
 template.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 
-## Set up a raster "template" for alberta
-temp.rast.ab <- rast(res=c(250,250), ext=ext(landcover.v)) # Let's do a 250x250 res for computational purposes
-crs(temp.rast.ab) <- "epsg:32612" # UTM zone 12N for AB
-values(temp.rast.ab) <- rep(1, ncell(temp.rast.ab))
-
 # Make spat vectors
 bhb.v <- vect(bhb.buf)
 landcover.v <- vect(ab_landcover)
@@ -88,6 +83,11 @@ exposed.v <- vect(exposed)
 glacial.v <- vect(glacial)
 rocky.v <- vect(rocky)
 developed.v <- vect(developed) 
+
+## Set up a raster "template" for alberta
+temp.rast.ab <- rast(res=c(250,250), ext=ext(landcover.v)) # Let's do a 250x250 res for computational purposes
+crs(temp.rast.ab) <- "epsg:32612" # UTM zone 12N for AB
+values(temp.rast.ab) <- rep(1, ncell(temp.rast.ab))
 
 bhb.landcover.crop <- crop(landcover.v, template.rast)
 bhb.shrub.crop <- crop(shrubland.v, template.rast)
@@ -120,6 +120,15 @@ bhb.exposed.rast <- terra::rasterize(bhb.exposed.crop, template.rast, field = "L
 bhb.glacial.rast <- terra::rasterize(bhb.glacial.crop, template.rast, field = "LC_class")
 bhb.rocky.rast <- terra::rasterize(bhb.rocky.crop, template.rast, field = "LC_class")
 bhb.dev.rast <- terra::rasterize(bhb.dev.crop, template.rast, field = "LC_class")
+
+# Change landcover na's to 0:
+ab.landcover.raster <- raster(ab.landcover.rast)
+ab.landcover.raster[is.na(ab.landcover.raster[])] <- 0
+names(ab.landcover.raster)[names(ab.landcover.raster) == "LC_DESCRIPTION"] <- "landcover"
+
+bhb.landcover.raster <- raster(bhb.landcover.type.rast)
+bhb.landcover.raster[is.na(bhb.landcover.raster[])] <- 0
+names(bhb.landcover.raster)[names(bhb.landcover.raster) == "LC_DESCRIPTION"] <- "landcover"
 
 # Make shrubland a continuous raster:
 bhb.shrubland.rast[bhb.shrubland.rast == 50] <- 1
@@ -218,8 +227,8 @@ names(bhb.dev.raster)[names(bhb.dev.raster) == "LC_class"] <- "developed"
 table(is.na(bhb.generalist.raster[])) # FALSE
 
 # Save rasters
-terra::writeRaster(ab.landcover.rast, "data/processed/ab_landcover.tif", overwrite=TRUE)
-terra::writeRaster(bhb.landcover.type.rast, "data/processed/bhb_landcover.tif", overwrite=TRUE)
+terra::writeRaster(ab.landcover.raster, "data/processed/ab_landcover.tif", overwrite=TRUE)
+terra::writeRaster(bhb.landcover.raster, "data/processed/bhb_landcover.tif", overwrite=TRUE)
 terra::writeRaster(bhb.shrubland.raster, "data/processed/bhb_shrubland.tif", overwrite=TRUE)
 terra::writeRaster(bhb.grassland.raster, "data/processed/bhb_grassland.tif", overwrite=TRUE)
 terra::writeRaster(bhb.conifer.raster, "data/processed/bhb_conifer_mix.tif", overwrite=TRUE)
