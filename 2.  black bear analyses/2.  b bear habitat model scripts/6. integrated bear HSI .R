@@ -82,7 +82,7 @@ exposed.pred2 <- -0.65 * exposed
 coniferous.forest.pred2 <- 1.0 * coniferous.forest
 broadleaf.forest.pred2 <- 0.85 * broadleaf.forest
 alpine.mixed.forest.pred2 <- 1.0 * alpine.mixed.forest
-waterways.pred2 <- -1.55 * waterways
+waterways.pred2 <- 1.55 * waterways
 dist2water.pred2 <- -0.10 * dist2water.a
 dist2wb.pred2 <- -0.10 * dist2wb.a
 human.development.pred2 <- -2.5 * human.development
@@ -103,13 +103,6 @@ bear.hab.stack2 <- c(private.land.pred2, elevation.pred2, slope.pred2, dist2road
 bh.rast.2 <- sum(bear.hab.stack2, na.rm=TRUE)
 habitat.prob.rast.2 <- (exp(bh.rast.2))/(1 + exp(bh.rast.2))
 plot(habitat.prob.rast.2)
-
-# Overlay our boundary line: ----------------------------------------------
-bhb.50km.v <- vect(bhb.50km.boundary)
-
-plot(habitat.prob.rast)
-plot(bhb.50km.v, add=TRUE)
-
 
 # Mask Habitat Model to BHB Watershed -------------------------------------
 bear.habitat2.bhw <- terra::mask(habitat.prob.rast.2, bhw.v)

@@ -84,7 +84,7 @@ slope.a <- slope / 10
 private.land.pred <-  -0.228986729 * private.land.rast
 elevation.pred <- 2.636984904 * elevation 
 slope.pred <- 0.672187111 * slope.a
-roads.pred <- -0.116349970 * roads.adjust # don't use this AND dist to roads
+#roads.pred <- -0.116349970 * roads.adjust # don't use this AND dist to roads
 dist2roads.pred <- -0.045513248 * dist2roads.a
 pop.dens.pred <- -0.040123557 * pop.dens.a
 shrubland.pred <- 0.203343818 * shrubland
