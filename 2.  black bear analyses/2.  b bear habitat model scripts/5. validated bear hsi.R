@@ -78,28 +78,28 @@ slope.a <- slope / 10
 
 
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
-# Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
+# Multiplying these variables by coefficients determined from our rsf using bear collar data
 
-private.land.pred <-  0.06147 * private.land.rast
-elevation.pred <- 1.65914 * elevation 
-slope.pred <- 0.27049 * slope.a
-roads.pred <- -0.29970 * roads.adjust # don't use this AND dist to roads
-dist2roads.pred <- -0.01783 * dist2roads.a
-pop.dens.pred <- -0.00513 * pop.dens.a
-shrubland.pred <- -0.35 * shrubland
-grassland.pred <- -0.28894 * grassland
-coniferous.forest.pred <- 0.53058 * coniferous.forest
-broadleaf.forest.pred <- -0.12170 * broadleaf.forest
-alpine.mixed.forest.pred <- 0.85678 * alpine.mixed.forest
-snow.ice.pred <- 1.88920 * snow.ice
-exposed.pred <- -0.32684 * exposed
-waterways.pred <- -2.28499 * waterways
-dist2water.pred <- -0.01411 * dist2water.a
-dist2wb.pred <- -0.07224 * dist2wb.a
-human.development.pred <- 0.70310 * human.development
-ag.land.pred <- -1.503 * ag.land
+private.land.pred <-  -0.228986729 * private.land.rast
+elevation.pred <- 2.636984904 * elevation 
+slope.pred <- 0.672187111 * slope.a
+roads.pred <- -0.116349970 * roads.adjust # don't use this AND dist to roads
+dist2roads.pred <- -0.045513248 * dist2roads.a
+pop.dens.pred <- -0.040123557 * pop.dens.a
+shrubland.pred <- 0.203343818 * shrubland
+grassland.pred <- -0.776574365 * grassland
+coniferous.forest.pred <- -0.004110265 * coniferous.forest
+broadleaf.forest.pred <- 0.828511177 * broadleaf.forest
+alpine.mixed.forest.pred <- 0.155851896 * alpine.mixed.forest
+snow.ice.pred <- 0 * snow.ice
+exposed.pred <- 0.773917828 * exposed
+waterways.pred <- -2.003527810 * waterways
+dist2water.pred <- -0.023117239 * dist2water.a
+dist2wb.pred <- -0.046315852 * dist2wb.a
+human.development.pred <- -3.364712453 * human.development
+ag.land.pred <- -0.503 * ag.land
 bh.lake.pred <- -2.0 * bh.lake
-recent.wildfires.pred <- -0.29793 * recent.wildfires
+recent.wildfires.pred <- 0.417258638 * recent.wildfires
 
 # Stack Precictor Rasters -------------------------------------------------
 
@@ -125,7 +125,7 @@ plot(einp.10km.v, add=TRUE)
 # Mask Habitat Model to BHB Watershed -------------------------------------
 bear.habitat.val.bhw <- terra::mask(habitat.val.rast, bhw.v)
 bear.habitat.val.bhw.50km <- terra::mask(habitat.val.rast, bhb.50km.v)
-bear.hab.val.einp10km <- terra::mask(habitat.val.rast, einp10km.v)
+bear.hab.val.einp10km <- terra::mask(habitat.val.rast, einp.10km.v)
 plot(bear.habitat.val.bhw)
 plot(bear.hab.val.einp10km)
 
@@ -134,4 +134,4 @@ writeRaster(bear.hab.val.rast, "data/processed/bbear_raw_validated_habitat_suita
 writeRaster(habitat.val.rast, "data/processed/bbear_validated_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
 writeRaster(bear.habitat.val.bhw.50km, "data/processed/bbear_val_habitat_bhw_50km.tif", overwrite=TRUE) # for 50km buf of beaver hills watershed
 writeRaster(bear.habitat.val.bhw, "data/processed/bbear_val_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed
-writeRaster(bear.hab.val.einp10km, "data/processed/bbear_val_habitat_einp_10km.tif")
+writeRaster(bear.hab.val.einp10km, "data/processed/bbear_val_habitat_einp_10km.tif", overwrite=TRUE)
