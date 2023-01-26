@@ -82,7 +82,7 @@ slope.a <- slope / 10
 private.land.pred <-  -0.44081247 * private.land.rast
 elevation.pred <- 1.872481892 * elevation 
 slope.pred <- 0.42931595 * slope.a
-roads.pred <- 0.22415818 * roads # don't use this AND dist to roads
+#roads.pred <- 0.22415818 * roads # don't use this AND dist to roads
 dist2roads.pred <- -0.05897692 * dist2roads.a
 pop.dens.pred <- -0.04393780 * pop.dens.a
 shrubland.pred <- 0.18766320 * shrubland
@@ -97,7 +97,7 @@ developed.pred <- 0.11617686 * developed
 waterways.pred <- 1.86423807 * waterways
 dist2water.pred <- -0.04450276 * dist2water.a
 dist2wb.pred <- -0.16686632 * dist2wb.a
-human.mod.pred <- -3.54351824 * human.mod # this was originally -0.5 , which seems like a gross underestimate
+human.mod.pred <- -2.54351824 * human.mod # this was originally -0.5 , which seems like a gross underestimate
 ag.land.pred <- -0.503 * ag.land
 bh.lake.pred <- -2.0 * bh.lake
 recent.wildfires.pred <- 0.75229416 * recent.wildfires
@@ -105,7 +105,7 @@ recent.wildfires.pred <- 0.75229416 * recent.wildfires
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
-bear.hab.val <- c(private.land.pred, elevation.pred, slope.pred, roads.pred, dist2roads.pred, shrubland.pred, waterways.pred,
+bear.hab.val <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred, # roads.pred,
                   grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, rocky.pred,
                   snow.ice.pred, exposed.pred, dist2water.pred, dist2wb.pred, human.mod.pred, ag.land.pred, 
                   bh.lake.pred, recent.wildfires.pred)
