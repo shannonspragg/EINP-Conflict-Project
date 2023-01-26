@@ -17,7 +17,7 @@ bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
 bhb.watershed <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 einp <- st_read("data/processed/einp.shp")
 einp.reproj <- st_transform(einp, crs=st_crs(bhb.watershed))
-st_write(einp.reproj, "data/processed/einp_reproj.shp")
+#st_write(einp.reproj, "data/processed/einp_reproj.shp")
 
 # model 1 Beckman et al., 2015:
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
@@ -97,7 +97,7 @@ developed.pred <- 0.11617686 * developed
 waterways.pred <- 1.86423807 * waterways
 dist2water.pred <- -0.04450276 * dist2water.a
 dist2wb.pred <- -0.16686632 * dist2wb.a
-human.mod.pred <- -0.54351824 * human.mod
+human.mod.pred <- -3.54351824 * human.mod # this was originally -0.5 , which seems like a gross underestimate
 ag.land.pred <- -0.503 * ag.land
 bh.lake.pred <- -2.0 * bh.lake
 recent.wildfires.pred <- 0.75229416 * recent.wildfires
@@ -105,7 +105,7 @@ recent.wildfires.pred <- 0.75229416 * recent.wildfires
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
-bear.hab.val <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
+bear.hab.val <- c(private.land.pred, elevation.pred, slope.pred, roads.pred, dist2roads.pred, shrubland.pred, waterways.pred,
                   grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, rocky.pred,
                   snow.ice.pred, exposed.pred, dist2water.pred, dist2wb.pred, human.mod.pred, ag.land.pred, 
                   bh.lake.pred, recent.wildfires.pred)
