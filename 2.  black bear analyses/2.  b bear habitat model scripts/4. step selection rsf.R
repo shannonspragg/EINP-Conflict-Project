@@ -296,7 +296,7 @@ stepdata.final <- stepdata.final %>%
                             stepdata.final$landcover == 9 ~ "Snow/Ice",
                             stepdata.final$landcover == 7 ~ "Rock/Rubble",
                             stepdata.final$landcover == 4 ~ "Exposed Land",
-                            stepdata.final$landcover == 4 ~ "Developed",
+                            stepdata.final$landcover == 3 ~ "Developed",
                             stepdata.final$landcover == 8 ~ "Shrubland",
                             stepdata.final$landcover == 5 ~ "Grassland", # meadow / grassland
                             stepdata.final$landcover == 0 ~ "Agriculture",

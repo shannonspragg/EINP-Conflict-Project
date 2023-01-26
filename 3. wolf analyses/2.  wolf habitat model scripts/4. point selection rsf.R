@@ -47,7 +47,7 @@ livestock.dens <- projectRaster(livestock.density, crs = "EPSG:26912")
 hum.dev <- projectRaster(human.development, crs = "EPSG:26912")
 ungulate.dens <- projectRaster(ungulate.density, crs = "EPSG:26912")
 dist2pa <- projectRaster(dist2pa.rast, crs = "EPSG:26912")
-temp.rast <- rast(dist2pa)
+#temp.rast <- rast(dist2pa)
 
 crs(land) 
 crs(private)
@@ -77,46 +77,10 @@ shrubgrass <- land
 values(shrubgrass) <- 0 
 shrubgrass[land == 5 | land == 8] <- 1
 
-# agriculture land
-agriculture <- land
-values(agriculture) <- 0 
-agriculture[land == 0] <- 1
-
-# developed land
-developed <- land
-values(developed) <- 0 
-developed[land == 3] <- 1
-
-# exposed land
-exposed <- land
-values(exposed) <- 0 
-exposed[land == 4] <- 1
-
-# rocky
-rock <- land
-values(rock) <- 0 
-rock[land == 7] <- 1
-
-# snow/ice
-snow.ice <- land
-values(snow.ice) <- 0 
-snow.ice[land == 9] <- 1
-
-# water
-water <- land
-values(water) <- 0 
-water[land == 10] <- 1
-
 #/moving window t o get neighborhood proportion
 fw <- focalWeight(land, 5000, 'circle')
 forest.focal <-focal(forests,w=fw, fun="sum",na.rm=T) 
 shrubgrass.focal <- focal(shrubgrass, w = fw, fun= "sum", na.rm= T)
-# ag.focal <- focal(agriculture, w = fw, fun= "sum", na.rm= T)
-# developed.focal <- focal(developed, w = fw, fun= "sum", na.rm= T)
-# exposed.focal <- focal(exposed, w = fw, fun= "sum", na.rm= T)
-# rock.focal <- focal(rock, w = fw, fun= "sum", na.rm= T)
-# snow.focal <- focal(snow.ice, w = fw, fun= "sum", na.rm= T)
-# water.focal <- focal(water, w = fw, fun= "sum", na.rm= T)
 
 layers <- stack(forest.focal, shrubgrass.focal, private, elevation, slope, road.dens, dist2roads, hum.dens, recent.burn, livestock.dens, 
                 dist2drainage, ungulate.dens, dist2pa, hum.dev) #ag.focal, developed.focal, exposed.focal, rock.focal, snow.focal, water.focal,
@@ -131,23 +95,25 @@ library(reshape2)
 use <- raster::extract(layers, wolves, method = 'bilinear',  na.rm = TRUE)
 use <- data.frame(use)
 use$landcover <- raster::extract(land, wolves,  na.rm = TRUE)
-use$WolfID <- as.factor(wolves$Anml_ID)
+use$landcover <- as.factor(use$landcover)
 
-# make landcover categories: STILL GETTING NA'S... NEED TO FIX THIS
+# make landcover categories: 
+levels(use$landcover) # these are the LC values present at each point
+
 use <- use %>%
-  dplyr::mutate(landcover.desc = 
-                  case_when(use$landcover == 10 ~ "Water",
-                            use$landcover == 9 ~ "Snow/Ice",
-                            use$landcover == 7 ~ "Rock/Rubble",
-                            use$landcover == 4 ~ "Exposed Land",
-                            use$landcover == 3 ~ "Developed",
-                            use$landcover == 8 ~ "Shrubland",
-                            use$landcover == 5 ~ "Grassland", # meadow / grassland
-                            use$landcover == 0 ~ "Agriculture",
-                            use$landcover == 2 ~ "Coniferous Forest", # conifer mixed forest
-                            use$landcover == 1 ~ "Broadleaf Forest", # birch, oak and aspen
-                            use$landcover == 6 ~ "Mixed Forest", # alpine mixed forest
-                  ))
+  dplyr::mutate(land.desc = 
+                  case_when(use$landcover == 1.00000002736691 ~ "Broadleaf Forest",
+                            use$landcover == 2 ~ "Coniferous Forest",
+                            use$landcover == 2.00000000594696 ~ "Coniferous Forest",
+                            use$landcover == 2.00000000606547 ~ "Coniferous Forest",
+                            use$landcover == 3.00000000029057 ~ "Developed",
+                            use$landcover == 3.00000001062592 ~ "Developed",
+                            use$landcover == 3.00000002745353 ~ "Developed",
+                            use$landcover == 4.99999999955297 ~ "Grassland", # 5
+                            use$landcover == 7.9999999730892 ~ "Shrubland", # 8
+                            use$landcover == 8.00000001115724 ~ "Shrubland"))
+                            
+use$WolfID <- as.factor(wolves$Anml_ID)
 
 # use reshape2. dcast function: let's try to skip this...
 useWolfID <- dcast(use, WolfID ~ landcover, length, value.var = "WolfID")
@@ -159,7 +125,21 @@ rand.II <- sampleRandom(layers, size= 1000)
 rand.II.land <- data.frame(rand.II)
 rand.II.land$landcover <- sampleRandom(land, size= 1000)
 
-rand.II.land <- rand.II.land %>%
+# Try replacing values to match whole numbers:
+rand.II.land$landcover[rand.II.land$landcover >= 9.1 & rand.II.land$landcover <= 10.1] <- 10
+rand.II.land$landcover[rand.II.land$landcover >= 8.1 & rand.II.land$landcover <= 9.1] <- 9
+rand.II.land$landcover[rand.II.land$landcover >= 7.1 & rand.II.land$landcover <= 8.1] <- 8
+rand.II.land$landcover[rand.II.land$landcover >= 6.1 & rand.II.land$landcover <= 7.1] <- 7
+rand.II.land$landcover[rand.II.land$landcover >= 5.1 & rand.II.land$landcover <= 6.1] <- 6
+rand.II.land$landcover[rand.II.land$landcover >= 4.1 & rand.II.land$landcover <= 5.1] <- 5
+rand.II.land$landcover[rand.II.land$landcover >= 3.1 & rand.II.land$landcover <= 4.1] <- 4
+rand.II.land$landcover[rand.II.land$landcover >= 2.1 & rand.II.land$landcover <= 3.1] <- 3
+rand.II.land$landcover[rand.II.land$landcover >= 1.1 & rand.II.land$landcover <= 2.1] <- 2
+rand.II.land$landcover[rand.II.land$landcover >= 0.1 & rand.II.land$landcover <= 1.1] <- 1
+rand.II.land$landcover[rand.II.land$landcover >= -1 & rand.II.land$landcover <= 0.1] <- 0
+unique(rand.II.land$landcover)
+
+rand.II.land <- rand.II.land %>% # STILL GETTING NA'S... NEED TO FIX THIS with a range assignment
   dplyr::mutate(land.desc = 
                   case_when(rand.II.land$landcover == 10 ~ "Water",
                             rand.II.land$landcover == 9 ~ "Snow/Ice",
@@ -179,13 +159,12 @@ rand.II.land <- rand.II.land %>%
 # avail.II <- tapply(rand.II.land, rand.II.land, length)
 
 # Presence only distribution data:
-use.cov <- data.frame(use[,1:21], use= 1)
-back.cov <- data.frame(rand.II, use = 0)
+use.cov <- data.frame(use[,1:16], use= 1)
+back.cov <- data.frame(rand.II.land[,1:16], use = 0)
 all.cov <- data.frame(rbind(use.cov, back.cov))
 
 # Run two models: NEED TO GET LANDCOVER TO BE CATEGORICAL / HAVE LAYERS
-rsf.all <- glm(use ~ forested + shrub.grass + agriculture + developed + exposed + rock + snow.ice + water + 
-                 privateland + elevation + slope + road.dens + dist2roads + human.dens + recent.burns + livestock.dens
+rsf.all <- glm(use ~ land.desc + forested + shrub.grass + privateland + elevation + slope + road.dens + dist2roads + human.dens + recent.burns + livestock.dens
                + dist2drainage + ungulate.dens + dist2pa + human.mod, family = binomial(link = logit), data = all.cov)
 
 rsf.simple <- glm(use ~ forested + shrub.grass + elevation + slope + road.dens  + human.dens +
