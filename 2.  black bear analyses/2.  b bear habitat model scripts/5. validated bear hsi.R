@@ -23,7 +23,7 @@ st_write(einp.reproj, "data/processed/einp_reproj.shp")
 private.land.rast <- rast("data/processed/bhb_privatelands.tif")
 elevation <- rast("data/processed/elevation_km_bhb.tif")
 slope <- rast("data/processed/slope_bhb.tif")
-roads <- rast("data/processed/bhb_roads.tif")
+roads <- rast("data/processed/bhb_roads_adjusted.tif")
 dist2roads <- rast("data/processed/dist2roads_km_bhb.tif")
 pop.dens <- rast("data/processed/human_dens_bhb.tif")
 shrubland <- rast("data/processed/bhb_shrubland.tif")
@@ -34,10 +34,11 @@ alpine.mixed.forest <- rast("data/processed/bhb_alpine_mix.tif")
 rocky <- rast("data/processed/bhb_rocky_land.tif")
 snow.ice <- rast("data/processed/bhb_glacial_land.tif")
 exposed <- rast("data/processed/bhb_exposed_land.tif")
+developed <- rast("data/processed/bhb_developed_land.tif")
 waterways <- rast("data/processed/bhb_water_areas.tif")
 dist2water <- rast("data/processed/dist2drainage_km_bhb.tif")
 dist2wb <- rast("data/processed/dist2waterbodies_km_bhb.tif")
-human.development <- rast("data/processed/bhw_ghm.tif")
+human.mod <- rast("data/processed/bhw_ghm.tif")
 ag.land <- rast("data/processed/bhb_agriculture.tif")
 bh.lake <- rast("data/processed/beaverhills_lake.tif")
 recent.wildfires <- rast("data/processed/bhb_fire_history.tif")
@@ -62,13 +63,10 @@ snow.ice
 waterways
 dist2water
 dist2wb
-human.development
+human.mod
 ag.land
 bh.lake
 recent.wildfires
-
-roads.adjust <- roads / 1
-writeRaster(roads.adjust, "data/processed/bhb_roads_adjusted.tif")
 
 # Adjust some of these:
 pop.dens.a <- pop.dens / 10000 #making this meters
@@ -81,34 +79,35 @@ slope.a <- slope / 10
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
 # Multiplying these variables by coefficients determined from our rsf using bear collar data
 
-private.land.pred <-  -0.228986729 * private.land.rast
-elevation.pred <- 2.636984904 * elevation 
-slope.pred <- 0.672187111 * slope.a
-#roads.pred <- -0.116349970 * roads.adjust # don't use this AND dist to roads
-dist2roads.pred <- -0.045513248 * dist2roads.a
-pop.dens.pred <- -0.040123557 * pop.dens.a
-shrubland.pred <- 0.203343818 * shrubland
-grassland.pred <- -0.776574365 * grassland
-coniferous.forest.pred <- -0.004110265 * coniferous.forest
+private.land.pred <-  -0.44081247 * private.land.rast
+elevation.pred <- 1.872481892 * elevation 
+slope.pred <- 0.42931595 * slope.a
+roads.pred <- 0.22415818 * roads # don't use this AND dist to roads
+dist2roads.pred <- -0.05897692 * dist2roads.a
+pop.dens.pred <- -0.04393780 * pop.dens.a
+shrubland.pred <- 0.18766320 * shrubland
+grassland.pred <- 0.13825049 * grassland
+coniferous.forest.pred <- -0.01051404 * coniferous.forest
 broadleaf.forest.pred <- 0.828511177 * broadleaf.forest
-alpine.mixed.forest.pred <- 0.155851896 * alpine.mixed.forest
+alpine.mixed.forest.pred <- 1.03739684 * alpine.mixed.forest
 rocky.pred <- 0 * rocky
 snow.ice.pred <- 0 * snow.ice
-exposed.pred <- 0.773917828 * exposed
-waterways.pred <- 1.828283959 * waterways
-dist2water.pred <- -0.023117239 * dist2water.a
-dist2wb.pred <- -0.046315852 * dist2wb.a
-human.development.pred <- -3.364712453 * human.development
+exposed.pred <- 0.23441883 * exposed
+developed.pred <- 0.11617686 * developed
+waterways.pred <- 1.86423807 * waterways
+dist2water.pred <- -0.04450276 * dist2water.a
+dist2wb.pred <- -0.16686632 * dist2wb.a
+human.mod.pred <- -0.54351824 * human.mod
 ag.land.pred <- -0.503 * ag.land
 bh.lake.pred <- -2.0 * bh.lake
-recent.wildfires.pred <- 0.417258638 * recent.wildfires
+recent.wildfires.pred <- 0.75229416 * recent.wildfires
 
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
 bear.hab.val <- c(private.land.pred, elevation.pred, slope.pred, dist2roads.pred, shrubland.pred, waterways.pred,
                   grassland.pred, coniferous.forest.pred, broadleaf.forest.pred, alpine.mixed.forest.pred, rocky.pred,
-                  snow.ice.pred, exposed.pred, dist2water.pred, dist2wb.pred, human.development.pred, ag.land.pred, 
+                  snow.ice.pred, exposed.pred, dist2water.pred, dist2wb.pred, human.mod.pred, ag.land.pred, 
                   bh.lake.pred, recent.wildfires.pred)
 # Convert to Probability Scale (IF NEEDED): -------------------------------
 
