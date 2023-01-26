@@ -328,3 +328,5 @@ logit.rsf
 coef(logit.rsf) # Here are the coefficients we use to build our "validated" habitat model
 logit.rsf2
 
+saveRDS(logit.bear.ssf, "data/processed/bbear_collar_ssf.rds")
+saveRDS(logit.ssf, "data/processed/bbear_ssf.rds")
