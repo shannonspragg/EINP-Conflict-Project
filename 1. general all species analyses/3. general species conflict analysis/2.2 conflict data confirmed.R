@@ -640,7 +640,7 @@ badger.within$OCC_VAL <- "PROBABLE" # another 4
 P3.conf.join <- rbind(P2.conf.join, porcupine.within, squirrel.within, racoon.within, owl.gh.within, grizzly.within, rabbit.within,
                       badger.within) # join points - 4817 now
 
-
+unique(conflict.bhb$OCC_SPE) # 2/3 thorugh
 
 
 #st_write(final.conf.join, "data/processed/full_confirmed_conflict_df.shp")
