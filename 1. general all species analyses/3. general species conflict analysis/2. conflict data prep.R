@@ -14,7 +14,6 @@ library(units)
  
 conflicts <- read.csv("data/original/Beaver Hills Biosphere - all species.csv")
 bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
-can.ccs.shp<- st_make_valid(st_read("Data/original/lccs000b21a_e.shp"))
 
   # Add columns: Convert selected species to 1's and all others to 0's:
 conflict.data <- conflicts %>% 
