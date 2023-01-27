@@ -11,7 +11,8 @@ library(units)
 
 # Bring in our previous Data --------------------------------------------
  all.conf <- st_read("data/processed/full_confirmed_conflict_df.shp")
- 
+ bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
+ can.ccs.shp<- st_make_valid(st_read("Data/original/lccs000b21a_e.shp"))
  
  # Add in the 2 Collision Reports ------------------------------------------
  road.kills <- read_csv("data/original/AWW-exp-2022-10-04 black bear.csv")

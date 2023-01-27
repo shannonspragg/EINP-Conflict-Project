@@ -12,8 +12,6 @@ library(dplyr)
 
 # Bring in our previous Data --------------------------------------------
 conflict.bhb <- st_read("data/processed/conflict_bhb_no_filt.shp")
-bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
-can.ccs.shp<- st_make_valid(st_read("Data/original/lccs000b21a_e.shp"))
 
 conflict.bhb$OCC_VAL <- conflict.bhb$OCC_VAL %>% replace_na("UNKNOWN")
 
