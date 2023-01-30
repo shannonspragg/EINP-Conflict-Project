@@ -39,19 +39,38 @@ conflict.data.missing <- dplyr::filter(conflict.bhb, OCC_VAL == "UNKNOWN" | OCC_
   # Test this on a small chunk of data first:
 mini.df <- conflict.data.conf[c(1:50),]
 mini.df2 <- conflict.data.missing[c(1:50),]
+mini.df.3 <- conflict.bhb[c(1:50),]
 
 species_group <- function(a,b){
-  a %>% group_by(OCC_SPE)
-  b %>% group_by(OCC_SPE)
+  a %>% group_by(OCC_SPE) %>% split(a, "OCC_SPE")
+  b %>% group_by(OCC_SPE) %>% split(a, "OCC_SPE")
 }
+
+test.filt <- conflict.data.conf %>% subset(conflict.data.conf$OCC_SPE == " ")
+test.subs <- species_group(conflict.data.conf)
+
+species_split <- function(a){
+  as.data.frame(split(a, f = a$OCC_SPE))
+}
+
+test <- split(conflict.data.conf, f = conflict.data.conf$OCC_SPE)
+tsp <- species_split(conflict.data.conf)
+
 
 st_confirm <- function(a,b){
   conf.buf <- a %>% st_buffer(5000) # buffer confirmed points
-  conf.within <- species_group(conf.buf, b) %>% st_intersection(conf.buf, b) # group by species and then calc intersection
+  conf.within <- st_intersection(conf.buf, b) # group by species and then calc intersection
   conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE) # delete any duplicate rows
   conf.within <- conf.within %>% # trim down df to wanted columns
     dplyr::select(., -c(18:35))
 }
+
+ctest <- lapply(unique(mini.df.3$OCC_SPE), st_confirm)
+
+for (i in unique(mini.df.3$OCC_SPE))
+  species_split(mini.df)   
+  species_split(mini.df2)
+  st_confirm(mini.df, mini.df2)
 
 # st_confirm <- function(a,b){
 #   conf.buf <- a %>% group_by(OCC_SPE) %>% st_buffer(5000)
@@ -92,7 +111,7 @@ plot(st_geometry(test.bear), col="red", add=TRUE) # not entirely correct..
 conf.new <- st_confirm(conflict.data.conf, conflict.data.missing) # looks like we can verify 7780 out of 8203 missing observations
 conf.new$OCC_VAL <- "PROBABLE"
 conf.join <- rbind(conf.new, conflict.data.conf) # join points - 8866 now
-conf.final <- conf.join %>% filter(!conf.join$OCC_SPE == "UNKNOWN") # filter out any unknown species
+conf.final <- conf.join %>% filter(conf.join$OCC_SPE != "UNKNOWN") # filter out any unknown species
 
 plot(st_geometry(conflict.data.conf), col="green")
 plot(st_geometry(conf.new), col="red", add=TRUE) # Looks like it did what we need...
@@ -980,5 +999,11 @@ CW <- conflict.data.conf %>% subset(conflict.data.conf$OCC_SPE == "WOLF") %>% st
 plot(st_geometry(CW), col="green")
 plot(st_geometry(tw), col="red", add=TRUE) # this looks good
 
+tb <- final.conf.join %>% subset(final.conf.join$OCC_SPE == "BLACK BEAR")
+cb <- conflict.data.conf %>% subset(conflict.data.conf$OCC_SPE == "BLACK BEAR") %>% st_buffer(5000)
+
+plot(st_geometry(cb), col="green")
+plot(st_geometry(tb), col="red", add=TRUE) # this looks good
+
 saveRDS(final.conf.join, "data/processed/manual_final_conf_conflict.rds")
-#st_write(final.conf.join, "data/processed/full_confirmed_conflict_df.shp")
+st_write(final.conf.join, "data/processed/full_confirmed_conflict_df.shp", append = FALSE)

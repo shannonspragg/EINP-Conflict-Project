@@ -625,3 +625,7 @@ conflict_no_filt.shp
 conflict_no_filt.shx
 carnivore_validated_bhb.rds
 manual_final_conf_conflict.rds
+full_confirmed_conflict_df.dbf
+full_confirmed_conflict_df.prj
+full_confirmed_conflict_df.shp
+full_confirmed_conflict_df.shx
