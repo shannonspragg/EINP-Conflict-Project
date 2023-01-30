@@ -46,12 +46,11 @@ species_group <- function(a,b){
 }
 
 st_confirm <- function(a,b){
-  conf.buf <- a %>% st_buffer(5000)
-  conf.within <- species_group(b, conf.buf) %>% st_intersection(b, conf.buf) 
-  conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE)
-  conf.within <- conf.within %>% 
+  conf.buf <- a %>% st_buffer(5000) # buffer confirmed points
+  conf.within <- species_group(conf.buf, b) %>% st_intersection(conf.buf, b) # group by species and then calc intersection
+  conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE) # delete any duplicate rows
+  conf.within <- conf.within %>% # trim down df to wanted columns
     dplyr::select(., -c(18:35))
-  # conf.within$OCC_VAL <- "PROBABLE"
 }
 
 # st_confirm <- function(a,b){
@@ -79,13 +78,13 @@ conf.test$OCC_VAL <- "PROBABLE"
 mini.moose <- mini.df %>% subset(mini.df$OCC_SPE == "MOOSE") %>% st_buffer(5000)
 test.moose <- conf.test %>% subset(conf.test$OCC_SPE == "MOOSE")
 
-mini.goose <- mini.df %>% subset(mini.df$OCC_SPE == "CANADA GOOSE") %>% st_buffer(5000)
-test.goose <- conf.test %>% subset(conf.test$OCC_SPE == "CANADA GOOSE")
+mini.bear <- mini.df %>% subset(mini.df$OCC_SPE == "BLACK BEAR") %>% st_buffer(5000)
+test.bear <- conf.test %>% subset(conf.test$OCC_SPE == "BLACK BEAR")
 
 plot(st_geometry(mini.moose))
 plot(st_geometry(test.moose), col="red", add=TRUE) # not entirely correct..
-plot(st_geometry(mini.goose))
-plot(st_geometry(test.goose), col="red", add=TRUE) # not entirely correct..
+plot(st_geometry(mini.bear))
+plot(st_geometry(test.bear), col="red", add=TRUE) # not entirely correct..
 
 
 
@@ -975,6 +974,11 @@ turtle.within <- st_intersection(missing.turtle, turtle.buf)
 # JOIN these back into "confirmed" data set (doing this as we go)
 final.conf.join <- rbind(P3.conf.join) # join points - 4817 now
 
+tw <- final.conf.join %>% subset(final.conf.join$OCC_SPE == "WOLF")
+CW <- conflict.data.conf %>% subset(conflict.data.conf$OCC_SPE == "WOLF") %>% st_buffer(10000)
 
+plot(st_geometry(CW), col="green")
+plot(st_geometry(tw), col="red", add=TRUE) # this looks good
 
+saveRDS(final.conf.join, "data/processed/manual_final_conf_conflict.rds")
 #st_write(final.conf.join, "data/processed/full_confirmed_conflict_df.shp")
