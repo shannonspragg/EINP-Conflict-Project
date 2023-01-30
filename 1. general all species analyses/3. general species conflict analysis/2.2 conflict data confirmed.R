@@ -34,6 +34,42 @@ sum(conflict.data.expanded$OCC_SPE == "COUGAR") # 82 cougar
 # Look at reports without assigned validity
 conflict.data.missing <- dplyr::filter(conflict.bhb, OCC_VAL == "UNKNOWN" | OCC_VAL == "DOUBTFUL" | OCC_VAL == "CANNOT BE JUDGED")
 
+
+# Write function to verify reports by proximity ---------------------------
+  # Test this on a small chunk of data first:
+mini.df <- conflict.data.conf[c(1:25),]
+mini.df2 <- conflict.data.missing[c(1:25),]
+
+st_confirm <- function(a,b){
+      conf <- group_by(a, OCC_SPE)
+      miss <- group_by(b, OCC_SPE)
+      conf.buf <- st_buffer(conf, 5000)
+      conf.within <- st_intersection(miss, conf.buf)
+      conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE)
+      conf.within <- conf.within %>% 
+        dplyr::select(., -c(18:35))
+     # conf.within$OCC_VAL <- "PROBABLE"
+}
+
+conf.test <- st_confirm(mini.df, mini.df2)
+conf.test$OCC_VAL <- "PROBABLE"
+
+plot(st_geometry(mini.df))
+plot(st_geometry(conf.test), col="red", add=TRUE) # Looks like it did what we need...
+
+  # Try this on the real data:
+conf.new <- st_confirm(conflict.data.conf, conflict.data.missing)
+
+conf.coyote <- conflict.data.conf %>%
+subset(conflict.data.conf$OCC_SPE == "COYOTE")
+missing.coyote <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "COYOTE")
+coyote.buf <- st_buffer(conf.coyote, 5000)
+coyote.within <- st_intersection(missing.coyote, coyote.buf)
+coyote.within <- coyote.within %>% distinct(OCC_FIL, .keep_all = TRUE) 
+coyote.within <- coyote.within %>% 
+  dplyr::select(., -c(18:35))
+coyote.within$OCC_VAL <- "PROBABLE" # another 595
+
 # Try verifying points by proximity to confirmed ones ---------------------
 unique(conflict.bhb$OCC_SPE) # theres like 92...
 
@@ -641,6 +677,263 @@ P3.conf.join <- rbind(P2.conf.join, porcupine.within, squirrel.within, racoon.wi
                       badger.within) # join points - 4817 now
 
 unique(conflict.bhb$OCC_SPE) # 2/3 thorugh
+
+# ng.hawk
+conf.ng.hawk <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "HAWKS - NORTHERN GOSHAWK")
+missing.ng.hawk <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "HAWKS - NORTHERN GOSHAWK")
+ng.hawk.buf <- st_buffer(conf.ng.hawk, 10000)
+ng.hawk.within <- st_intersection(missing.ng.hawk, ng.hawk.buf)
+# ng.hawk.within <- ng.hawk.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# ng.hawk.within <- ng.hawk.within %>% 
+#   dplyr::select(., -c(18:35))
+# ng.hawk.within$OCC_VAL <- "PROBABLE" # 0
+
+# se.owl
+conf.se.owl <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "OWLS - SHORT-EARED")
+missing.se.owl <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "OWLS - SHORT-EARED")
+se.owl.buf <- st_buffer(conf.se.owl, 10000)
+se.owl.within <- st_intersection(missing.se.owl, se.owl.buf)
+# se.owl.within <- se.owl.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# se.owl.within <- se.owl.within %>% 
+#   dplyr::select(., -c(18:35))
+# se.owl.within$OCC_VAL <- "PROBABLE" # 0
+
+# marmot
+conf.marmot <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "MARMOT")
+missing.marmot <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "MARMOT")
+marmot.buf <- st_buffer(conf.marmot, 5000)
+marmot.within <- st_intersection(missing.marmot, marmot.buf)
+# marmot.within <- marmot.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# marmot.within <- marmot.within %>% 
+#   dplyr::select(., -c(18:35))
+# marmot.within$OCC_VAL <- "PROBABLE" # 0
+
+# whitefish
+conf.whitefish <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "WHITEFISH - LAKE")
+missing.whitefish <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "WHITEFISH - LAKE")
+whitefish.buf <- st_buffer(conf.whitefish, 5000)
+whitefish.within <- st_intersection(missing.whitefish, whitefish.buf)
+# whitefish.within <- whitefish.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# whitefish.within <- whitefish.within %>% 
+#   dplyr::select(., -c(18:35))
+# whitefish.within$OCC_VAL <- "PROBABLE" # 0
+
+# swainson's hawk
+conf.sw.hawk <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "HAWKS - SWAINSON'S")
+missing.sw.hawk <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "HAWKS - SWAINSON'S")
+sw.hawk.buf <- st_buffer(conf.sw.hawk, 10000)
+sw.hawk.within <- st_intersection(missing.sw.hawk, sw.hawk.buf)
+# sw.hawk.within <- sw.hawk.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# sw.hawk.within <- sw.hawk.within %>% 
+#   dplyr::select(., -c(18:35))
+# sw.hawk.within$OCC_VAL <- "PROBABLE" # 0
+
+# turkey vulture
+conf.t.vulture <- conflict.data.conf %>%
+    subset(conflict.data.conf$OCC_SPE == "TURKEY VULTURES")
+missing.t.vulture <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "TURKEY VULTURES")
+t.vulture.buf <- st_buffer(conf.t.vulture, 10000)
+t.vulture.within <- st_intersection(missing.t.vulture, t.vulture.buf)
+# t.vulture.within <- t.vulture.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# t.vulture.within <- t.vulture.within %>% 
+#   dplyr::select(., -c(18:35))
+# t.vulture.within$OCC_VAL <- "PROBABLE" # 0
+
+# merlin falcon
+conf.m.falcon <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "MERLIN FALCON")
+missing.m.falcon <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "MERLIN FALCON")
+m.falcon.buf <- st_buffer(conf.m.falcon, 10000)
+m.falcon.within <- st_intersection(missing.m.falcon, m.falcon.buf)
+# m.falcon.within <- m.falcon.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# m.falcon.within <- m.falcon.within %>% 
+#   dplyr::select(., -c(18:35))
+# m.falcon.within$OCC_VAL <- "PROBABLE" # 0
+
+# gopher
+conf.gopher <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "GOPHER")
+missing.gopher <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "GOPHER")
+gopher.buf <- st_buffer(conf.gopher, 5000)
+gopher.within <- st_intersection(missing.gopher, gopher.buf)
+# gopher.within <- gopher.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# gopher.within <- gopher.within %>% 
+#   dplyr::select(., -c(18:35))
+# gopher.within$OCC_VAL <- "PROBABLE" # 0
+
+# wild.boar
+conf.wild.boar <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "WILD BOAR")
+missing.wild.boar <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "WILD BOAR")
+wild.boar.buf <- st_buffer(conf.wild.boar, 5000)
+wild.boar.within <- st_intersection(missing.wild.boar, wild.boar.buf)
+# wild.boar.within <- wild.boar.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# wild.boar.within <- wild.boar.within %>% 
+#   dplyr::select(., -c(18:35))
+# wild.boar.within$OCC_VAL <- "PROBABLE" # 0
+
+# bison
+conf.bison <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "BISON")
+missing.bison <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "BISON")
+bison.buf <- st_buffer(conf.bison, 5000)
+bison.within <- st_intersection(missing.bison, bison.buf)
+# bison.within <- bison.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# bison.within <- bison.within %>% 
+#   dplyr::select(., -c(18:35))
+# bison.within$OCC_VAL <- "PROBABLE" # 0
+
+# rough grouse
+conf.r.grouse <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "GROUSE - RUFFED")
+missing.r.grouse <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "GROUSE - RUFFED")
+r.grouse.buf <- st_buffer(conf.r.grouse, 5000)
+r.grouse.within <- st_intersection(missing.r.grouse, r.grouse.buf)
+# r.grouse.within <- r.grouse.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# r.grouse.within <- r.grouse.within %>% 
+#   dplyr::select(., -c(18:35))
+# r.grouse.within$OCC_VAL <- "PROBABLE" # 0
+# 
+# american kestrel
+conf.a.kestrel <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "AMERICAN KESTREL")
+missing.a.kestrel <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "AMERICAN KESTREL")
+a.kestrel.buf <- st_buffer(conf.a.kestrel, 10000)
+a.kestrel.within <- st_intersection(missing.a.kestrel, a.kestrel.buf)
+# a.kestrel.within <- a.kestrel.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# a.kestrel.within <- a.kestrel.within %>% 
+#   dplyr::select(., -c(18:35))
+# a.kestrel.within$OCC_VAL <- "PROBABLE" # 0
+
+# sandhill.crane
+conf.sandhill.crane <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "SANDHILL CRANE")
+missing.sandhill.crane <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "SANDHILL CRANE")
+sandhill.crane.buf <- st_buffer(conf.sandhill.crane, 10000)
+sandhill.crane.within <- st_intersection(missing.sandhill.crane, sandhill.crane.buf)
+# sandhill.crane.within <- sandhill.crane.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# sandhill.crane.within <- sandhill.crane.within %>% 
+#   dplyr::select(., -c(18:35))
+# sandhill.crane.within$OCC_VAL <- "PROBABLE" # 0
+
+# sparrow hawk
+conf.sp.hawk <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "HAWKS - SPARROW")
+missing.sp.hawk <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "HAWKS - SPARROW")
+sp.hawk.buf <- st_buffer(conf.sp.hawk, 10000)
+sp.hawk.within <- st_intersection(missing.sp.hawk, sp.hawk.buf)
+# sp.hawk.within <- sp.hawk.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# sp.hawk.within <- sp.hawk.within %>% 
+#   dplyr::select(., -c(18:35))
+# sp.hawk.within$OCC_VAL <- "PROBABLE" # 0
+
+# bighorn
+conf.bighorn <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "BIGHORN SHEEP")
+missing.bighorn <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "BIGHORN SHEEP")
+bighorn.buf <- st_buffer(conf.bighorn, 5000)
+bighorn.within <- st_intersection(missing.bighorn, bighorn.buf)
+# bighorn.within <- bighorn.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# bighorn.within <- bighorn.within %>% 
+#   dplyr::select(., -c(18:35))
+# bighorn.within$OCC_VAL <- "PROBABLE" # 0
+
+# partridge
+conf.partridge <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "PARTRIDGE - HUNGARIAN")
+missing.partridge <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "PARTRIDGE - HUNGARIAN")
+partridge.buf <- st_buffer(conf.partridge, 10000)
+partridge.within <- st_intersection(missing.partridge, partridge.buf)
+# partridge.within <- partridge.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# partridge.within <- partridge.within %>% 
+#   dplyr::select(., -c(18:35))
+# partridge.within$OCC_VAL <- "PROBABLE" # 0
+
+# bull.snake
+conf.bull.snake <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "BULL SNAKE")
+missing.bull.snake <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "BULL SNAKE")
+bull.snake.buf <- st_buffer(conf.bull.snake, 5000)
+bull.snake.within <- st_intersection(missing.bull.snake, bull.snake.buf)
+# bull.snake.within <- bull.snake.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# bull.snake.within <- bull.snake.within %>% 
+#   dplyr::select(., -c(18:35))
+# bull.snake.within$OCC_VAL <- "PROBABLE" # 0
+
+# mink
+conf.mink <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "MINK")
+missing.mink <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "MINK")
+mink.buf <- st_buffer(conf.mink, 5000)
+mink.within <- st_intersection(missing.mink, mink.buf)
+# mink.within <- mink.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# mink.within <- mink.within %>% 
+#   dplyr::select(., -c(18:35))
+# mink.within$OCC_VAL <- "PROBABLE" # 0
+
+# bobcat
+conf.bobcat <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "BOBCAT")
+missing.bobcat <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "BOBCAT")
+bobcat.buf <- st_buffer(conf.bobcat, 10000)
+bobcat.within <- st_intersection(missing.bobcat, bobcat.buf)
+# bobcat.within <- bobcat.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# bobcat.within <- bobcat.within %>% 
+#   dplyr::select(., -c(18:35))
+# bobcat.within$OCC_VAL <- "PROBABLE" # 0
+
+# wild turkey
+conf.turkey <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "WILD TURKEY")
+missing.turkey <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "WILD TURKEY")
+turkey.buf <- st_buffer(conf.turkey, 5000)
+turkey.within <- st_intersection(missing.turkey, turkey.buf)
+# turkey.within <- turkey.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# turkey.within <- turkey.within %>% 
+#   dplyr::select(., -c(18:35))
+# turkey.within$OCC_VAL <- "PROBABLE" # 0
+
+# wolverine
+conf.wolverine <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "WOLVERINE")
+missing.wolverine <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "WOLVERINE")
+wolverine.buf <- st_buffer(conf.wolverine, 5000)
+wolverine.within <- st_intersection(missing.wolverine, wolverine.buf)
+# wolverine.within <- wolverine.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# wolverine.within <- wolverine.within %>% 
+#   dplyr::select(., -c(18:35))
+# wolverine.within$OCC_VAL <- "PROBABLE" # 0
+
+# rattlesnake
+conf.rattlesnake <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "RATTLESNAKE")
+missing.rattlesnake <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "RATTLESNAKE")
+rattlesnake.buf <- st_buffer(conf.rattlesnake, 5000)
+rattlesnake.within <- st_intersection(missing.rattlesnake, rattlesnake.buf)
+# rattlesnake.within <- rattlesnake.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# rattlesnake.within <- rattlesnake.within %>% 
+#   dplyr::select(., -c(18:35))
+# rattlesnake.within$OCC_VAL <- "PROBABLE" # 0
+
+# turtle
+conf.turtle <- conflict.data.conf %>%
+  subset(conflict.data.conf$OCC_SPE == "TURTLE")
+missing.turtle <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "TURTLE")
+turtle.buf <- st_buffer(conf.turtle, 5000)
+turtle.within <- st_intersection(missing.turtle, turtle.buf)
+# turtle.within <- turtle.within %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 409
+# turtle.within <- turtle.within %>% 
+#   dplyr::select(., -c(18:35))
+# turtle.within$OCC_VAL <- "PROBABLE" # 0
+
+# JOIN these back into "confirmed" data set (doing this as we go)
+final.conf.join <- rbind(P3.conf.join) # join points - 4817 now
+
 
 
 #st_write(final.conf.join, "data/processed/full_confirmed_conflict_df.shp")
