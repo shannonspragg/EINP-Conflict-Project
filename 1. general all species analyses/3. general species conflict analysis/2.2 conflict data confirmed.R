@@ -37,38 +37,79 @@ conflict.data.missing <- dplyr::filter(conflict.bhb, OCC_VAL == "UNKNOWN" | OCC_
 
 # Write function to verify reports by proximity ---------------------------
   # Test this on a small chunk of data first:
-mini.df <- conflict.data.conf[c(1:25),]
-mini.df2 <- conflict.data.missing[c(1:25),]
+mini.df <- conflict.data.conf[c(1:50),]
+mini.df2 <- conflict.data.missing[c(1:50),]
+
+species_group <- function(a,b){
+  a %>% group_by(OCC_SPE)
+  b %>% group_by(OCC_SPE)
+}
 
 st_confirm <- function(a,b){
-      conf <- group_by(a, OCC_SPE)
-      miss <- group_by(b, OCC_SPE)
-      conf.buf <- st_buffer(conf, 5000)
-      conf.within <- st_intersection(miss, conf.buf)
-      conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE)
-      conf.within <- conf.within %>% 
-        dplyr::select(., -c(18:35))
-     # conf.within$OCC_VAL <- "PROBABLE"
+  conf.buf <- a %>% st_buffer(5000)
+  conf.within <- species_group(b, conf.buf) %>% st_intersection(b, conf.buf) 
+  conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE)
+  conf.within <- conf.within %>% 
+    dplyr::select(., -c(18:35))
+  # conf.within$OCC_VAL <- "PROBABLE"
 }
+
+# st_confirm <- function(a,b){
+#   conf.buf <- a %>% group_by(OCC_SPE) %>% st_buffer(5000)
+#   conf.within <- b %>% group_by(OCC_SPE) %>% st_intersection(b, conf.buf)
+#   conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE)
+#   conf.within <- conf.within %>% 
+#     dplyr::select(., -c(18:35))
+#   # conf.within$OCC_VAL <- "PROBABLE"
+# }
+# 
+# st_confirm <- function(a,b){
+#       conf <- a %>% group_by(OCC_SPE)
+#       miss <- b %>% group_by(OCC_SPE)
+#       conf.buf <- st_buffer(conf, 5000)
+#       conf.within <- st_intersection(miss, conf.buf)
+#       conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE)
+#       conf.within <- conf.within %>% 
+#         dplyr::select(., -c(18:35))
+#      # conf.within$OCC_VAL <- "PROBABLE"
+# }
 
 conf.test <- st_confirm(mini.df, mini.df2)
 conf.test$OCC_VAL <- "PROBABLE"
+mini.moose <- mini.df %>% subset(mini.df$OCC_SPE == "MOOSE") %>% st_buffer(5000)
+test.moose <- conf.test %>% subset(conf.test$OCC_SPE == "MOOSE")
 
-plot(st_geometry(mini.df))
-plot(st_geometry(conf.test), col="red", add=TRUE) # Looks like it did what we need...
+mini.goose <- mini.df %>% subset(mini.df$OCC_SPE == "CANADA GOOSE") %>% st_buffer(5000)
+test.goose <- conf.test %>% subset(conf.test$OCC_SPE == "CANADA GOOSE")
+
+plot(st_geometry(mini.moose))
+plot(st_geometry(test.moose), col="red", add=TRUE) # not entirely correct..
+plot(st_geometry(mini.goose))
+plot(st_geometry(test.goose), col="red", add=TRUE) # not entirely correct..
+
+
 
   # Try this on the real data:
-conf.new <- st_confirm(conflict.data.conf, conflict.data.missing)
+conf.new <- st_confirm(conflict.data.conf, conflict.data.missing) # looks like we can verify 7780 out of 8203 missing observations
+conf.new$OCC_VAL <- "PROBABLE"
+conf.join <- rbind(conf.new, conflict.data.conf) # join points - 8866 now
+conf.final <- conf.join %>% filter(!conf.join$OCC_SPE == "UNKNOWN") # filter out any unknown species
 
-conf.coyote <- conflict.data.conf %>%
-subset(conflict.data.conf$OCC_SPE == "COYOTE")
-missing.coyote <- conflict.data.missing %>% subset(conflict.data.missing$OCC_SPE == "COYOTE")
-coyote.buf <- st_buffer(conf.coyote, 5000)
-coyote.within <- st_intersection(missing.coyote, coyote.buf)
-coyote.within <- coyote.within %>% distinct(OCC_FIL, .keep_all = TRUE) 
-coyote.within <- coyote.within %>% 
-  dplyr::select(., -c(18:35))
-coyote.within$OCC_VAL <- "PROBABLE" # another 595
+plot(st_geometry(conflict.data.conf), col="green")
+plot(st_geometry(conf.new), col="red", add=TRUE) # Looks like it did what we need...
+
+  # Look at individual species:
+new.wolf <- conf.new  %>%
+  subset(conf.new$OCC_SPE == "WOLF")
+conf.wolf <- conflict.data.conf  %>%
+  subset(conflict.data.conf$OCC_SPE == "WOLF") %>% st_buffer(5000)
+
+plot(st_geometry(conf.wolf), col="green")
+plot(st_geometry(new.wolf), col="red", add=TRUE) # Looks like it did what we need...
+
+
+
+
 
 # Try verifying points by proximity to confirmed ones ---------------------
 unique(conflict.bhb$OCC_SPE) # theres like 92...
