@@ -95,8 +95,8 @@ depred.ccs.join <- depred.ccs.join[ , c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,1
 head(conflict.filt)
 
 # Join our reports together:
-depred.reproj <- st_transform(depred.ccs.join, st_crs(conflict.conf.bhb))
-conf.conflict.full <- rbind(conflict.filt, depred.ccs.join) # now 1136 reports
+depred.reproj <- st_transform(depred.ccs.join, st_crs(updated.conflict))
+conf.conflict.full <- rbind(conflict.filt, depred.ccs.join) # now 4867 reports
 
 # Update our file
 st_write(conf.conflict.full, "data/processed/conflict_conf_full_dataframe.shp", append = FALSE)

@@ -64,28 +64,18 @@ comp.sf <- comp.sf %>%           # Reorder data frame
   dplyr::select("id", everything())
 comp.sf$id <- as.numeric(comp.sf$id)
 
-# Crop reports down to BHB watershed:
-st_crs(conflict.dataset.conf) == st_crs(bhb.50k.buf) #FALSE
-conflict.reproj <- st_transform(conflict.dataset.conf, st_crs(bhb.50k.buf))
-st_crs(conflict.reproj) == st_crs(bhb.50k.buf) #TRUE
-
-conflict.bhb.50k.buf <- st_intersection(conflict.reproj, bhb.50k.buf) # This gives 2057 total reports
-
-head(iem.data.sf)
-unique(iem.data.sf$X.1)
-unique(prov.conflict$SITE_NA)
-
 # Need to compare time stamps for duplicates:
 prov.bears <- prov.conflict %>% filter(prov.conflict$OCC_SPE == "BLACK BEAR") # FILTER to just our bear reports
 
 unique(prov.bears$OCC_OCC)
 unique(iem.data.sf$X.2)
-# Upon manual search and inspection, there are no duplicates between the 2 report sets. I can merge these into the other report df
+# Upon manual search and inspection, there are no duplicates between the 2 report sets. 
+# I can merge these into the other report df
 
 
 # Join IEM to Province conflict data: -------------------------------------
 
-iem.data.reproj <- iem.data.sf %>% st_transform(., crs(prov.conflict))
+iem.data.reproj <- iem.data.sf %>% st_transform(., crs = st_crs(prov.conflict))
 head(iem.data.reproj)
 iem.data.reproj <- mutate(iem.data.reproj, id = row_number())
 iem.data.reproj <- iem.data.reproj %>%           # Reorder data frame
@@ -157,6 +147,7 @@ comp.ccs.join <- comp.ccs.join %>%
 
 # Join our reports together:
 conf.conflict.all <- rbind(prov.conflict, iem.ccs.join, comp.ccs.join) # now we have 1130 obs!
+head(conf.conflict.all) # now 4861 total reports
 
 # Add a column for conflict presence:
 conf.conflict.all$conflict_pres <- 1

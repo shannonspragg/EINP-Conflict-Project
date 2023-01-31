@@ -25,7 +25,7 @@ plot(st_geometry(conflict.conf, add=TRUE)) #1178 reports
 
 # Generate Random Points for Pseudo-absences: -----------------------------
 set.seed(2345)
-p.abs.pts <- randomPoints(raster(temp.rast.bhb), 2300) # roughly double the conflict reports
+p.abs.pts <- randomPoints(raster(temp.rast.bhb), 5500) # try just under 1.5x to avoid perfect spacing
 
 # Make this a data frame:
 abs.pts.df <- data.frame(p.abs.pts)
@@ -55,7 +55,7 @@ abs.pts.sf['cougars'] <- 0  # so this shows as absences
 # Reorder the columns to match:
 abs.pts.sf <- abs.pts.sf[ , c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,1)]
 
-
+plot(st_geometry(abs.pts.sf))
 # Assign CCS regions: -----------------------------------------------------
 
 # Write this as a .shp for later:
@@ -80,7 +80,7 @@ presabs.ccs.join <- presabs.ccs.join[, c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,
 # Join our all species presence points with the absence points:
 st_crs(conflict.conf) == st_crs(presabs.ccs.join)
 
-conf.conflict.pts.w.abs <- rbind(conflict.conf, presabs.ccs.join) # 3478 points total
+conf.conflict.pts.w.abs <- rbind(conflict.conf, presabs.ccs.join) # 10,327 points total
 
 # Plot these to check:
 plot(st_geometry(bhb.50k.buf))

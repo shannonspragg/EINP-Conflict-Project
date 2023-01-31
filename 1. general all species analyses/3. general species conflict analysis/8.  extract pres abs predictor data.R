@@ -77,7 +77,7 @@ which(is.na(pres.abs.reproj$agno_biophys)) #none
 #which(is.na(pres.abs.reproj$gfocal_biophys)) #none
 
 # remove the NA quick:
-pres.abs.reproj <- pres.abs.reproj[-c(1130), ]  
+#pres.abs.reproj <- pres.abs.reproj[-c(1130), ]  
 
 # Save this as new file ---------------------------------------------------
 st_write(pres.abs.reproj, "Data/processed/pres_abs_full_df.shp", append=FALSE)

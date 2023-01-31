@@ -13,6 +13,7 @@ library(units)
  all.conf <- st_read("data/processed/full_confirmed_conflict_df.shp")
  bhb.50k.buf <- st_read("data/processed/bhb_50km.shp")
  can.ccs.shp<- st_make_valid(st_read("Data/original/lccs000b21a_e.shp"))
+ temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
  
  # Add in the 2 Collision Reports ------------------------------------------
  road.kills <- read_csv("data/original/AWW-exp-2022-10-04 black bear.csv")
@@ -36,8 +37,8 @@ library(units)
  # Drop to columns we need:
  roadkill.filt <- roadkill.data.reproj %>% 
    dplyr::select(., c('id','Record ID', 'Species', 'geometry'))
- names(roadkill.filt)[names(roadkill.filt) == 'Species'] <- 'OCC_SPECIES'
- names(roadkill.filt)[names(roadkill.filt) == 'Record ID'] <- 'OCC_FILE_NUMBER'
+ names(roadkill.filt)[names(roadkill.filt) == 'Species'] <- 'OCC_SPE'
+ names(roadkill.filt)[names(roadkill.filt) == 'Record ID'] <- 'OCC_FIL'
  
  # Add the missing columns:
  
