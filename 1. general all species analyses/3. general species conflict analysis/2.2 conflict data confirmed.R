@@ -42,36 +42,65 @@ mini.df2 <- conflict.data.missing[c(1:50),]
 mini.df.3 <- conflict.bhb[c(1:50),]
 
 species_group <- function(a,b){
-  a %>% group_by(OCC_SPE) %>% split(a, "OCC_SPE")
-  b %>% group_by(OCC_SPE) %>% split(a, "OCC_SPE")
+  a %>% group_by(OCC_SPE) %>% st_as_sf(split(a, f = a$OCC_SPE))
+  b %>% group_by(OCC_SPE) %>% st_as_sf(split(b, f = b$OCC_SPE))
 }
-
-test.filt <- conflict.data.conf %>% subset(conflict.data.conf$OCC_SPE == " ")
-test.subs <- species_group(conflict.data.conf)
-
-species_split <- function(a){
-  as.data.frame(split(a, f = a$OCC_SPE))
+species_split <- function(a,b){
+  split(a, f = a$OCC_SPE)
+  split(b, f = b$OCC_SPE)
 }
-
-test <- split(conflict.data.conf, f = conflict.data.conf$OCC_SPE)
-tsp <- species_split(conflict.data.conf)
-
 
 st_confirm <- function(a,b){
   conf.buf <- a %>% st_buffer(5000) # buffer confirmed points
-  conf.within <- st_intersection(conf.buf, b) # group by species and then calc intersection
+  species_split(conf.buf, b) # split into list for each species
+  buf.sp <- rbind(conf.buf)
+  miss.sp <- rbind(b)
+  conf.within <- st_intersection(st_as_sf(buf.sp), st_as_sf(miss.sp)) # group by species and then calc intersection
   conf.within <- conf.within %>% distinct(OCC_FIL, .keep_all = TRUE) # delete any duplicate rows
   conf.within <- conf.within %>% # trim down df to wanted columns
     dplyr::select(., -c(18:35))
 }
+mini.list <- list(mini.df, mini.df2)
+ctest <- lapply(mini.list, st_confirm)
+# 
 
-ctest <- lapply(unique(mini.df.3$OCC_SPE), st_confirm)
+conf.test <- st_confirm(mini.df, mini.df2)
+conf.test$OCC_VAL <- "PROBABLE"
+mini.moose <- mini.df %>% subset(mini.df$OCC_SPE == "MOOSE") %>% st_buffer(5000)
+test.moose <- conf.test %>% subset(conf.test$OCC_SPE == "MOOSE")
 
-for (i in unique(mini.df.3$OCC_SPE))
-  species_split(mini.df)   
-  species_split(mini.df2)
-  st_confirm(mini.df, mini.df2)
+mini.bear <- mini.df %>% subset(mini.df$OCC_SPE == "BLACK BEAR") %>% st_buffer(5000)
+test.bear <- conf.test %>% subset(conf.test$OCC_SPE == "BLACK BEAR")
 
+plot(st_geometry(mini.moose))
+plot(st_geometry(test.moose), col="red", add=TRUE) # not entirely correct..
+plot(st_geometry(mini.bear))
+plot(st_geometry(test.bear), col="red", add=TRUE) # not entirely correct..
+
+# test.filt <- conflict.data.conf[conflict.data.conf$OCC_SPE == conflict.data.conf$OCC_SPE,]
+# test.subs <- species_group(conflict.data.conf)
+# 
+# species_split <- function(a,b){
+#   split(a, f = a$OCC_SPE)
+#  split(b, f = b$OCC_SPE)
+# }
+# 
+# filt_all <- function(a){
+#   a[a$OCC_SPE == a$OCC_SPE,]
+# }
+# 
+# test <- split(conflict.data.conf, f = conflict.data.conf$OCC_SPE)
+# tsp <- species_split(mini.df, mini.df2)
+# list2env(tsp)
+# 
+# cst <- species_split(mini.df)
+# 
+# sptest <- lapply(list2env(tsp), st_confirm)
+# mini.sp <- cbind(cst)
+
+# for (i in unique(mini.df$OCC_SPE)) {
+#   conf.within <- species_group(conf.buf, b) %>% st_intersection(conf.buf, b) # group by species and then calc intersection
+# }
 # st_confirm <- function(a,b){
 #   conf.buf <- a %>% group_by(OCC_SPE) %>% st_buffer(5000)
 #   conf.within <- b %>% group_by(OCC_SPE) %>% st_intersection(b, conf.buf)
@@ -92,18 +121,6 @@ for (i in unique(mini.df.3$OCC_SPE))
 #      # conf.within$OCC_VAL <- "PROBABLE"
 # }
 
-conf.test <- st_confirm(mini.df, mini.df2)
-conf.test$OCC_VAL <- "PROBABLE"
-mini.moose <- mini.df %>% subset(mini.df$OCC_SPE == "MOOSE") %>% st_buffer(5000)
-test.moose <- conf.test %>% subset(conf.test$OCC_SPE == "MOOSE")
-
-mini.bear <- mini.df %>% subset(mini.df$OCC_SPE == "BLACK BEAR") %>% st_buffer(5000)
-test.bear <- conf.test %>% subset(conf.test$OCC_SPE == "BLACK BEAR")
-
-plot(st_geometry(mini.moose))
-plot(st_geometry(test.moose), col="red", add=TRUE) # not entirely correct..
-plot(st_geometry(mini.bear))
-plot(st_geometry(test.bear), col="red", add=TRUE) # not entirely correct..
 
 
 
