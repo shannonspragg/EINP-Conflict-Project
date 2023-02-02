@@ -176,6 +176,7 @@ rsf.null <- glm(use ~ 1, family = binomial(link = logit), data = all.cov)
 anova(rsf.all, rsf.simple, rsf.null, test = "LRT")
 
 ## NOTE: models are VERY poor due to the very small number of sightings for wolf so far
+# NEED TO: run a k-fold cross validation on these to see how they cover the area..
 
 saveRDS(rsf.all, "data/processed/wolf_ct_RSF.rds")
-
+rsf.all <- readRDS("data/processed/wolf_ct_RSF.rds")

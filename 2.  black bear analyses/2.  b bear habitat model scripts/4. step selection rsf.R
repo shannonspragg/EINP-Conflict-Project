@@ -14,7 +14,7 @@ library(terra)
 # Landcover:
 land <- raster("data/processed/bhb_landcover.tif") 
 private.land.rast <- raster("data/processed/bhb_privatelands.tif")
-elevation <- raster("data/processed/elevation_km_bhb.tif")
+#elevation <- raster("data/processed/elevation_km_bhb.tif") # let's leave this out
 slope <- raster("data/processed/slope_bhb.tif")
 roads <- raster("data/processed/bhb_roads.tif")
 dist2roads <- raster("data/processed/dist2roads_km_bhb.tif")
@@ -33,7 +33,7 @@ projection(bears)
 
 land <- projectRaster(land, crs = "EPSG:26912") # UTM zone 12N for AB
 private <- projectRaster(private.land.rast, crs = "EPSG:26912")
-elevation <- projectRaster(elevation, crs = "EPSG:26912")
+#elevation <- projectRaster(elevation, crs = "EPSG:26912")
 slope <- projectRaster(slope, crs = "EPSG:26912")
 roads <- projectRaster(roads, crs = "EPSG:26912")
 dist2roads <- projectRaster(dist2roads, crs = "EPSG:26912")
@@ -90,10 +90,10 @@ shrubgrass.focal <- focal(shrubgrass, w = fw, fun= "sum", na.rm= T)
 
 #merge raster data
 #layers <- stack(land, forest.focal, shrubgrass.focal, private)
-layers <- stack(land, forest.focal, private, elevation, slope, roads, dist2roads, hum.dens, 
+layers <- stack(land, forest.focal, private, slope, roads, dist2roads, hum.dens, 
                 recent.burn, water, dist2drainage, dist2waterbodies, hum.dev)
 
-names(layers) <- c( "landcover", "forested", "privateland", "elevation", "slope", "roads", "dist2roads", "human.dens",
+names(layers) <- c( "landcover", "forested", "privateland", "slope", "roads", "dist2roads", "human.dens",
                     "recent.burns", "water", "dist2drainage", "dist2waterbodies", "human.mod") 
 plot(layers)
 
@@ -309,23 +309,27 @@ stepdata.final <- stepdata.final %>%
 #install.packages("survival")
 library(survival)
 
+# NOTE: we are leaving out elevation because there is very minimal elevation change across the study area (<200m), and don't want it to
+# skew the data. We also are leaving out recent burned areas as they are very minimal and also skewing the data.
+# We may also remove the forested moving window bc it covers so much area
+
 # conditional logistic
-logit.ssf <- clogit(use ~ forested + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns + water + dist2drainage + dist2waterbodies + human.mod + strata(pair), data = stepdata.final)
+logit.ssf <- clogit(use ~ landcover.desc + privateland + slope + roads + dist2roads + human.dens + water + dist2drainage + dist2waterbodies + human.mod + strata(pair), data = stepdata.final)
 
 # including bearID as cluster:
-logit.bear.ssf <- clogit(use ~ forested + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns +  water + dist2drainage + dist2waterbodies + human.mod + strata(pair) + cluster(id), method = "approximate", data = stepdata.final)
+logit.bear.ssf <- clogit(use ~  landcover.desc + privateland + slope + roads + dist2roads + human.dens +  water + dist2drainage + dist2waterbodies + human.mod + strata(pair) + cluster(id), method = "approximate", data = stepdata.final)
 
 # logistic ignoring local pairing structure of data
-logit.rsf <- glm(use ~ forested + landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns  + water + dist2drainage + dist2waterbodies + human.mod, family = "binomial", data = stepdata.final)
-logit.rsf2 <- glm(use ~  landcover.desc + privateland + elevation + slope + roads + dist2roads + human.dens + recent.burns, family = "binomial", data = stepdata.final)
+logit.rsf <- glm(use ~  landcover.desc + privateland + slope + roads + dist2roads + human.dens + water + dist2drainage + dist2waterbodies + human.mod, family = "binomial", data = stepdata.final)
+logit.rsf2 <- glm(use ~  landcover.desc + privateland + slope + roads + dist2roads + human.dens , family = "binomial", data = stepdata.final)
 
 # compare coefficients
 logit.ssf
 coef(logit.ssf)
 logit.bear.ssf
-coef(logit.bear.ssf)
+coef(logit.bear.ssf) # Here are the coefficients we use to build our "validated" habitat model
 logit.rsf
-coef(logit.rsf) # Here are the coefficients we use to build our "validated" habitat model
+coef(logit.rsf) 
 logit.rsf2
 
 saveRDS(logit.bear.ssf, "data/processed/bbear_collar_ssf.rds")
