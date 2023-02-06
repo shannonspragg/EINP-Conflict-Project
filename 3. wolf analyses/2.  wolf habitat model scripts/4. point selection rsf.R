@@ -119,11 +119,11 @@ use$WolfID <- as.factor(wolves$Anml_ID)
 useWolfID <- dcast(use, WolfID ~ landcover, length, value.var = "WolfID")
 #newclass.names <- unique(classification[,3:4])
 
-# use sample random from raster to create availability
+# use sample random from raster to create availability (let's do ~4x the presence points)
 set.seed(8)
-rand.II <- sampleRandom(layers, size= 1000)
+rand.II <- sampleRandom(layers, size= 500)
 rand.II.land <- data.frame(rand.II)
-rand.II.land$landcover <- sampleRandom(land, size= 1000)
+rand.II.land$landcover <- sampleRandom(land, size= 500)
 
 # Try replacing values to match whole numbers:
 rand.II.land$landcover[rand.II.land$landcover >= 9.1 & rand.II.land$landcover <= 10.1] <- 10
@@ -161,22 +161,58 @@ rand.II.land <- rand.II.land %>% # STILL GETTING NA'S... NEED TO FIX THIS with a
 # Presence only distribution data:
 use.cov <- data.frame(use[,1:16], use= 1)
 back.cov <- data.frame(rand.II.land[,1:16], use = 0)
-all.cov <- data.frame(rbind(use.cov, back.cov))
+all.cov <- data.frame(rbind(use.cov, back.cov)) # 617 total
 
 # Run two models: NEED TO GET LANDCOVER TO BE CATEGORICAL / HAVE LAYERS
 rsf.all <- glm(use ~ land.desc + forested + shrub.grass + privateland + elevation + slope + road.dens + dist2roads + human.dens + recent.burns + livestock.dens
                + dist2drainage + ungulate.dens + dist2pa + human.mod, family = binomial(link = logit), data = all.cov)
 
-rsf.simple <- glm(use ~ forested + shrub.grass + elevation + slope + road.dens  + human.dens +
+rsf.simple <- glm(use ~ land.desc + slope + road.dens + elevation + human.dens + dist2roads + livestock.dens + dist2pa +
                    dist2drainage + ungulate.dens + human.mod, family = binomial(link = logit), data = all.cov)
 
 rsf.null <- glm(use ~ 1, family = binomial(link = logit), data = all.cov)
+
+summary(rsf.all)
+summary(rsf.simple)
+
+# Check coefficients:
+coef(rsf.all)
+coef(rsf.simple)
 
 # AIC
 anova(rsf.all, rsf.simple, rsf.null, test = "LRT")
 
 ## NOTE: models are VERY poor due to the very small number of sightings for wolf so far
 # NEED TO: run a k-fold cross validation on these to see how they cover the area..
+
+
+# Run K-Fold cross validation ---------------------------------------------
+library(caret)
+
+#specify the cross-validation method
+ctrl <- trainControl(method = "cv", number = 10, savePredictions="all",
+                     classProbs=TRUE)
+
+#fit a regression model and use k-fold CV to evaluate performance
+kfold.rsf.all <- train(use ~ land.desc + forested + shrub.grass + privateland + slope + road.dens + dist2roads + human.dens + recent.burns + livestock.dens
+               + dist2drainage + ungulate.dens + dist2pa + human.mod, data = all.cov, method = "glm", trControl = ctrl)
+
+kfold.rsf.simp <- train(use ~ land.desc + privateland + slope + road.dens + dist2roads + human.dens + recent.burns + livestock.dens
+                       + dist2drainage + ungulate.dens + dist2pa + human.mod, data = all.cov, method = "glm", trControl = ctrl)
+
+#view summary of k-fold CV               
+print(kfold.rsf.all) # This shows RMSE of 0.17399 (a difference of 17% between the observed outcome and the models predictions (0 is perfect))
+# Rsq of 0.7989 (72% shows decent correlation between real samples and model predictions)
+# MAE of 0.1003 (low mean squared error is decent)
+
+print(kfold.rsf.simp)
+
+# Estimate the importance of different predictors
+varImp(kfold.rsf.all)
+varImp(kfold.rsf.simp)
+
+
+
 
 saveRDS(rsf.all, "data/processed/wolf_ct_RSF.rds")
 rsf.all <- readRDS("data/processed/wolf_ct_RSF.rds")

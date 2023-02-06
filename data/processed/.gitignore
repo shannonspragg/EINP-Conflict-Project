@@ -629,3 +629,7 @@ full_confirmed_conflict_df.dbf
 full_confirmed_conflict_df.prj
 full_confirmed_conflict_df.shp
 full_confirmed_conflict_df.shx
+wolf_ct_validated_habitat_bhw.tif
+wolf_ct_validated_habitat_bhw_50km.tif
+wolf_ct_validated_habitat_suitability.tif
+wolf_raw_ct_val_habitat_suitability.tif

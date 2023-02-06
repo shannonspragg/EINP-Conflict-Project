@@ -58,36 +58,36 @@ ungulate.dens.adj <- ungulate.density / 100
 # Multiply Rasters by Coefficients: ----------------------------------------------------------
 # Multiplying these variables by coefficients determined from our literature review of bear habitat predictors
 
-road.dens.pred <- 0.0048607237 * road.dens.adj
-prey.dens.pred <-  0.0502115311 * ungulate.dens.adj
-forest.pred <- 1.2817276551 * forests
-human.dens.pred <-  .0002044319 * pop.dens.adj
-livestock.pred <- -0.8694228472 * livestock.density
-shrubland.pred <- 0.00192448589 * shrubland
-grassland.pred <- 0.05669781578 * grassland
-coniferous.forest.pred <- -0.01151213113 * coniferous.forest
-broadleaf.forest.pred <- -0.02454393855 * broadleaf.forest
-alpine.mixed.forest.pred <- 0.05325289175 * alpine.mixed.forest
-ag.land.pred <- -0.0095 * ag.land
-waterbodies.pred <- 0.02053413636 * waterways
-dist2water.pred <- 0.00717034487 * dist2waterways.adj
+road.dens.pred <- -2.826689 * road.dens.adj
+prey.dens.pred <-  67.075231  * ungulate.dens.adj
+#forest.pred <- 1.2817276551 * forests
+human.dens.pred <- -13.067464 * pop.dens.adj
+livestock.pred <-  -7183.384664 * livestock.density
+shrubland.pred <- 11.425055 * shrubland
+grassland.pred <- 233.916946 * grassland
+coniferous.forest.pred <- 55.883680 * coniferous.forest
+broadleaf.forest.pred <- -43.876623 * broadleaf.forest
+alpine.mixed.forest.pred <- 1297.640452 * alpine.mixed.forest
+ag.land.pred <- 0 * ag.land
+waterbodies.pred <- 927.777560  * waterways
+dist2water.pred <- 27.335369 * dist2waterways.adj
 major.lake.pred <- -2.5 * bh.lake
-recent.burn.pred <- 1.2211873138 * recent.wildfires
+recent.burn.pred <- 0 * recent.wildfires
 glacial.pred <- 0 * snow.ice
-rocky.pred <- -0.00906307408 * rocky
-developed.pred <- -0.01016350622 * developed
+rocky.pred <- 100.791687 * rocky
+developed.pred <- 297.772131 * developed
 exposed.pred <- 1.8595579594  * exposed
 private.land.pred <-  -0.07516588149 * private.land.rast
-dist2pa.pred <- -0.00771797482 * dist2pa.adj
-dist2roads.pred <- 0.00121410821 * dist2roads.adj
-elevation.pred <- 2.2870644338 * elevation
-slope.pred <- 0.00364028078 * slope.adj
-human.mod.pred <- -0.05436663873 * human.mod
+dist2pa.pred <- -113.044548 * dist2pa.adj
+dist2roads.pred <- 13.943357 * dist2roads.adj
+elevation.pred <- 1048.492087 * elevation
+slope.pred <- 22.871080 * slope.adj
+human.mod.pred <- -9.066308 * human.mod
 
 # Stack Precictor Rasters -------------------------------------------------
 
 # Model 1:
-wolf.hab.val <- c(road.dens.pred, prey.dens.pred, forest.pred, human.dens.pred, livestock.pred, shrubland.pred, grassland.pred, ag.land.pred, 
+wolf.hab.val <- c(road.dens.pred, prey.dens.pred, human.dens.pred, livestock.pred, shrubland.pred, grassland.pred, ag.land.pred, 
                     waterbodies.pred, dist2water.pred , major.lake.pred, recent.burn.pred, glacial.pred, rocky.pred, exposed.pred,developed.pred,
                     private.land.pred, dist2pa.pred, elevation.pred, slope.pred, human.mod.pred)
 
@@ -101,6 +101,7 @@ plot(wolf.habitat.prob.val)
 # NOTE: I don't think we can use this... model coef suck
 
 # Overlay our boundary line: ----------------------------------------------
+bhw.v <- vect(bhb.watershed)
 bhb.50km.v <- vect(bhb.50km.boundary)
 
 plot(wolf.habitat.prob.val)
@@ -110,12 +111,15 @@ plot(bhb.50km.v, add=TRUE)
 # Mask Habitat Model to BHB Watershed -------------------------------------
 wolf.habitat.val.bhw <- terra::mask(wolf.habitat.prob.val, bhw.v)
 wolf.habitat.val.bhw.50km <- terra::mask(wolf.habitat.prob.val, bhb.50km.v)
+wolf.hab.val.rast.bhw <- terra::mask(wolf.hab.val.rast, bhw.v)
 
-plot(wolf.habitat.val.bhw)
+plot(wolf.habitat.val.bhw) # this is with probability
+plot(wolf.hab.val.rast.bhw) # this is raw values from raster merge
 
 # Save habitat model(s): -----------------------------------------------------
 writeRaster(wolf.hab.val.rast, "data/processed/wolf_raw_ct_val_habitat_suitability.tif", overwrite=TRUE) # use THIS ONE for conflict analysis
-writeRaster(wolf.habitat.prob.valt, "data/processed/wolf_ct_validated_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
+writeRaster(wolf.habitat.prob.val, "data/processed/wolf_ct_validated_habitat_suitability.tif", overwrite=TRUE) # for region beaver hills watershed
 writeRaster(wolf.habitat.val.bhw.50km, "data/processed/wolf_ct_validated_habitat_bhw_50km.tif", overwrite=TRUE) # for 50km buf of beaver hills watershed
 writeRaster(wolf.habitat.val.bhw, "data/processed/wolf_ct_validated_habitat_bhw.tif", overwrite=TRUE) # for boundary of beaver hills watershed
 
+writeRaster(wolf.hab.val.rast.bhw, "data/processed/wolf_raw_ct_val_habitat_suitability_bhw.tif", overwrite=TRUE) # use THIS ONE for conflict analysis
