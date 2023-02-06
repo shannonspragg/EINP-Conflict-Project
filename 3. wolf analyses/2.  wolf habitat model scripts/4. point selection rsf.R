@@ -197,7 +197,7 @@ ctrl <- trainControl(method = "cv", number = 10, savePredictions="all",
 kfold.rsf.all <- train(use ~ land.desc + forested + shrub.grass + privateland + slope + road.dens + dist2roads + human.dens + recent.burns + livestock.dens
                + dist2drainage + ungulate.dens + dist2pa + human.mod, data = all.cov, method = "glm", trControl = ctrl)
 
-kfold.rsf.simp <- train(use ~ land.desc + privateland + slope + road.dens + dist2roads + human.dens + recent.burns + livestock.dens
+kfold.rsf.simp <- train(use ~ land.desc + privateland + elevation + slope + road.dens + dist2roads + human.dens + recent.burns + livestock.dens
                        + dist2drainage + ungulate.dens + dist2pa + human.mod, data = all.cov, method = "glm", trControl = ctrl)
 
 #view summary of k-fold CV               
@@ -211,6 +211,17 @@ print(kfold.rsf.simp)
 varImp(kfold.rsf.all)
 varImp(kfold.rsf.simp)
 
+# Plotting AUC
+opar <- par()
+par(pty = "s")
+pROC::roc(all.cov$use, rsf.all$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
+          xlab= "False Positive Percentage", ylab= "True Positive Percentage",
+          col="#377eb8", lwd=4, print.auc=TRUE)
+pROC::plot.roc(all.cov$use, rsf.simple$fitted.values, percent=TRUE, col='#4daf4a', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=35)
+pROC::plot.roc(all.cov$use, rsf.null$fitted.values, percent=TRUE, col='#B090D0', lwd=4, print.auc=TRUE, add=TRUE, print.auc.y=45)
+
+legend("bottomright", legend=c("Full Model", "Simple Model", "Varying Intercept-only Model"),
+       col=c("#377eb8", "#4daf4a", "#B090D0"), lwd = 4)
 
 
 

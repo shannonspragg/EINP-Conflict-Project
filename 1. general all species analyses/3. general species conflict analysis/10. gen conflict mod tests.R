@@ -22,6 +22,7 @@ post.pa.full <- readRDS("data/processed/post_pa_full.rds")
 post.pa.partial <- readRDS("data/processed/post_pa_partial.rds")
 post.pa.full.quad <- readRDS("data/processed/post_pa_full_quad.rds")
 post.int.only <- readRDS("data/processed/post_int_only.rds")
+pres.abs.scl <- readRDS("data/processed/pres_abs_scl.rds")
 
 # Run LOOIC and Posterior Comparisons: ------------------------------------
 loo1 <- loo(post.pa.full, save_psis = TRUE)
