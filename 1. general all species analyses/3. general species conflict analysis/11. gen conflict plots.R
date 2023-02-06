@@ -48,7 +48,7 @@ p <- mcmc_intervals(posterior,
                              "human.dens.ps",
                              "animal.farm.dens.ps",
                              "ground.crop.dens.ps",
-                             "ndvi.ps", "gHM.ps", "agno.biophys.ps", "gen.focal.biophys.ps"),
+                             "ndvi.ps", "gHM.ps", "agno.biophys.ps"),
                     prob = 0.8) +
   scale_y_discrete(labels = c("dist.2.pa.ps" = "Dist. to PA",
                               "human.dens.ps" = "Population Density",
@@ -184,6 +184,7 @@ ground.dens.plot <- ggplot(data=plot.df) +
   xlab(expression("Density of Row-Crop Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+
 saveRDS(ground.dens.plot, "data/processed/groundcrop_dens_mixe_plot.rds")
 
 # Prep plot for NDVI:
