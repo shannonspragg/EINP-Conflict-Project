@@ -10,7 +10,7 @@ library(tidyverse)
 library(raster)
 
 # Load Data: --------------------------------------------------------------
-bhs <- rast("data/processed/bbear_habitat_suitability.tif")
+bhs <- rast("data/processed/bbear_validated_habitat_suitability.tif")
 temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 ghm1 <- rast("data/original/gHMv1_300m_2017_static-0000000000-0000000000.tif") 
 bhb.buf <- st_read("data/processed/bhb_50km.shp")

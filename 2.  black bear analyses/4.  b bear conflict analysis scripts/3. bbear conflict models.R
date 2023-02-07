@@ -30,7 +30,7 @@ bear.conflict$genconflictprob <- gen.prob.conflict[,2]
 
 bear.conflict.df <- bear.conflict %>% 
   st_drop_geometry() %>% 
-  dplyr::select(., bears, CCSNAME, dst2p_k, hum_dns, anml_fr, grnd_cr, ndvi, gHM, bhs, frst_s_, genconflictprob)
+  dplyr::select(., bears, CCSNAME, dst2p_k, hum_dns, anml_fr, grnd_cr, ndvi, gHM, bhs, biophys, genconflictprob)
 
 colnames(bear.conflict.df) <- c("bear_conflict", "CCSNAME.ps", "dist2pa", "humandens", "livestockOps", "rowcropOps", "ndvi", "gHM", "habsuit", "connectivity", "conflictprob")
 

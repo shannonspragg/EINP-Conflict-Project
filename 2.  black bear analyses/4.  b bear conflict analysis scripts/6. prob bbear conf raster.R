@@ -34,7 +34,7 @@ ground.dens <- rast("data/processed/ground_crop_density_raster.tif")
 ndvi.r <- rast("data/processed/bhb_ndvi.tif")
 ghm.r <- rast("data/processed/bhw_ghm.tif")
 bhs <- rast("data/processed/bbear_habitat_suitability.tif")
-biophys <- rast("data/processed/forest_specialist_cum_currmap.tif")
+biophys <- rast("data/processed/bbear_collar_validated_cum_currmap.tif")
 conflict <- rast("Data/processed/prob_conflict_all.tif") # Only need this if using model with conflict
 
 bbear.conf.pred.stack <- c(dist.2.pa, hum.dens.r, animal.dens, ground.dens, ndvi.r, ghm.r, bhs, biophys, conflict)
@@ -83,7 +83,7 @@ conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
 # Add our Rasters:
-bear.pred.stack <- c(global.int, ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ndvi.pred, bhs.pred, ghm.pred, biophys.pred) #, conflict.pred, conflict.quad.prd)
+bear.pred.stack <- c(global.int, ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ndvi.pred, bhs.pred, ghm.pred, biophys.pred) #, global.int, ccs.int, )
 
 bear.linpred.rst <- sum(bear.pred.stack)
 bear.prob.rast <- (exp(bear.linpred.rst))/(1 + exp(bear.linpred.rst))
