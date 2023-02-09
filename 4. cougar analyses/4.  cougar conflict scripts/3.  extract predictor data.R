@@ -90,7 +90,7 @@ which(is.na(c.conflict.reproj$cougar_biophys)) #one
 #which(is.na(c.conflict.reproj$cougar_inc)) #one
 
 # Remove 1130th row
-c.conflict.reproj <- c.conflict.reproj[-c(1130), ]
+#c.conflict.reproj <- c.conflict.reproj[-c(1130), ]
 
 # Save this as new file ---------------------------------------------------
 

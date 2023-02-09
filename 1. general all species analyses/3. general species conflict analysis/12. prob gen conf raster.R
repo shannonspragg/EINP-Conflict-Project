@@ -22,7 +22,7 @@ var.int <- ranef(post.pa.full)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCS
 ccs.sf <- st_read("Data/processed/AB_CCS.shp")
 ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
 ccs.sf.join <- ccs.reproj %>% left_join(., var.int)
-ccs.sf.join[ccs.sf$CCSNAME == "Lesser Slave River No. 124",]$`(Intercept)` <- 0 #no points from this CCS; setting to 0 results in use of global intercept
+ccs.sf.join[ccs.sf$CCSNAME == "Lac la Biche County",]$`(Intercept)` <- 0 #no points from this CCS; setting to 0 results in use of global intercept
 
 # Load predictor rasters:
 dist.2.pa <- rast("Data/processed/dist2pa_km_bhb.tif") 
