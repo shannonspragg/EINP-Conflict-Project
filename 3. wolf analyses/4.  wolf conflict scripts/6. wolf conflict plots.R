@@ -23,7 +23,7 @@ library(ggplot2)
 
 
 # Bring in Data: ----------------------------------------------------------
-wolf.full.mod.quad <- readRDS("data/processed/wolf_quad_reg.rds")
+wolf.full.mod <- readRDS("data/processed/wolf_full_mod.rds")
 #wolf.no.conflict.mod <- readRDS("data/processed/wolf_no_conf.rds")
 wolf.conflict.df.scl <- readRDS("data/processed/wolf_conf_df_scl.rds")
 # Plot Effects of Posterior Coefficients:
@@ -34,12 +34,12 @@ library(see)
 library(insight)
 library(ggplot2)
 
-wolf.full.result <- p_direction(wolf.full.mod.quad)
+wolf.full.result <- p_direction(wolf.full.mod)
 wolf.mod.preds.plot <- plot(wolf.full.result, title = "Predictor Effects for Wolf Conflict")
 wolf.mod.preds.plot
 # this is the max probability of effect (MPE), showing the probability of a predictor having a positive or negative effect
 
-wolf.coef.plot <- plot(wolf.full.mod.quad, pars = c("dist2pa","humandens",
+wolf.coef.plot <- plot(wolf.full.mod, pars = c("dist2pa","humandens",
                                               "livestockOps",
                                               "rowcropOps",
                                               "ungulatedens", "gHM", "habsuit", "connectivity", "roaddens", "conflictprob"), main = "Predictor Effects for  Wolf Conflict")
@@ -49,8 +49,8 @@ saveRDS(wolf.coef.plot, "data/processed/wolf_coef_plot.rds")
 
 # Plot results ------------------------------------------------------------
 
-posterior <- as.matrix(wolf.full.mod.quad)
-parnames <- names(fixef(wolf.full.mod.quad))[2:11] # change range based on model variables
+posterior <- as.matrix(wolf.full.mod)
+parnames <- names(fixef(wolf.full.mod))[2:11] # change range based on model variables
 p <- mcmc_intervals(posterior,
                     pars = parnames,
                     prob = 0.8) +
@@ -82,7 +82,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, # changing to add_elpd_draws from add_fitted_draws
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, # changing to add_elpd_draws from add_fitted_draws
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -127,7 +127,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad,
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod,
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -169,7 +169,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, 
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -212,7 +212,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, 
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -253,7 +253,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, 
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -295,7 +295,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, 
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -338,7 +338,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, 
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -380,7 +380,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, 
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -421,7 +421,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = mean(roaddens),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, 
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -462,7 +462,7 @@ simdata <- wolf.conflict.df.scl %>%
                     roaddens = seq_range(roaddens, n=300),
                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod.quad, 
+postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -496,7 +496,7 @@ social.p.w <-  livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot.w + road
 
 wolf.plot.all <- connectivity.plot.w + habsuit.plot.w + dist2pa.plot.w + ungulate.plot.w + livestockOps.plot.w + rowcropOps.plot.w + human.mod.plot.w + pop.dens.plot.w + road.dens.plot +  plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
-saveRDS(biophys.p, "data/processed/biophys_wolf_conf_plots.rds")
-saveRDS(social.p, "data/processed/social_wolf_conf_plots.rds")
+saveRDS(biophys.p.w, "data/processed/biophys_wolf_conf_plots.rds")
+saveRDS(social.p.w, "data/processed/social_wolf_conf_plots.rds")
 saveRDS(wolf.plot.all, "data/processed/all_wolf_conf_plots.rds")
 

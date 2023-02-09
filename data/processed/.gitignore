@@ -645,3 +645,7 @@ bhw_bbear_collar_biophys_cumcurr.tif
 bhw_bbear_collar_biophys_cumcurr_50km.tif
 bhw_bbear_collar_biophys_norm.tif
 bhw_bbear_collar_biophys_norm_50km.tif
+all_wolf_conf_plots.rds
+biophys_wolf_conf_plots.rds
+social_wolf_conf_plots.rds
+wolf_conf_mixed_effects_plot.jpeg

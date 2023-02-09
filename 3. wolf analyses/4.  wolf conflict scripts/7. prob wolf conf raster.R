@@ -88,7 +88,7 @@ conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
 # Add our Rasters: NOTE: including global and ccs intercept (which is very high), messes this up
-wolf.pred.stack <- c( dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
+wolf.pred.stack <- c(dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
 
 wolf.linpred.rst <- sum(wolf.pred.stack)
 wolf.prob.rast <- (exp(wolf.linpred.rst))/(1 + exp(wolf.linpred.rst))
