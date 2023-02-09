@@ -64,8 +64,8 @@ p <- mcmc_intervals(posterior,
                               "habsuit" = "Cougar habitat suitability",
                             #  "cougarincrease" = "Public Support of cougar Population Increase",
                             "connectivity" = "Cougar Biophysical Connectivity",
-                            "conflictprob" = "Prob of wildlife conflict"))
-                              # "I(conflictprob^2)" = expression("Prob of wildlife conflict"^2))) # only use these if using conflict model
+                            "conflictprob" = "Prob of wildlife conflict",
+                            "I(conflictprob^2)" = expression("Prob of wildlife conflict"^2))) # only use these if using conflict model
 
 
 # Prep Dist to Wetland Plot ----------------------------------------------------
@@ -380,7 +380,7 @@ postdraws <- tidybayes::add_epred_draws(cougar.full.mod,
 
 postdraws$habsuit <- (postdraws$habsuit * attributes(cougar.conflict.df.scl$habsuit)[[3]])+attributes(cougar.conflict.df.scl$habsuit)[[2]]
 
-#Plot wHS:
+#Plot CHS:
 plot.df <- postdraws %>% 
   mutate_at(., vars(conflictprob), as.factor) %>% 
   group_by(habsuit, conflictprob) %>% 

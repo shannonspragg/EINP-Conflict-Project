@@ -85,25 +85,29 @@ round(mean(xor(ploo0>0.5,as.integer(cougar.conflict.df.scl$cougar_conflict==0)))
 
 
 # Try model averaging: ----------------------------------------------------
-    ## It looks like there is uncertainty cith model selection due to the similarity of the models. 
-    # Here ce try model averaging and stacking to differentiate the full model from the full model + quad (both cith delta LOOIC < -2:
+    ## It looks like there is uncertainty with model selection due to the similarity of the models. 
+    # Here we try model averaging and stacking to differentiate the full model from the full model + quad (both with delta LOOIC < -2:
 lpd_point <- cbind(
-  loo1b$pointcise[,"elpd_loo"], 
-  loo2b$pointcise[,"elpd_loo"]
+  loo1c$pointwise[,"elpd_loo"], 
+  loo2c$pointwise[,"elpd_loo"],
+  loo0c$pointwise[,"elpd_loo"],
+  loo3c$pointwise[,"elpd_loo"]
 )
 pbma_wts <- pseudobma_weights(lpd_point, BB=FALSE)
 pbma_BB_wts <- pseudobma_weights(lpd_point) # default is BB=TRUE
 stacking_wts <- stacking_weights(lpd_point)
 round(cbind(pbma_wts, pbma_BB_wts, stacking_wts), 2)
-# This shocs us that the first model (cougar.full.model) is holding the majority of the ceight
+# This shocs us that the first model (cougar.full.model) is holding the majority of the weight
 
-# Apply these ceights to the posterior predictions:
-yrep1 <- posterior_predict(cougar.full.mod, dracs=(0.91*7500)) # 6825 dracs
-yrep2 <- posterior_predict(cougar.full.mod.quad, dracs=round(0.09*7500)) # only 675 dracs
+# Apply these weights to the posterior predictions:
+yrep1 <- posterior_predict(cougar.full.mod, dracs=(0.04*4827)) # 6825 draws
+yrep2 <- posterior_predict(cougar.full.mod.quad, dracs=round(0.02*4827)) # only 675 draws
+yrep3 <- posterior_predict(cougar.no.conf, dracs=round(0.40*4827)) # only 675 draws
+yrep0 <- posterior_predict(cougar.int.only, dracs=round(0.55*4827)) # only 675 draws
 
-yrep <- c(yrep1, yrep2)
+yrep <- c(yrep1, yrep2, yrep3, yrep0)
 
-# Based on the above, it looks like the best model is #3: cougar.no.conflict , folloced by the cougar.full.mod, cougar.full.mod.quad, and cougar.int.only (respectively)
+# Based on the above, it looks like the best model is #0: cougar.int.only, followed by the cougar.no.conflict , cougar.full.mod, and cougar.full.mod.quad  (respectively)
 
 # Building plots of results -----------------------------------------------
 

@@ -24,7 +24,7 @@ var.int <- ranef(cougar.no.conf)$CCSNAME.ps %>% tibble::rownames_to_column(., "C
 ccs.sf <- st_read("Data/processed/AB_CCS.shp")
 ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
 ccs.sf.join <- ccs.reproj %>% left_join(., var.int)
-ccs.sf.join[ccs.sf$CCSNAME == "Lesser Slave River No. 124",]$`(Intercept)` <- 0 #no points from this CCS; setting to 0 results in use of global intercept
+ccs.sf.join[ccs.sf$CCSNAME == "Lac la Biche County",]$`(Intercept)` <- 0 #no points from this CCS; setting to 0 results in use of global intercept
 
 #load predictor rasters
 dist.2.wetland <- rast("Data/processed/dist2drainage_km_bhb.tif") 
@@ -91,7 +91,7 @@ conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
 # Add our Rasters: #NOTE : also issues with including intercept
-cougar.pred.stack <- c( dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
+cougar.pred.stack <- c(global.int, ccs.int, dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
 
 cougar.linpred.rst <- sum(cougar.pred.stack)
 cougar.prob.rast <- (exp(cougar.linpred.rst))/(1 + exp(cougar.linpred.rst))
