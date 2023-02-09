@@ -26,7 +26,7 @@ wolf.no.conf <- readRDS("data/processed/wolf_no_conf.rds")
 wolf.conflict.df.scl <- readRDS("data/processed/wolf_conf_df_scl.rds")
 
 # Model Comparison: -------------------------------------------------------
-loo1w <- loo(wolf.full.mod, save_psis = TRUE, k_threshold = 0.7) # there is one point that has a poor loo value
+loo1w <- loo(wolf.full.mod, save_psis = TRUE , k_threshold = 0.7) # there is one point that has a poor loo value
 loo2w <- loo(wolf.full.mod.quad, save_psis = TRUE, k_threshold = 0.7)
 loo3w <- loo(wolf.no.conf, save_psis = TRUE, k_threshold = 0.7)
 loo0w <- loo(wolf.int.only, save_psis = TRUE, k_threshold = 0.7)

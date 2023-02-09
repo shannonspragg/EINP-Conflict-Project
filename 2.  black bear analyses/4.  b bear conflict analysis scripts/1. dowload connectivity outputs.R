@@ -31,6 +31,7 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
 
 # Let's crop these to the BHW boundary and 50km buffer --------------------
 library(terra)
+library(sf)
 
 # Bring in covariate data: -------------------------------------------------------------
 bhb.50km.boundary <- st_read("data/processed/bhb_50km.shp")
@@ -40,12 +41,12 @@ temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 forest_sp_cumcurr <- rast("data/processed/forest_specialist_cum_currmap.tif")
 forest_sp_norm <- rast("data/processed/forest_specialist_normalized_cum_currmap.tif")
 
-bbear_valid_integrated_biophys_cumcurr <- rast("data/processed/bbear_val_int_biophys_cum_currmap.tif")
-bbear_valid_integrated_biophys_norm <- rast("data/processed/bbear_val_int_biophys_normalized_cum_currmap.tif")
+# bbear_valid_integrated_biophys_cumcurr <- rast("data/processed/bbear_val_int_biophys_cum_currmap.tif")
+# bbear_valid_integrated_biophys_norm <- rast("data/processed/bbear_val_int_biophys_normalized_cum_currmap.tif")
 
 # Conflict connectivity outputs: (you won't have these until after conflict analysis)
-bbear_conflict_cumcurr <- rast("data/processed/bbear_conflict_cum_currmap.tif")
-bbear_conflict_norm <- rast("data/processed/bbear_conflict_normalized_cum_currmap.tif")
+bbear_conflict_cumcurr <- rast("data/processed/bbear_conf_collar_validated_cum_currmap.tif")
+bbear_conflict_norm <- rast("data/processed/bbear_conf_collar_validated_normalized_cum_currmap.tif")
 
 bbear_conflict_val_integrated_cumcurr <- rast("data/processed/bbear_val_int_conflict_cum_currmap.tif")
 bbear_conflict_val_integrated_norm <- rast("data/processed/bbear_val_int_conflict_normalized_cum_currmap.tif")
