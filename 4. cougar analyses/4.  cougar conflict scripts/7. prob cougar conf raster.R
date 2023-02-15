@@ -13,13 +13,13 @@ library(terra)
 cougar.full.mod.quad <- readRDS("Data/processed/cougar_quad_reg.rds")
 # cougar.int.only <- readRDS("Data/processed/cougar_int_only.rds")
 #cougar.full.mod <- readRDS("Data/processed/cougar_full_mod.rds")
-#cougar.no.conf <- readRDS("Data/processed/cougar_no_conf.rds")
+#cougar.no.conf <- readRDS("Data/processed/cougar_no_conf.rds") # try this and see..
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
 
 # generate spatial pred ---------------------------------------------------
-fixed.effects <- fixef(cougar.full.mod.quad)
-var.int <- ranef(cougar.full.mod.quad)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
+fixed.effects <- fixef(cougar.full.mod)
+var.int <- ranef(cougar.full.mod)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
 
 ccs.sf <- st_read("Data/processed/AB_CCS.shp")
 ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
@@ -90,7 +90,7 @@ road.dens.pred <- road.dens.scl * fixed.effects[['road_dens']]
 conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
-# Add our Rasters: #NOTE : also issues with including intercept
+# Add our Rasters: #NOTE : also issues with including intercept - this and CHS / connectivity are quite large
 cougar.pred.stack <- c(global.int, ccs.int, dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
 
 cougar.linpred.rst <- sum(cougar.pred.stack)
