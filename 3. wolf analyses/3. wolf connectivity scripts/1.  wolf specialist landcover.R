@@ -26,10 +26,13 @@ plot(specialist.wolf.rast)
 
 
 
-# Assign values for specialist selection: ---------------------------------
+# Assign values for resistance to specialist selection: ---------------------------------
 specialist.wolf.rast[specialist.wolf.rast == 1] <- 900 
 specialist.wolf.rast[specialist.wolf.rast == 0] <- 0.7 # increase this to represent wolf selection, not crazy specific but still high
 specialist.wolf.rast[specialist.wolf.rast == 900] <- 0 
 
+plot(specialist.wolf.rast)
+
 # Save:
+# NOTE: this is inverted so it is now a resistance layer, with 0 = no resistance and 0.7 = most resistance
 writeRaster(specialist.wolf.rast, "data/processed/wolf_specialist_habitat.tif")

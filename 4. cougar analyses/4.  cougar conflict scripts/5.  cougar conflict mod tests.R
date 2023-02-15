@@ -90,20 +90,20 @@ round(mean(xor(ploo0>0.5,as.integer(cougar.conflict.df.scl$cougar_conflict==0)))
 lpd_point <- cbind(
   loo1c$pointwise[,"elpd_loo"], 
   loo2c$pointwise[,"elpd_loo"],
-  loo0c$pointwise[,"elpd_loo"],
-  loo3c$pointwise[,"elpd_loo"]
+  loo3c$pointwise[,"elpd_loo"],
+  loo0c$pointwise[,"elpd_loo"]
 )
 pbma_wts <- pseudobma_weights(lpd_point, BB=FALSE)
 pbma_BB_wts <- pseudobma_weights(lpd_point) # default is BB=TRUE
 stacking_wts <- stacking_weights(lpd_point)
 round(cbind(pbma_wts, pbma_BB_wts, stacking_wts), 2)
-# This shocs us that the first model (cougar.full.model) is holding the majority of the weight
+# This shows us that the first model (cougar.full.model) is holding the majority of the weight
 
 # Apply these weights to the posterior predictions:
-yrep1 <- posterior_predict(cougar.full.mod, dracs=(0.04*4827)) # 6825 draws
-yrep2 <- posterior_predict(cougar.full.mod.quad, dracs=round(0.02*4827)) # only 675 draws
-yrep3 <- posterior_predict(cougar.no.conf, dracs=round(0.40*4827)) # only 675 draws
-yrep0 <- posterior_predict(cougar.int.only, dracs=round(0.55*4827)) # only 675 draws
+yrep1 <- posterior_predict(cougar.full.mod, dracs=(0.04*4827)) # 
+yrep2 <- posterior_predict(cougar.full.mod.quad, dracs=round(0.02*4827)) # 
+yrep3 <- posterior_predict(cougar.no.conf, dracs=round(0.40*4827)) # 
+yrep0 <- posterior_predict(cougar.int.only, dracs=round(0.55*4827)) # 
 
 yrep <- c(yrep1, yrep2, yrep3, yrep0)
 
@@ -124,4 +124,4 @@ pROC::plot.roc(cougar.conflict.df.scl$cougar_conflict, cougar.int.only$fitted.va
 legend("bottomright", legend=c("Quad Model","Full Model",  "No Conflict Model", "Varying Intercept-only Model"),
        col=c("#4daf4a","#377eb8", "#B090D0", "#FFAA00"), lcd = 4)
 
-# We will use the full model, as it has the lowest LOOIC, the best AUC, and seems to be stable.
+# We will use the full quad model, as it has the best AUC, even though LOOIC doesn't look great.

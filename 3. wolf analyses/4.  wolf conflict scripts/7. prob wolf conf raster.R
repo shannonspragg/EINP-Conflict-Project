@@ -10,13 +10,13 @@ library(terra)
 
 
 # Bring in Data: ----------------------------------------------------------
-wolf.full.mod.quad <- readRDS("Data/processed/wolf_quad_reg.rds")
+wolf.full.mod <- readRDS("Data/processed/wolf_full_mod.rds")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
 
 # generate spatial pred ---------------------------------------------------
-fixed.effects <- fixef(wolf.full.mod.quad)
-var.int <- ranef(wolf.no.conf)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
+fixed.effects <- fixef(wolf.full.mod)
+var.int <- ranef(wolf.full.mod)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
 
 ccs.sf <- st_read("Data/processed/AB_CCS.shp")
 ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
@@ -85,7 +85,7 @@ biophys.pred <- biophys.scl * fixed.effects[['connectivity']]
 road.dens.pred <- road.dens.scl * fixed.effects[['roaddens']]
 #wolfinc.pred <- wolf.inc.scl * fixed.effects[['wolfinc']]
 conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
-conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
+#conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
 # Add our Rasters: NOTE: including global and ccs intercept (which is very high), messes this up
 wolf.pred.stack <- c(global.int, ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,

@@ -33,4 +33,5 @@ specialist.hab.rast[specialist.hab.rast == 0] <- 0.9 # increase this to represen
 specialist.hab.rast[specialist.hab.rast == 900] <- 0 
 
 # Save:
+# NOTE: this is inverted so it is now a resistance layer, with 0 = no resistance and 0.9 = most resistance
 writeRaster(specialist.hab.rast, "data/processed/forest_specialist_species_habitat.tif")

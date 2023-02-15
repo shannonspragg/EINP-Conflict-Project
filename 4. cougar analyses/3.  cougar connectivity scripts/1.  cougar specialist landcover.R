@@ -34,4 +34,5 @@ specialist.cougar.rast[specialist.cougar.rast == 0] <- 0.7 # increase this to re
 specialist.cougar.rast[specialist.cougar.rast == 900] <- 0 
 
 # Save resistance input:
+# NOTE: this is inverted so it is now a resistance layer, with 0 = no resistance and 0.7 = most resistance
 writeRaster(specialist.cougar.rast, "data/processed/cougar_specialist_habitat_resist.tif")

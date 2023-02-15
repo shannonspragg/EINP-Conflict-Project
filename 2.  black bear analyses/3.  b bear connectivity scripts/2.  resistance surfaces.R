@@ -15,7 +15,7 @@ temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 ghm1 <- rast("data/original/gHMv1_300m_2017_static-0000000000-0000000000.tif") 
 bhb.buf <- st_read("data/processed/bhb_50km.shp")
 bh.lake <- rast("data/processed/beaverhills_lake.tif")
-forest.specialist <- rast("data/processed/forest_specialist_species_habitat.tif")
+forest.specialist <- rast("data/processed/forest_specialist_species_habitat.tif") # this is already in "resistance" form (low values = more ideal habitat)
 elev.can.crop <- rast("data/processed/elevation_bhw.tif")
 rough.proj <- rast("data/processed/topo_roughness_bhw.tif")
 

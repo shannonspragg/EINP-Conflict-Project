@@ -121,4 +121,4 @@ pROC::plot.roc(wolf.conflict.df.scl$wolf_conflict, wolf.int.only$fitted.values, 
 legend("bottomright", legend=c("Full Model", "Quad Model",  "No Conflict Model", "Varying Intercept-only Model"),
        col=c("#4daf4a","#377eb8", "#B090D0", "#FFAA00"), lwd = 4)
 
-# We will use the full quad model, as it has the lowest LOOIC, the best AUC, and seems to be decent
+# We will use the full model, as it has the lowest LOOIC, the best AUC, and seems to be decent
