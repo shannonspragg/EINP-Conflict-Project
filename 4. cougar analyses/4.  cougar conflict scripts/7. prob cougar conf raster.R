@@ -82,7 +82,8 @@ pop.dens.pred <- pop.dens.scl * fixed.effects[['humandens']]
 edge.hab.pred <- edge.hab.scl * fixed.effects[['edge_habitat']]
 pipeline.dens.pred <- pipeline.dens.scl * fixed.effects[['pipeline_dens']]
 ungulate.pred <- ungulate.scl * fixed.effects[['ungulatedens']]
-chs.pred <- chs.scl * fixed.effects[['habsuit']]
+#chs.pred <- chs.scl * fixed.effects[['habsuit']]
+chs.pred <- chs.scl * 4.0 # what if we reduce coefficients by half..
 ghm.pred <- gHM.scl * fixed.effects[['gHM']]
 biophys.pred <- biophys.scl * fixed.effects[['connectivity']]
 road.dens.pred <- road.dens.scl * fixed.effects[['road_dens']]
@@ -90,8 +91,11 @@ road.dens.pred <- road.dens.scl * fixed.effects[['road_dens']]
 conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
-# Add our Rasters: #NOTE : also issues with including intercept - this and CHS / connectivity are quite large
+# Add our Rasters: #NOTE : also issues with including intercept -  CHS / connectivity are quite large
 cougar.pred.stack <- c(global.int, ccs.int, dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
+
+# Try without global int: helps, but main issue is with how large CHS is
+cougar.pred.stack <- c( ccs.int, dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
 
 cougar.linpred.rst <- sum(cougar.pred.stack)
 cougar.prob.rast <- (exp(cougar.linpred.rst))/(1 + exp(cougar.linpred.rst))

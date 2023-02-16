@@ -90,6 +90,10 @@ conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # Add our Rasters: NOTE: including global and ccs intercept (which is very high), messes this up
 wolf.pred.stack <- c(global.int, ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
 
+# Removing the global intercept (very negative) makes this better --> can we do this??
+wolf.pred.stack <- c(ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
+
+
 wolf.linpred.rst <- sum(wolf.pred.stack)
 wolf.prob.rast <- (exp(wolf.linpred.rst))/(1 + exp(wolf.linpred.rst))
 plot(wolf.prob.rast)
