@@ -82,7 +82,7 @@ biophys.pred <- biophys.scl * fixed.effects[['connectivity']]
 conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
-# Add our Rasters:
+# Add our Rasters: NOTE: animal prod is making this a little wonky bc it is very large -
 bear.pred.stack <- c(global.int, ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ndvi.pred, bhs.pred, ghm.pred, biophys.pred) #, global.int, ccs.int, )
 
 bear.linpred.rst <- sum(bear.pred.stack)
