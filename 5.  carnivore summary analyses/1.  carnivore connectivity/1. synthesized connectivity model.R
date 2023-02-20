@@ -22,7 +22,7 @@ cougar.conf.cumcurr <- rast("data/processed/cougar_conflict_cum_currmap.tif")
 cougar.conf.norm <- rast("data/processed/cougar_conflict_normalized_cum_currmap.tif")
 
 all.conflict.df <- st_read("data/processed/conflict_conf_comp_dataframe.shp")
-
+bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 
 # Method 1: Multiple across using data proportions ------------------------
     # Here we will multiply each surface by the proportion of species reports to total reports. Then we will add these weighted surfaces
@@ -56,4 +56,22 @@ carnivore.cumcurr.sum <- sum(carnivore.cumcurr)
 carnivore.norm.sum <- sum(carnivore.norm)
 
 
+
+# Crop these to the BHW for mapping: --------------------------------------
+bhw.v <- vect(bhw)
+
+carnivore.cumcurr.bhw <- terra::mask(carnivore.cumcurr.sum, bhw.v)
+carnivore.norm.bhw <- terra::mask(carnivore.norm.sum, bhw.v)
+
+plot(carnivore.cumcurr.bhw)
+plot(carnivore.norm.bhw)
+
+
+
+# Save files: -------------------------------------------------------------
+writeRaster(carnivore.cumcurr.sum, "data/processed/carnivore_summarized_cumcurr.tif", overwrite = TRUE)
+writeRaster(carnivore.norm.sum, "data/processed/carnivore_summarized_normalized.tif", overwrite = TRUE)
+
+writeRaster(carnivore.cumcurr.bhw, "data/processed/bhw_carnivore_summarized_cumcurr.tif", overwrite = TRUE)
+writeRaster(carnivore.norm.bhw, "data/processed/bhw_carnivore_summarized_normalized.tif", overwrite = TRUE)
 
