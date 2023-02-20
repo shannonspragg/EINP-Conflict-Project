@@ -24,7 +24,7 @@ cougar.conf.norm <- rast("data/processed/cougar_conflict_normalized_cum_currmap.
 all.conflict.df <- st_read("data/processed/conflict_conf_comp_dataframe.shp")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 
-# Method 1: Multiple across using data proportions ------------------------
+# Method 1: Multiple across using conflict report proportions ------------------------
     # Here we will multiply each surface by the proportion of species reports to total reports. Then we will add these weighted surfaces
     # together into one 
 
