@@ -33,7 +33,7 @@ elev.can.crop
 rough.proj
 
 # Need to invert roughness:
-install.packages("spatialEco")
+#install.packages("spatialEco")
 library(spatialEco)
 #elev.inv <- raster.invert(elev.can.crop)
 rough.inv <- raster.invert(rough.proj)
@@ -58,7 +58,7 @@ writeRaster(wolf_biophys_resistance, "data/processed/wolf_biophys_resist.tif", o
 
 # Add prob conflict for biophys + social surface (after running conflict models)--------------------------
 
-prob.wolf.conf <- rast("Data/processed/prob_conflict_wolf.tif")
+prob.wolf.conf <- rast("Data/processed/prob_conflict_wolf_smoothed.tif") # try this with smoothed one
 
 fuzzysum6 <- function(r1, r2, r3, r4, r5, r6) {
   rc1.1m <- (1-r1)
@@ -72,6 +72,11 @@ fuzzysum6 <- function(r1, r2, r3, r4, r5, r6) {
 # # Add together our biophys attributes + grizz inc resist: gHM, and roughness + grizz resist
 bio_social_fuzzysum <- fuzzysum5(ghm.conv, rough.inv, ag.land, bh.lake, prob.wolf.conf)
 biosocial_resistance <- (1+bio_social_fuzzysum)^10
+
+plot(biosocial_resistance)
+
+writeRaster(bio_social_fuzzysum, "data/processed/wolf_biosocial_fuzsum_smoothed.tif",overwrite=TRUE)
+writeRaster(biosocial_resistance, "data/processed/wolf_biosocial_resist_smoothed.tif", overwrite=TRUE)
 
 writeRaster(bio_social_fuzzysum, "data/processed/wolf_biosocial_fuzsum.tif",overwrite=TRUE)
 writeRaster(biosocial_resistance, "data/processed/wolf_biosocial_resist.tif", overwrite=TRUE)

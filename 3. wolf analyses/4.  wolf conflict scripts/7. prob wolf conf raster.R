@@ -98,9 +98,18 @@ wolf.linpred.rst <- sum(wolf.pred.stack)
 wolf.prob.rast <- (exp(wolf.linpred.rst))/(1 + exp(wolf.linpred.rst))
 plot(wolf.prob.rast)
 
+# Apply Moving Window to smooth harsh lines -------------------------------
+fw <- focalWeight(bear.prob.rast, 2523, 'circle') # 2.5km radius, so an area of 20km^2
+wolf.prob.smooth <- focal(wolf.prob.rast, w=fw, fun="sum",na.rm=T) # Selected bigger radius for larger range
+plot(wolf.prob.smooth)
+
 # Crop to BHW Boundary:
 wolf.prob.rast.bhw <- mask(wolf.prob.rast, bhw.v)
-plot(wolf.prob.rast.bhw)
+wolf.prob.rast.smooth.bhw <- mask(wolf.prob.smooth, bhw.v)
+plot(wolf.prob.rast.smooth.bhw)
+
+writeRaster(wolf.prob.smooth, "Data/processed/prob_conflict_wolf_smoothed.tif", overwrite=TRUE)
+writeRaster(wolf.prob.rast.smooth.bhw, "Data/processed/prob_conflict_wolf_smooth_bhw.tif", overwrite=TRUE)
 
 writeRaster(wolf.prob.rast, "Data/processed/prob_conflict_wolf.tif", overwrite=TRUE)
 writeRaster(wolf.prob.rast.bhw, "Data/processed/prob_conflict_wolf_bhw.tif", overwrite=TRUE)

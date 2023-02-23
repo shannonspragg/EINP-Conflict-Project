@@ -12,14 +12,14 @@ library(tidyverse)
 
 
 # Bring in data -----------------------------------------------------------
-bbear.conf.cumcurr <- rast("data/processed/bbear_conflict_cum_currmap.tif")
-bbear.conf.norm <- rast("data/processed/bbear_conflict_normalized_cum_currmap.tif")
+bbear.conf.cumcurr <- rast("data/processed/smoothed_bbear_conf_collar_validated_cum_currmap.tif") # trying this with smoothed models
+bbear.conf.norm <- rast("data/processed/smoothed_bbear_conf_collar_validated_normalized_cum_currmap.tif")
 
-wolf.conf.cumcurr <- rast("data/processed/wolf_conf_cum_currmap.tif")
-wolf.conf.norm <- rast("data/processed/wolf_conf_normalized_cum_currmap.tif")
+wolf.conf.cumcurr <- rast("data/processed/smoothed_wolf_conf_cum_currmap.tif")
+wolf.conf.norm <- rast("data/processed/smoothed_wolf_conf_normalized_cum_currmap.tif")
 
-cougar.conf.cumcurr <- rast("data/processed/cougar_conflict_cum_currmap.tif")
-cougar.conf.norm <- rast("data/processed/cougar_conflict_normalized_cum_currmap.tif")
+cougar.conf.cumcurr <- rast("data/processed/smoothed_cougar_conflict_cum_currmap.tif")
+cougar.conf.norm <- rast("data/processed/smoothed_cougar_conflict_normalized_cum_currmap.tif")
 
 all.conflict.df <- st_read("data/processed/conflict_conf_comp_dataframe.shp")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
@@ -39,6 +39,8 @@ sum(all.conflict.df$cougars) # 203
   #     cougar - 0.0421
 
 ## Multiply weights to each species connectivity model:
+  ## IMPORTANT NOTE: multiplying weights will mess up the "normalized" value range (indicating diffuse = 0, restricted <0, etc.)
+  # not entirely sure what to do /how to avoid this..
 bbear.cum.adj <- 0.1218 * bbear.conf.cumcurr
 bbear.norm.adj <- 0.1218 * bbear.conf.norm
 

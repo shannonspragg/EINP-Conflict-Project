@@ -109,10 +109,9 @@ dist2pa.plot.w <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(dist2pa.plot.w, "data/processed/wolf_dist2pa_mixe_plot.rds")
-
+dist2pa.plot.w
 
 # Prep Human Density Plot: ----------------------------------------------------
-
 
 simdata <- wolf.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
@@ -153,7 +152,7 @@ pop.dens.plot.w <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(pop.dens.plot.w, "data/processed/wolf_popdens_mixe_plot.rds")
-
+pop.dens.plot.w
 
 # Prep Livestock plot: ----------------------------------------------------
 simdata <- wolf.conflict.df.scl %>%
@@ -195,7 +194,7 @@ livestockOps.plot.w <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(livestockOps.plot.w, "data/processed/wolf_livestockOps_mixe_plot.rds")
-
+livestockOps.plot.w
 
 # Prep Row Crop Plot: -----------------------------------------------------
 
@@ -238,6 +237,7 @@ rowcropOps.plot.w <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(rowcropOps.plot.w, "data/processed/wolf_rowcrops_mixe_plot.rds")
+rowcropOps.plot.w
 
 # Prep Connectivity Plot: -------------------------------------------------
 simdata <- wolf.conflict.df.scl %>%
@@ -279,6 +279,7 @@ connectivity.plot.w <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(connectivity.plot.w, "data/processed/wolf_connectivity_mixe_plot.rds")
+connectivity.plot.w
 
 # Prep Ungulate density Plot: ---------------------------------------------------------
 
@@ -321,7 +322,7 @@ ungulate.plot.w <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(ungulate.plot.w, "data/processed/wolf_ungulatedensity_mixe_plot.rds")
-
+ungulate.plot.w
 
 # Prep WHS Plot -----------------------------------------------------------
 
@@ -364,6 +365,7 @@ habsuit.plot.w <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(habsuit.plot.w, "data/processed/wolf_bhs_mixe_plot.rds")
+habsuit.plot.w
 
 # Prep gHM Plot -----------------------------------------------------------
 
@@ -405,6 +407,7 @@ human.mod.plot.w <- ggplot(data=plot.df) +
   xlab("Degree of Human Modification (gHM)")+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(human.mod.plot.w, "data/processed/wolf_gHM_mixe_plot.rds")
+human.mod.plot.w
 
 # Prep wolf inc Plot -----------------------------------------------------------
 
@@ -487,7 +490,7 @@ road.dens.plot <- ggplot(data=plot.df) +
   xlab("Road Density per km")+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(road.dens.plot, "data/processed/wolf_road_density_mixe_plot.rds")
-
+road.dens.plot
 
 # Add Plots together:
 biophys.p.w <-  connectivity.plot.w + habsuit.plot.w + dist2pa.plot.w + ungulate.plot.w + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         

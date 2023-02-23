@@ -105,7 +105,7 @@ dist2pa.plot.b <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(dist2pa.plot.b, "data/processed/bear_dist2pa_mixe_plot.rds")
-
+dist2pa.plot.b
 
 # Prep Human Density Plot: ----------------------------------------------------
 
@@ -147,7 +147,7 @@ pop.dens.plot <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(pop.dens.plot, "data/processed/bear_popdens_mixe_plot.rds")
-
+pop.dens.plot
 
 # Prep Livestock plot: ----------------------------------------------------
 simdata <- bear.conflict.df.scl %>%
@@ -187,7 +187,7 @@ livestockOps.plot.b <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(livestockOps.plot.b, "data/processed/bear_livestockOps_mixe_plot.rds")
-
+livestockOps.plot.b
 
 # Prep Row Crop Plot: -----------------------------------------------------
 
@@ -228,6 +228,7 @@ rowcropOps.plot.b <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(rowcropOps.plot.b, "data/processed/bear_rowcrops_mixe_plot.rds")
+rowcropOps.plot.b
 
 # Prep Connectivity Plot: -------------------------------------------------
 simdata <- bear.conflict.df.scl %>%
@@ -267,6 +268,7 @@ connectivity.plot <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(connectivity.plot, "data/processed/bear_connectivity_mixe_plot.rds")
+connectivity.plot
 
 # Prep NDVI Plot: ---------------------------------------------------------
 
@@ -307,7 +309,7 @@ ndvi.plot.b <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(ndvi.plot.b, "data/processed/bear_ndvi_mixe_plot.rds")
-
+ndvi.plot.b
 
 # Prep BHS Plot -----------------------------------------------------------
 
@@ -348,6 +350,7 @@ habsuit.plot <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(habsuit.plot, "data/processed/bear_bhs_mixe_plot.rds")
+habsuit.plot
 
 # Prep gHM Plot -----------------------------------------------------------
 
@@ -387,6 +390,7 @@ human.mod.plot <- ggplot(data=plot.df) +
   xlab("Degree of Human Modification (gHM)")+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(human.mod.plot, "data/processed/bear_gHM_mixe_plot.rds")
+human.mod.plot
 
 # Add Plots together:
 biophys.p <-  connectivity.plot + habsuit.plot + dist2pa.plot.b + ndvi.plot.b + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         

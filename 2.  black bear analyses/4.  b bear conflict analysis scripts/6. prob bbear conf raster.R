@@ -89,9 +89,19 @@ bear.linpred.rst <- sum(bear.pred.stack)
 bear.prob.rast <- (exp(bear.linpred.rst))/(1 + exp(bear.linpred.rst))
 plot(bear.prob.rast)
 
+# Apply Moving Window to smooth harsh lines -------------------------------
+fw <- focalWeight(bear.prob.rast, 1262, 'circle') # 1.3km radius, so an area of 5km^2
+bear.prob.smooth <- focal(bear.prob.rast, w=fw, fun="sum",na.rm=T) 
+plot(bear.prob.smooth)
+
 # Crop to BHW Boundary:
 bear.prob.rast.bhw <- mask(bear.prob.rast, bhw.v)
-plot(bear.prob.rast.bhw)
+bear.prob.smooth.bhw <- mask(bear.prob.smooth, bhw.v)
+plot(bear.prob.smooth.bhw)
+
+# Save these:
+writeRaster(bear.prob.smooth, "Data/processed/prob_conflict_bear_smoothed.tif", overwrite=TRUE) # We will try this as a resistance input to help with harsh connectivity slow lines
+writeRaster(bear.prob.smooth.bhw, "Data/processed/prob_conflict_bear_smooth_bhw.tif", overwrite=TRUE)
 
 writeRaster(bear.prob.rast, "Data/processed/prob_conflict_bear.tif", overwrite=TRUE)
 writeRaster(bear.prob.rast.bhw, "Data/processed/prob_conflict_bear_bhw.tif", overwrite=TRUE)

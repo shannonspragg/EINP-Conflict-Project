@@ -109,7 +109,7 @@ dist2wetland.plot <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(dist2wetland.plot, "data/processed/cougar_dist2wetland_mixe_plot.rds")
-
+dist2wetland.plot
 
 # Prep Human Density Plot: ----------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -151,7 +151,7 @@ pop.dens.plot.c <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(pop.dens.plot.c, "data/processed/cougar_popdens_mixe_plot.rds")
-
+pop.dens.plot.c
 
 # Prep Edge Habitat plot: ----------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -193,7 +193,7 @@ edge.hab.plot <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(edge.hab.plot, "data/processed/cougar_edge_hab_mixe_plot.rds")
-
+edge.hab.plot
 
 # Prep Pipeline Dens Plot: -----------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -235,7 +235,7 @@ pipeline.dens.plot <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(pipeline.dens.plot, "data/processed/cougar_pipeline_dens_mixe_plot.rds")
-
+pipeline.dens.plot
 
 # Prep Ungulate density Plot: ---------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -277,6 +277,7 @@ ungulate.plot.c <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(ungulate.plot.c, "data/processed/cougar_ungulate_density_mixe_plot.rds")
+ungulate.plot.c
 
 # Prep road dens Plot -----------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -317,7 +318,7 @@ road.dens.plot.c <- ggplot(data=plot.df) +
   xlab(expression("Road Density per"~km^{2}))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(road.dens.plot.c, "data/processed/cougar_road_density_mixe_plot.rds")
-
+road.dens.plot.c
 
 # Prep gHM Plot -----------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -358,6 +359,7 @@ human.mod.plot.c <- ggplot(data=plot.df) +
   xlab("Degree of Human Modification (gHM)")+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(human.mod.plot.c, "data/processed/cougar_gHM_mixe_plot.rds")
+human.mod.plot.c
 
 # Prep CHS Plot -----------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -399,6 +401,7 @@ habsuit.plot.c <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(habsuit.plot.c, "data/processed/cougar_chs_mixe_plot.rds")
+habsuit.plot.c
 
 # Prep Connectivity Plot: -------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
@@ -440,6 +443,7 @@ connectivity.plot.c <- ggplot(data=plot.df) +
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
 saveRDS(connectivity.plot.c, "data/processed/cougar_connectivity_mixe_plot.rds")
+connectivity.plot.c
 
 # Prep cougar inc Plot -----------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%

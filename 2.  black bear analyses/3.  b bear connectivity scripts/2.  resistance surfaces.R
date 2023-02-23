@@ -47,7 +47,7 @@ writeRaster(forest_specialist_biophys_resistance, "Data/processed/forest_special
 
 # Add prob conflict for biophys + social surface (after running conflict models)--------------------------
 
-prob.bear.conf <- rast("Data/processed/prob_conflict_bear.tif")
+prob.bear.conf <- rast("Data/processed/prob_conflict_bear_smoothed.tif") # switching to smoothed out, trying to correct harsh lines
 
 # fuzzysum3 <- function(r1, r2, r3) {
 #   rc1.1m <- (1-r1)
@@ -59,5 +59,7 @@ prob.bear.conf <- rast("Data/processed/prob_conflict_bear.tif")
 bio_social_fuzzysum <- fuzzysum4(ghm.conv, rough.proj, prob.bear.conf, bh.lake)
 biosocial_resistance <- (1+bio_social_fuzzysum)^10
 
-writeRaster(bio_social_fuzzysum, "data/processed/biosocial_fuzsum.tif",overwrite=TRUE)
-writeRaster(biosocial_resistance, "data/processed/biosocial_resist.tif", overwrite=TRUE)
+plot(biosocial_resistance)
+
+writeRaster(bio_social_fuzzysum, "data/processed/bbear_biosocial_fuzsum.tif",overwrite=TRUE)
+writeRaster(biosocial_resistance, "data/processed/bbear_biosocial_resist.tif", overwrite=TRUE)

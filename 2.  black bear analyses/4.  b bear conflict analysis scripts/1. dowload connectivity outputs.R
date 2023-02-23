@@ -22,7 +22,7 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/processed/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 # Conflict Connectivity Models: (completed after conflict analysis)
-folder_url <- "https://drive.google.com/drive/u/0/folders/1uTsMaX2p__Z0FrkKu9JemxlbpVREVm37" # conflict outputs male b bears 
+folder_url <- "https://drive.google.com/drive/u/0/folders/1VQwuyleCv9idrK2nZKiyPiUrwWtE2gqV" # conflict outputs b bears 
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)
 #have to treat the gdb as a folder and download it into a gdb directory in order to deal with the fact that gdb is multiple, linked files
@@ -41,59 +41,35 @@ temp.rast <- rast("data/processed/dist2pa_km_bhb.tif")
 bbear_collar_biophys_cumcurr <- rast("data/processed/bbear_collar_validated_cum_currmap.tif")
 bbear_collar_biophys_norm <- rast("data/processed/bbear_collar_validated_normalized_cum_currmap.tif")
 
-# bbear_valid_integrated_biophys_cumcurr <- rast("data/processed/bbear_val_int_biophys_cum_currmap.tif")
-# bbear_valid_integrated_biophys_norm <- rast("data/processed/bbear_val_int_biophys_normalized_cum_currmap.tif")
-
 # Conflict connectivity outputs: (you won't have these until after conflict analysis)
-bbear_conflict_cumcurr <- rast("data/processed/bbear_conf_collar_validated_cum_currmap.tif")
-bbear_conflict_norm <- rast("data/processed/bbear_conf_collar_validated_normalized_cum_currmap.tif")
-
-# bbear_conflict_val_integrated_cumcurr <- rast("data/processed/bbear_val_int_conflict_cum_currmap.tif")
-# bbear_conflict_val_integrated_norm <- rast("data/processed/bbear_val_int_conflict_normalized_cum_currmap.tif")
+bbear_conflict_cumcurr <- rast("data/processed/smoothed_bbear_conf_collar_validated_cum_currmap.tif") # trying with smoothed ones
+bbear_conflict_norm <- rast("data/processed/smoothed_bbear_conf_collar_validated_normalized_cum_currmap.tif")
 
 # Make these vectors:
-bhb.50km.v <- vect(bhb.50km.boundary)
 bhw.v <- vect(bhb.watershed)
 
-# Mask layers to the BHW buffer and boundary line -------------------------
-
-# Crop our rasters to the BH watershed 50km buffer shape:
-bbear_biophys_cumcurr.bhb <- terra::mask(bbear_collar_biophys_cumcurr, bhb.50km.v)
-bbear_biophys_norm.bhb <- terra::mask(bbear_collar_biophys_norm, bhb.50km.v)
-
-bbear_conflict_cumcurr.bhb <- terra::mask(bbear_conflict_cumcurr, bhb.50km.v)
-bbear_conflict_norm.bhb <- terra::mask(bbear_conflict_norm, bhb.50km.v)
+# Mask layers to the BHW  boundary line -------------------------
 
 # Crop to BHW boundary:
 bbear_biophys_cumcurr.bhw <- terra::mask(bbear_collar_biophys_cumcurr, bhw.v)
 bbear_biophys_norm.bhw <- terra::mask(bbear_collar_biophys_norm, bhw.v)
 
-# bbear_val_int_bio_cumcurr.bhw <- terra::mask(bbear_valid_integrated_biophys_cumcurr, bhw.v)
-# bbear_val_int_bio_norm.bhw <- terra::mask(bbear_valid_integrated_biophys_norm, bhw.v)
-
 bbear_conflict_cumcurr.bhw <- terra::mask(bbear_conflict_cumcurr, bhw.v)
 bbear_conflict_norm.bhw <- terra::mask(bbear_conflict_norm, bhw.v)
 
-# bbear_conflict_val_int_cumcurr.bhw <- terra::mask(bbear_conflict_val_integrated_cumcurr, bhw.v)
-# bbear_conflict_val_int_norm.bhw <- terra::mask(bbear_conflict_val_integrated_norm, bhw.v)
+bbear_conflict_cumcurr.smooth.bhw <- terra::mask(bbear_conflict_cumcurr, bhw.v)
+bbear_conflict_norm.smooth.bhw <- terra::mask(bbear_conflict_norm, bhw.v)
 
-# Variables with 50km buffer of BHW:
-writeRaster(bbear_biophys_cumcurr.bhb, "data/processed/bhw_bbear_collar_biophys_cumcurr_50km.tif", overwrite=TRUE)
-writeRaster(bbear_biophys_norm.bhb, "data/processed/bhw_bbear_collar_biophys_norm_50km.tif", overwrite=TRUE)
-
-writeRaster(bbear_conflict_cumcurr.bhb, "data/processed/bhw_bbear_conflict_cumcurr_50km.tif", overwrite=TRUE)
-writeRaster(bbear_conflict_norm.bhb, "data/processed/bhw_bbear_conflict_norm_50km.tif", overwrite=TRUE)
+# Plot
+plot(bbear_conflict_cumcurr.smooth.bhw)
+plot(bbear_conflict_norm.smooth.bhw)
 
 # Variables with boundary of BHW:
 writeRaster(bbear_biophys_cumcurr.bhw, "data/processed/bhw_bbear_collar_biophys_cumcurr.tif", overwrite=TRUE)
 writeRaster(bbear_biophys_norm.bhw, "data/processed/bhw_bbear_collar_biophys_norm.tif", overwrite=TRUE)
 
-# writeRaster(bbear_val_int_bio_cumcurr.bhw, "data/processed/bhw_bbear_val_int_bio_cumcurr.tif", overwrite=TRUE)
-# writeRaster(bbear_val_int_bio_norm.bhw, "data/processed/bhw_bbear_val_int_bio_norm.tif", overwrite=TRUE)
-
 writeRaster(bbear_conflict_cumcurr.bhw, "data/processed/bhw_bbear_conflict_cumcurr.tif", overwrite=TRUE)
 writeRaster(bbear_conflict_norm.bhw, "data/processed/bhw_bbear_conflict_norm.tif", overwrite=TRUE)
 
-# writeRaster(bbear_conflict_val_int_cumcurr.bhw, "data/processed/bhw_bbear_val_int_conflict_cumcurr.tif", overwrite=TRUE)
-# writeRaster(bbear_conflict_val_int_norm.bhw, "data/processed/bhw_bbear_val_int_conflict_norm.tif", overwrite=TRUE)
-
+writeRaster(bbear_conflict_cumcurr.smooth.bhw, "data/processed/bhw_smooth_bbear_conflict_cumcurr.tif", overwrite=TRUE)
+writeRaster(bbear_conflict_norm.smooth.bhw, "data/processed/bhw_smooth_bbear_conflict_norm.tif", overwrite=TRUE)

@@ -65,7 +65,7 @@ writeRaster(cougar_biophys_resistance, "data/processed/cougar_biophys_resist.tif
 
 # Add prob conflict for biophys + social surface (after running conflict models)--------------------------
 
-prob.cougar.conf <- rast("Data/processed/prob_conflict_cougar.tif")
+prob.cougar.conf <- rast("Data/processed/prob_conflict_cougar_smoothed.tif") # try this with smoothed one
 
 # fuzzysum6 <- function(r1, r2, r3, r4, r5, r6) {
 #   rc1.1m <- (1-r1)
@@ -80,5 +80,10 @@ prob.cougar.conf <- rast("Data/processed/prob_conflict_cougar.tif")
 bio_social_fuzzysum <- fuzzysum4(ghm.conv, rough.inv, bh.lake, prob.cougar.conf)
 biosocial_resistance <- (1+bio_social_fuzzysum)^10
 
+plot(biosocial_resistance)
+
 writeRaster(bio_social_fuzzysum, "data/processed/cougar_biosocial_fuzsum.tif",overwrite=TRUE)
 writeRaster(biosocial_resistance, "data/processed/cougar_biosocial_resist.tif", overwrite=TRUE)
+
+writeRaster(bio_social_fuzzysum, "data/processed/cougar_biosocial_fuzsum_smoothed.tif",overwrite=TRUE)
+writeRaster(biosocial_resistance, "data/processed/cougar_biosocial_resist_smoothed.tif", overwrite=TRUE)

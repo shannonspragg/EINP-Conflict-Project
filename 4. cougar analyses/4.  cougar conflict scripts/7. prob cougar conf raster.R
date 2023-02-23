@@ -12,7 +12,7 @@ library(terra)
 # Bring in Data: ----------------------------------------------------------
 cougar.full.mod.quad <- readRDS("Data/processed/cougar_quad_reg.rds")
 # cougar.int.only <- readRDS("Data/processed/cougar_int_only.rds")
-#cougar.full.mod <- readRDS("Data/processed/cougar_full_mod.rds")
+cougar.full.mod <- readRDS("Data/processed/cougar_full_mod.rds")
 #cougar.no.conf <- readRDS("Data/processed/cougar_no_conf.rds") # try this and see..
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
@@ -101,9 +101,18 @@ cougar.linpred.rst <- sum(cougar.pred.stack)
 cougar.prob.rast <- (exp(cougar.linpred.rst))/(1 + exp(cougar.linpred.rst))
 plot(cougar.prob.rast)
 
+# Apply Moving Window to smooth harsh lines -------------------------------
+fw <- focalWeight(cougar.prob.rast, 1262, 'circle') # 1.3km radius, so an area of 5km^2
+cougar.prob.smooth <- focal(cougar.prob.rast, w=fw, fun="sum",na.rm=T) 
+plot(cougar.prob.smooth)
+
 # Crop to BHW Boundary:
 cougar.prob.rast.bhw <- mask(cougar.prob.rast, bhw.v)
-plot(cougar.prob.rast.bhw)
+cougar.prob.rast.smooth.bhw <- mask(cougar.prob.smooth, bhw.v)
+plot(cougar.prob.rast.smooth.bhw)
 
 writeRaster(cougar.prob.rast, "Data/processed/prob_conflict_cougar.tif", overwrite=TRUE)
 writeRaster(cougar.prob.rast.bhw, "Data/processed/prob_conflict_cougar_bhw.tif", overwrite=TRUE)
+
+writeRaster(cougar.prob.smooth, "Data/processed/prob_conflict_cougar_smoothed.tif", overwrite=TRUE)
+writeRaster(cougar.prob.rast.smooth.bhw, "Data/processed/prob_conflict_cougar_smoothed_bhw.tif", overwrite=TRUE)
