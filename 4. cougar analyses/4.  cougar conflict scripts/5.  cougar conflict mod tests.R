@@ -1,6 +1,8 @@
 
 # Run LOOIC tests and ROC curves ------------------------------------------
-## ce test the data simulations and plot results 
+## we test the data simulations and plot results 
+
+## NOTE: use shinystan::launch_shinystan(model) to check posterior predictive details
 
 # Load Packages: ----------------------------------------------------------
 library(rstanarm)

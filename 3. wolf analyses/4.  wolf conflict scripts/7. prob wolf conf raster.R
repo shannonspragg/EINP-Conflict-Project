@@ -87,7 +87,7 @@ road.dens.pred <- road.dens.scl * fixed.effects[['roaddens']]
 conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 #conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
-# Add our Rasters: NOTE: including global and ccs intercept (which is very high), messes this up
+# Add our Rasters: NOTE: including global and ccs intercept (which is very high negative, -8.2), messes this up
 wolf.pred.stack <- c(global.int, ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
 
 # Removing the global intercept (very negative) makes this better --> can we do this??
