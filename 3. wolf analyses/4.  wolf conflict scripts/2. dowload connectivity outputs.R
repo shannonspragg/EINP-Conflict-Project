@@ -44,8 +44,8 @@ wolf_biophys_norm <- rast("data/processed/wolf_biophys_normalized_cum_currmap.ti
 wolf_conflict_cumcurr <- rast("data/processed/wolf_conf_cum_currmap.tif")
 wolf_conflict_norm <- rast("data/processed/wolf_conf_normalized_cum_currmap.tif")
 
-wolf_conf_smooth_cumcurr <- rast("data/processed/smoothed_wolf_conf_cum_currmap.tif")
-wolf_conf_smooth_norm <- rast("data/processed/smoothed_wolf_conf_normalized_cum_currmap.tif")
+# wolf_conf_smooth_cumcurr <- rast("data/processed/smoothed_wolf_conf_cum_currmap.tif")
+# wolf_conf_smooth_norm <- rast("data/processed/smoothed_wolf_conf_normalized_cum_currmap.tif")
 
 # Make these vectors:
 bhb.50km.v <- vect(bhb.50km.boundary)
@@ -60,18 +60,18 @@ wolf_bio_norm.bhw <- terra::mask(wolf_biophys_norm, bhw.v)
 wolf_conflict_cumcurr.bhw <- terra::mask(wolf_conflict_cumcurr, bhw.v)
 wolf_conflict_norm.bhw <- terra::mask(wolf_conflict_norm, bhw.v)
 
-wolf_conf_smooth_cumcurr.bhw <- terra::mask(wolf_conf_smooth_cumcurr, bhw.v)
-wolf_conf_smooth_norm.bhw <- terra::mask(wolf_conf_smooth_norm, bhw.v)
+# wolf_conf_smooth_cumcurr.bhw <- terra::mask(wolf_conf_smooth_cumcurr, bhw.v)
+# wolf_conf_smooth_norm.bhw <- terra::mask(wolf_conf_smooth_norm, bhw.v)
 
-plot(wolf_conf_smooth_cumcurr.bhw)
+plot(wolf_conflict_cumcurr.bhw)
+plot(wolf_conflict_norm.bhw)
 
 # Variables with boundary of BHW:
 writeRaster(wolf_bio_cumcurr.bhw, "data/processed/bhw_wolf_biophys_cumcurr.tif", overwrite=TRUE)
 writeRaster(wolf_bio_norm.bhw, "data/processed/bhw_wolf_biophys_norm.tif", overwrite=TRUE)
 
-writeRaster(wolf_conf_smooth_cumcurr.bhw, "data/processed/bhw_smoothed_wolf_conflict_cumcurr.tif", overwrite=TRUE)
-writeRaster(wolf_conf_smooth_norm.bhw, "data/processed/bhw_smoothed_wolf_conflict_norm.tif", overwrite=TRUE)
-
 writeRaster(wolf_conflict_cumcurr.bhw, "data/processed/bhw_wolf_conflict_cumcurr.tif", overwrite=TRUE)
 writeRaster(wolf_conflict_norm.bhw, "data/processed/bhw_wolf_conflict_norm.tif", overwrite=TRUE)
 
+# writeRaster(wolf_conf_smooth_cumcurr.bhw, "data/processed/bhw_smoothed_wolf_conflict_cumcurr.tif", overwrite=TRUE)
+# writeRaster(wolf_conf_smooth_norm.bhw, "data/processed/bhw_smoothed_wolf_conflict_norm.tif", overwrite=TRUE)

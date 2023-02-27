@@ -11,6 +11,7 @@ library(terra)
 
 # Bring in Data: ----------------------------------------------------------
 wolf.full.mod <- readRDS("Data/processed/wolf_full_mod.rds")
+wolf.conflict.df.scl <- readRDS("data/processed/wolf_conf_df_scl.rds")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
 
@@ -90,26 +91,22 @@ conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # Add our Rasters: NOTE: including global and ccs intercept (which is very high negative, -8.2), messes this up
 wolf.pred.stack <- c(global.int, ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
 
-# Removing the global intercept (very negative) makes this better --> can we do this??
-wolf.pred.stack <- c(ccs.int, dist2pa.pred, pop.dens.pred, animal.dens.pred, rowcrop.dens.pred, ungulate.pred, whs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # wolfinc.pred,
-
-
 wolf.linpred.rst <- sum(wolf.pred.stack)
 wolf.prob.rast <- (exp(wolf.linpred.rst))/(1 + exp(wolf.linpred.rst))
 plot(wolf.prob.rast)
 
-# Apply Moving Window to smooth harsh lines -------------------------------
-fw <- focalWeight(bear.prob.rast, 2523, 'circle') # 2.5km radius, so an area of 20km^2
-wolf.prob.smooth <- focal(wolf.prob.rast, w=fw, fun="sum",na.rm=T) # Selected bigger radius for larger range
-plot(wolf.prob.smooth)
+# Apply Moving Window to smooth harsh lines ------------------------------- don't NEED to do this -- skip for now
+# fw <- focalWeight(bear.prob.rast, 2523, 'circle') # 2.5km radius, so an area of 20km^2
+# wolf.prob.smooth <- focal(wolf.prob.rast, w=fw, fun="sum",na.rm=T) # Selected bigger radius for larger range
+# plot(wolf.prob.smooth)
 
 # Crop to BHW Boundary:
 wolf.prob.rast.bhw <- mask(wolf.prob.rast, bhw.v)
-wolf.prob.rast.smooth.bhw <- mask(wolf.prob.smooth, bhw.v)
-plot(wolf.prob.rast.smooth.bhw)
-
-writeRaster(wolf.prob.smooth, "Data/processed/prob_conflict_wolf_smoothed.tif", overwrite=TRUE)
-writeRaster(wolf.prob.rast.smooth.bhw, "Data/processed/prob_conflict_wolf_smooth_bhw.tif", overwrite=TRUE)
+# wolf.prob.rast.smooth.bhw <- mask(wolf.prob.smooth, bhw.v)
+plot(wolf.prob.rast.bhw)
 
 writeRaster(wolf.prob.rast, "Data/processed/prob_conflict_wolf.tif", overwrite=TRUE)
 writeRaster(wolf.prob.rast.bhw, "Data/processed/prob_conflict_wolf_bhw.tif", overwrite=TRUE)
+
+writeRaster(wolf.prob.smooth, "Data/processed/prob_conflict_wolf_smoothed.tif", overwrite=TRUE)
+writeRaster(wolf.prob.rast.smooth.bhw, "Data/processed/prob_conflict_wolf_smooth_bhw.tif", overwrite=TRUE)
