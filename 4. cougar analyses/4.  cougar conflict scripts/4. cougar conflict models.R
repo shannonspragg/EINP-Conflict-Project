@@ -30,13 +30,14 @@ cougar.conflict$genconflictprob <- gen.prob.conflict[,2]
 
 cougar.conflict.df <- cougar.conflict %>% 
   st_drop_geometry() %>% 
-  dplyr::select(., cougars, CCSNAME, dst2wt_, hum_dns, edg_hbt, ppln_dn, unglt_d, rod_dns, gHM, chs, cgr_bph, genconflictprob) # cougar_inc,
+  dplyr::select(., cougars, CCSNAME, dst2wt_, hum_dns, edg_hbt, ppln_dn, grndcr_, ndvi, unglt_d, rod_dns, gHM, chs, cgr_bph, genconflictprob) # cougar_inc,
 
-colnames(cougar.conflict.df) <- c("cougar_conflict", "CCSNAME.ps", "dist2wetland", "humandens", "edge_habitat", "pipeline_dens", "ungulatedens", "road_dens", "gHM", "habsuit", "connectivity", "conflictprob") #"cougarincrease",
+colnames(cougar.conflict.df) <- c("cougar_conflict", "CCSNAME.ps", "dist2wetland", "humandens", "edge_habitat", "pipeline_dens","groundcrop_dens", "ndvi", 
+                                  "ungulatedens", "road_dens", "gHM", "habsuit", "connectivity", "conflictprob") #"cougarincrease",
 
 # Scale Data:
 cougar.conflict.df.scl <- cougar.conflict.df %>% 
-  mutate_at(c("dist2wetland", "humandens", "edge_habitat", "pipeline_dens", "ungulatedens", "road_dens", "gHM", "habsuit", "connectivity", "conflictprob"), scale) # "cougarincrease",
+  mutate_at(c("dist2wetland", "humandens", "edge_habitat", "pipeline_dens","groundcrop_dens", "ndvi", "ungulatedens", "road_dens", "gHM", "habsuit", "connectivity", "conflictprob"), scale) # "cougarincrease",
 saveRDS(cougar.conflict.df.scl, "data/processed/cougar_conf_df_scl.rds")
 
 # Run Bear Conflict Models: -----------------------------------------------
@@ -45,13 +46,21 @@ int_prior <- normal(location = 0, scale = NULL, autoscale = FALSE)
 
 SEED<-14124869
 
-# Full Model:
-cougar.full.mod <- stan_glmer(cougar_conflict ~ dist2wetland + humandens + edge_habitat + pipeline_dens + ungulatedens + road_dens + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
+# Expanded  Model:
+cougar.exp.mod <- stan_glmer(cougar_conflict ~ dist2wetland + humandens + edge_habitat + pipeline_dens + groundcrop_dens + ndvi + ungulatedens + road_dens + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
                             data = cougar.conflict.df.scl,
                             family = binomial(link = "logit"), # define our binomial glm
                             prior = t_prior, prior_intercept = int_prior, QR=TRUE,
                             iter = 3000, chains=5,
                             seed = SEED)
+
+# Full Model:
+cougar.full.mod <- stan_glmer(cougar_conflict ~ dist2wetland + humandens + edge_habitat + pipeline_dens + ungulatedens + road_dens + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
+                              data = cougar.conflict.df.scl,
+                              family = binomial(link = "logit"), # define our binomial glm
+                              prior = t_prior, prior_intercept = int_prior, QR=TRUE,
+                              iter = 3000, chains=5,
+                              seed = SEED)
 
 # Full Model + Quadratic for GenConf:
 cougar.full.mod.quad <- update(cougar.full.mod, formula = cougar_conflict ~ dist2wetland + humandens + edge_habitat + pipeline_dens + ungulatedens + road_dens + gHM + habsuit + connectivity + conflictprob + I(conflictprob^2) + (1 | CCSNAME.ps), QR=TRUE)
@@ -65,4 +74,5 @@ cougar.int.only <- update(cougar.full.mod, formula = cougar_conflict ~ 1 + (1 | 
 saveRDS(cougar.full.mod.quad, "data/processed/cougar_quad_reg.rds")
 saveRDS(cougar.int.only, "data/processed/cougar_int_only.rds")
 saveRDS(cougar.full.mod, "data/processed/cougar_full_mod.rds")
+saveRDS(cougar.exp.mod, "data/processed/cougar_exp_mod.rds") # this is the old full model - less variables
 saveRDS(cougar.no.conf, "data/processed/cougar_no_conf.rds")

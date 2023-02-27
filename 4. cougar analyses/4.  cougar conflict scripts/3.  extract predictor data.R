@@ -23,6 +23,8 @@ hum.dens.rast <- rast("data/processed/human_dens_bhb.tif")
 ungulate.dens.rast <- rast("data/processed/total_ungulate_density.tif")
 road.dens <- rast("data/processed/bhb_road_density_250m.tif")
 pipeline.dens.rast <- rast("data/processed/bhb_pipeline_density_250m.tif")
+ground.crop.rast <- rast("data/processed/ground_crop_density_raster.tif")
+ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
 edge.hab.rast <- rast("data/processed/forest_edge_habitats.tif")
 ghm.rast <- rast("data/processed/bhw_ghm.tif")
 chs <- rast("data/processed/cougar_habitat_suitability.tif")
@@ -57,6 +59,8 @@ conf.d2water.ext <- terra::extract(dist2water.rast, cougar.con.buf.v, mean, na.r
 conf.humdens.ext <- terra::extract(hum.dens.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.edge.hab.ext <- terra::extract(edge.hab.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.pipeline.dens.ext <- terra::extract(pipeline.dens.rast, cougar.con.buf.v, mean, na.rm = TRUE)
+conf.ground.dens.ext <- terra::extract(ground.crop.rast, cougar.con.buf.v, mean, na.rm = TRUE)
+conf.ndvi.ext <- terra::extract(ndvi.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.ungulate.dens.ext <- terra::extract(ungulate.dens.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.road.dens.ext <- terra::extract(road.dens, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.ghm.ext <- terra::extract(ghm.rast, cougar.con.buf.v, mean, na.rm = TRUE)
@@ -69,6 +73,8 @@ c.conflict.reproj$dist2water_km <- conf.d2water.ext[,2]
 c.conflict.reproj$hum_dens <- conf.humdens.ext[,2]
 c.conflict.reproj$edge_habitats <- conf.edge.hab.ext[,2]
 c.conflict.reproj$pipeline_dens <- conf.pipeline.dens.ext[,2]
+c.conflict.reproj$groundcrop_dens <- conf.ground.dens.ext[,2]
+c.conflict.reproj$ndvi <- conf.ndvi.ext[,2]
 c.conflict.reproj$ungulate_dens <- conf.ungulate.dens.ext[,2]
 c.conflict.reproj$road_dens <- conf.road.dens.ext[,2]
 c.conflict.reproj$gHM <- conf.ghm.ext[,2]
@@ -82,6 +88,8 @@ which(is.na(c.conflict.reproj$dist2water_km)) #one
 which(is.na(c.conflict.reproj$hum_dens)) #one
 which(is.na(c.conflict.reproj$edge_habitats)) #one
 which(is.na(c.conflict.reproj$pipeline_dens)) #one
+which(is.na(c.conflict.reproj$groundcrop_dens)) #one
+which(is.na(c.conflict.reproj$ndvi)) #one
 which(is.na(c.conflict.reproj$ungulate_dens)) #one
 which(is.na(c.conflict.reproj$road_dens)) #one
 which(is.na(c.conflict.reproj$gHM)) #one

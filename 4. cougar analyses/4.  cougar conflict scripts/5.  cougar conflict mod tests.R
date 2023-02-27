@@ -22,6 +22,7 @@ library(performance)
 
 # Read data in:
 cougar.full.mod.quad <- readRDS("data/processed/cougar_quad_reg.rds")
+cougar.old.mod <- readRDS("data/processed/cougar_old_mod.rds")
 cougar.int.only <- readRDS("data/processed/cougar_int_only.rds")
 cougar.full.mod <- readRDS("data/processed/cougar_full_mod.rds")
 cougar.no.conf <- readRDS("data/processed/cougar_no_conf.rds")
@@ -30,12 +31,14 @@ cougar.conflict.df.scl <- readRDS("data/processed/cougar_conf_df_scl.rds")
 # Model Comparison: -------------------------------------------------------
 loo1c <- loo(cougar.full.mod, save_psis = TRUE, k_threshold = 0.7) # there is one point that has a poor loo value
 loo2c <- loo(cougar.full.mod.quad, save_psis = TRUE, k_threshold = 0.7)
-loo3c <- loo(cougar.no.conf, save_psis = TRUE, k_threshold = 0.7)
+loo3c <- loo(cougar.exp.mod, save_psis = TRUE, k_threshold = 0.7)
+loo4c <- loo(cougar.no.conf, save_psis = TRUE, k_threshold = 0.7)
 loo0c <- loo(cougar.int.only, save_psis = TRUE, k_threshold = 0.7)
 
 saveRDS(loo1c, "Data/processed/cougar_full_loo.rds")
 saveRDS(loo2c, "Data/processed/cougar_full_quad_loo.rds")
-saveRDS(loo3c, "Data/processed/cougar_no_conf_loo.rds")
+saveRDS(loo3c, "Data/processed/cougar_exp_loo.rds")
+saveRDS(loo4c, "Data/processed/cougar_no_conf_loo.rds")
 saveRDS(loo0c, "Data/processed/cougar_int_only_loo.rds")
 
 # Bring back in later:
@@ -44,7 +47,7 @@ saveRDS(loo0c, "Data/processed/cougar_int_only_loo.rds")
 # loo3c <- readRDS("Data/processed/cougar_no_conf_loo.rds")
 # loo0c <- readRDS("Data/processed/cougar_int_only_loo.rds")
 
-cougar.loo.comp <- loo_compare(loo1c, loo2c, loo3c, loo0c)
+cougar.loo.comp <- loo_compare(loo1c, loo2c, loo3c,loo4c, loo0c)
 saveRDS(cougar.loo.comp, "data/processed/cougar_loo_comp.rds")
 
 plot(

@@ -716,3 +716,7 @@ wolf_popdens_mixe_plot.jpeg
 wolf_roaddens_mixe_plot.jpeg
 wolf_rowcrops_mixe_plot.jpeg
 wolf_ungulatedens_mixe_plot.jpeg
+cougar_exp_loo.rds
+cougar_exp_mod.rds
+cougar_old_loo.rds
+cougar_old_mod.rds
