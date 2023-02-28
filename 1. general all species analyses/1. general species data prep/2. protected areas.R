@@ -58,7 +58,16 @@ bhb.pa.rast <- terra::rasterize(ab.pa.proj, temp.rast, field = "NAME_E")
 einp <- ab.PAs.fin %>% dplyr::filter(ab.PAs.fin$NAME_E == "Elk Island National Park Of Canada")
 st_write(einp, "data/processed/einp.shp")
 
-  # Dist to PA raster:
+# Crop PAs to Watershed:
+pas.proj <- ab.PAs %>% 
+  st_transform(., crs=crs(bhb))
+bhw.pas <- st_intersection(pas.proj, bhb)
+plot(st_geometry(bhb))
+plot(st_geometry(bhw.pas), add=TRUE)
+
+st_write(bhw.pas, "data/processed/bhw_protected_areas.shp")
+
+# Dist to PA raster:
 dist2pa <- terra::distance(temp.rast, ab.pa.proj)
 dist2pa.km <- measurements::conv_unit(dist2pa, "m", "km")
 writeRaster(dist2pa.km, "data/processed/dist2pa_km_bhb.tif", overwrite=TRUE)

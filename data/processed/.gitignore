@@ -721,3 +721,7 @@ cougar_exp_mod.rds
 cougar_old_loo.rds
 cougar_old_mod.rds
 bhw_carnivore_normalized_correlation.tif
+bhw_protected_areas.dbf
+bhw_protected_areas.prj
+bhw_protected_areas.shp
+bhw_protected_areas.shx
