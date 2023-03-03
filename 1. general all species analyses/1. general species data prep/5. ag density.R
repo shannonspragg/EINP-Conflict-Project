@@ -10,7 +10,7 @@ library(rgdal)
 library(terra)
 
 # Load Data ---------------------------------------------------------------
-farm.type <- read.csv("Data/original/farm type_32100403.csv")
+farm.type <- read.csv("data/original/farm_type_2021_32100231.csv")
 
 can.ccs.shp<- st_make_valid(st_read("Data/original/lccs000b16a_e.shp"))
 
@@ -27,6 +27,8 @@ ab.ccs<-can.ccs.sf %>%
   filter(., PRNAME == "Alberta") %>%
   st_make_valid()
 
+ab.ccs.reproj <- st_transform(ab.ccs, st_crs(bhb.50km.boundary))
+
 # Save this for later:
 st_write(ab.ccs, "data/processed/AB_CCS.shp", append = FALSE)
 
@@ -41,23 +43,24 @@ ab.farm.filter.ccs<-farm.type.ab %>%
 unique(farm.type.ab$North.American.Industry.Classification.System..NAICS.) # There are 43 unique farm types in BC
 
 # Filter for just the 2016 census results (the data had 2011 and 2016):
-ab.farm.2016.ccs<-ab.farm.filter.ccs %>%
-  filter(., REF_DATE == "2016") 
+ab.farm.2021.ccs<-ab.farm.filter.ccs %>%
+  filter(., REF_DATE == "2021") 
 
 # Join Farm and CCS data:
-ab.farm.2016.ccs$geoid <- str_sub(ab.farm.2016.ccs$DGUID, -7, -1)
+ab.farm.2021.ccs$geoid <- str_sub(ab.farm.2021.ccs$DGUID, -7, -1)
 
-farm.ccs.join <- ab.ccs %>% 
-  left_join(., ab.farm.2016.ccs, by = c("CCSUID" = "geoid"))
+farm.ccs.join <- ab.ccs.reproj %>% 
+  left_join(., ab.farm.2021.ccs, by = c("CCSUID" = "geoid"))
 
 # Calculate densities for ag categories: ----------------------------------
-# Start by cropping the data down to SOI buffer:
-farm.ccs.sf <- st_transform(farm.ccs.join, st_crs(bhb.50km.boundary))
+# Start by cropping the data down to BHB buffer:
+#farm.ccs.sf <- st_transform(farm.ccs.join, st_crs(bhb.50km.boundary))
 
-farm.ccs.bhb <- farm.ccs.sf[st_intersects(bhb.50km.boundary, farm.ccs.sf, sparse =  FALSE),]
+#farm.ccs.bhb <- st_intersection(farm.ccs.join, bhb.50km.boundary) # what if we skipped this step..
+
 
 # Subset the data - separate total farms out of NAIC:
-farm.bhb.subset <- subset(farm.ccs.bhb, North.American.Industry.Classification.System..NAICS. != "Total number of farms")
+farm.bhb.subset <- subset(farm.ccs.join, North.American.Industry.Classification.System..NAICS. != "Total number of farms")
 names(farm.bhb.subset)[names(farm.bhb.subset) == "North.American.Industry.Classification.System..NAICS."] <- "N_A_I_C"
 
 # Condense Farm Types to Animal & Ground Crop Production:
@@ -103,12 +106,12 @@ st_write(ground.crop.sf, "data/processed/ground_crop_production.shp", append = F
 animal.prod.sv <- vect(animal.prod.sf)
 ground.crop.sv <- vect(ground.crop.sf)
 
-animal.prod.crop <- crop(animal.prod.sv, temp.rast)
-ground.crop.crop <- crop(ground.crop.sv, temp.rast)
+# animal.prod.crop <- crop(animal.prod.sv, temp.rast)
+# ground.crop.crop <- crop(ground.crop.sv, temp.rast)
 
 # Rasterize our subset rasters:
-animal.prod.rast <- terra::rasterize(animal.prod.crop, temp.rast, field = "Farms_per_sq_km")
-ground.crop.rast <- terra::rasterize(ground.crop.crop, temp.rast, field = "Farms_per_sq_km")
+animal.prod.rast <- terra::rasterize(animal.prod.sv, temp.rast, field = "Farms_per_sq_km")
+ground.crop.rast <- terra::rasterize(ground.crop.sv, temp.rast, field = "Farms_per_sq_km")
 
 # Make the NA's here 0's
 animal.prod.raster <- raster(animal.prod.rast)
