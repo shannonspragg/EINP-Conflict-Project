@@ -24,7 +24,7 @@ library(ggplot2)
 
 # Bring in Data: ----------------------------------------------------------
 bear.full.mod <- readRDS("data/processed/bear_full_mod.rds")
-#bear.no.conflict.mod <- readRDS("data/processed/bear_no_conf.rds")
+bear.conflict.df.scl <- readRDS("data/processed/bear_conf_df_scl.rds")
 
 # Plot Effects of Posterior Coefficients:
 library(bayestestR)
