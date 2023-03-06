@@ -89,6 +89,7 @@ round(mean(xor(ploo0>0.5,as.integer(bear.conflict.df.scl$bear_conflict==0))),2) 
     # Here we try model averaging and stacking to differentiate the full model from the full model + quad (both with delta LOOIC < -2:
 lpd_point <- cbind(
   loo1b$pointwise[,"elpd_loo"], 
+  loo2b$pointwise[,"elpd_loo"],
   loo3b$pointwise[,"elpd_loo"]
 )
 pbma_wts <- pseudobma_weights(lpd_point, BB=FALSE)

@@ -85,7 +85,7 @@ which(is.na(conflict.reproj$biophys)) #none
 #conflict.reproj <- conflict.reproj[-c(1130), ]  
 
 # Save this as new file ---------------------------------------------------
-
+conflict.reproj
 st_write(conflict.reproj, "Data/processed/bbear_confirmed_reports_full_df.shp", append = FALSE)
 
 
