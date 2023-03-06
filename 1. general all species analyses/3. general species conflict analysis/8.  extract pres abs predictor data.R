@@ -25,7 +25,6 @@ ground.crop.rast <- rast("data/processed/ground_crop_density_raster.tif")
 ndvi.rast <- rast("data/processed/bhb_ndvi.tif")
 ghm.rast <- rast("data/processed/bhw_ghm.tif")
 agnostic_bio_cumcurrmap <- rast("data/processed/agnostic_cum_currmap.tif")
-#gen_focal_bio_cumcurrmap <- rast("data/processed/general_focal_cum_currmap.tif") # I don't think we need this since we have species agnostic biophys 
 
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------

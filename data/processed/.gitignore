@@ -725,3 +725,9 @@ bhw_protected_areas.dbf
 bhw_protected_areas.prj
 bhw_protected_areas.shp
 bhw_protected_areas.shx
+gan conf biophys plot.jpeg
+gen conf animal dens plot.jpeg
+gen conf dist2pa plot.jpeg
+gen conf ghm plot.jpeg
+gen conf ndvi plot.jpeg
+gen conf rowcrop dens plot.jpeg

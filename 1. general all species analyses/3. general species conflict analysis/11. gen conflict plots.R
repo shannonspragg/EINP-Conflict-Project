@@ -30,6 +30,7 @@ pres.abs.scl <- readRDS("data/processed/pres_abs_scl.rds")
 
 post.pa.result <- p_direction(post.pa.full)
 post.pa.full.preds.plot <- plot(post.pa.result, title = "Predictor Effects for General Wildlife Conflict")
+post.pa.full.preds.plot
 # this is the max probability of effect (MPE), showing the probability of a predictor having a positive or negative effect
 
 gen_conf_coef_plot <- plot(post.pa.full, pars = c("dist.2.pa.ps","human.dens.ps",
@@ -92,7 +93,7 @@ dist2pa.plot <- ggplot(data=plot.df) +
   xlab(expression("Distance to Protected Areas (km)"))+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
-
+dist2pa.plot
 saveRDS(dist2pa.plot, "data/processed/dist2pa_mixe_plot.rds")
 
 # Prep plot for Livestock density:
@@ -131,7 +132,7 @@ animal.dens.plot <- ggplot(data=plot.df) +
   xlab(expression("Density of Livestock Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
-
+animal.dens.plot
 saveRDS(animal.dens.plot, "data/processed/animal_dens_mixe_plot.rds")
 
 ###### Testing other color palette:
@@ -184,7 +185,7 @@ ground.dens.plot <- ggplot(data=plot.df) +
   xlab(expression("Density of Row-Crop Operations per"~km^{2}))+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
-
+ground.dens.plot
 saveRDS(ground.dens.plot, "data/processed/groundcrop_dens_mixe_plot.rds")
 
 # Prep plot for NDVI:
@@ -222,6 +223,7 @@ ndvi.plot <- ggplot(data=plot.df) +
   xlab("Normalized Difference Vegetation Index (NDVI)")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+ndvi.plot
 saveRDS(ndvi.plot, "data/processed/ndvi_mixe_plot.rds")
 
 # Prep gHM plot:
@@ -259,6 +261,7 @@ gHM.plot <- ggplot(data=plot.df) +
   xlab("Global Human Modification (gHM)")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+gHM.plot
 saveRDS(gHM.plot, "data/processed/gHM_mixe_plot.rds")
 
 # Prep Species Agnostic Biophysical connectivity plot:
@@ -296,10 +299,11 @@ agno.biophys.plot <- ggplot(data=plot.df) +
   xlab("Species Agnostic Biophysical Connectivity")+
   # guides(fill=guide_legend(title="Population Density"))+
   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+agno.biophys.plot
 saveRDS(agno.biophys.plot, "data/processed/agno_bio_mixe_plot.rds")
 
 
 p.all <- animal.dens.plot + ground.dens.plot + ndvi.plot + dist2pa.plot + gHM.plot + agno.biophys.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
-
+p.all
 saveRDS(p.all, "data/processed/general_conflict_all_pred_plot.rds")
 
