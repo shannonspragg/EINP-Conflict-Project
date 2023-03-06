@@ -91,12 +91,13 @@ plot(bear.prob.rast)
 
 # Apply Moving Window to smooth harsh lines -------------------------------
 fw <- focalWeight(bear.prob.rast, 1262, 'circle') # 1.3km radius, so an area of 5km^2
-bear.prob.smooth <- focal(bear.prob.rast, w=fw, fun="sum",na.rm=T) 
+bear.prob.smooth <- focal(bear.prob.rast, w=fw, fun="sum",na.rm=T)
 plot(bear.prob.smooth)
 
 # Crop to BHW Boundary:
 bear.prob.rast.bhw <- mask(bear.prob.rast, bhw.v)
 bear.prob.smooth.bhw <- mask(bear.prob.smooth, bhw.v)
+plot(bear.prob.rast.bhw)
 plot(bear.prob.smooth.bhw)
 
 # Save these:

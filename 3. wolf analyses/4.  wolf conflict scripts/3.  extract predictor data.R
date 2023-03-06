@@ -93,11 +93,12 @@ which(is.na(w.conflict.reproj$wolf_biophys)) #one
 #which(is.na(w.conflict.reproj$wolf_inc)) #
 
 # plot our NA point:
-plot(st_geometry(bhw.50km))
-plot(st_geometry(subset(w.conflict.reproj, id == "1130") ), col= "red", add=TRUE) # not sure why this isn't extracting, we can drop it
+# plot(st_geometry(bhw.50km))
+# plot(st_geometry(subset(w.conflict.reproj, id == "1130") ), col= "red", add=TRUE) # not sure why this isn't extracting, we can drop it
 
 # Remove 1130th row
 #w.conflict.reproj <- w.conflict.reproj[-c(1130), ]
+w.conflict.reproj
 
 # Save this as new file ---------------------------------------------------
 

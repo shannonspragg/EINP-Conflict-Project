@@ -731,3 +731,5 @@ gen conf dist2pa plot.jpeg
 gen conf ghm plot.jpeg
 gen conf ndvi plot.jpeg
 gen conf rowcrop dens plot.jpeg
+bear biophys mixed effects plots.jpeg
+bear social mixed effects plots.jpeg

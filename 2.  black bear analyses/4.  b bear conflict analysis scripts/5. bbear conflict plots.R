@@ -27,13 +27,6 @@ bear.full.mod <- readRDS("data/processed/bear_full_mod.rds")
 bear.conflict.df.scl <- readRDS("data/processed/bear_conf_df_scl.rds")
 
 # Plot Effects of Posterior Coefficients:
-library(bayestestR)
-# install.packages("see")
-#install.packages("insight")
-library(see)
-library(insight)
-library(ggplot2)
-
 bear.full.result <- p_direction(bear.full.mod)
 bear.mod.preds.plot <- plot(bear.full.result, title = "Predictor Effects for Bear Conflict")
 bear.mod.preds.plot
@@ -108,8 +101,6 @@ saveRDS(dist2pa.plot.b, "data/processed/bear_dist2pa_mixe_plot.rds")
 dist2pa.plot.b
 
 # Prep Human Density Plot: ----------------------------------------------------
-
-
 simdata <- bear.conflict.df.scl %>%
   modelr::data_grid(dist2pa = mean(dist2pa),
                     humandens = seq_range(humandens, n=300),
@@ -398,6 +389,7 @@ biophys.p <-  connectivity.plot + habsuit.plot + dist2pa.plot.b + ndvi.plot.b + 
 social.p <-  livestockOps.plot.b + rowcropOps.plot.b + human.mod.plot + pop.dens.plot +  plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
 
 bear.plot.all <- connectivity.plot + habsuit.plot + dist2pa.plot.b + ndvi.plot.b + livestockOps.plot.b + rowcropOps.plot.b + human.mod.plot + pop.dens.plot + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')
+bear.plot.all
 
 saveRDS(biophys.p, "data/processed/biophys_bear_conf_plots.rds")
 saveRDS(social.p, "data/processed/social_bear_conf_plots.rds")
