@@ -102,7 +102,7 @@ pbma_wts <- pseudobma_weights(lpd_point, BB=FALSE)
 pbma_BB_wts <- pseudobma_weights(lpd_point) # default is BB=TRUE
 stacking_wts <- stacking_weights(lpd_point)
 round(cbind(pbma_wts, pbma_BB_wts, stacking_wts), 2)
-# This shows us that the first model (cougar.full.model) is holding the majority of the weight
+# This shows us that the third model (cougar.exp.model) is holding the majority of the weight, aside from the intercept-only
 
 # Apply these weights to the posterior predictions:
 yrep1 <- posterior_predict(cougar.full.mod, dracs=(0.04*4827)) # 
@@ -119,14 +119,15 @@ yrep <- c(yrep1, yrep2, yrep3, yrep0)
 # Plotting AUC
 opar <- par()
 par(pty = "s")
-pROC::roc(cougar.conflict.df.scl$cougar_conflict, cougar.full.mod.quad$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
+pROC::roc(cougar.conflict.df.scl$cougar_conflict, cougar.exp.mod$fitted.values, plot=TRUE, legacy.axes=TRUE, percent=TRUE , 
           xlab= "False Positive Percentage", ylab= "True Positive Percentage",
-          col="#377eb8", lcd=4, print.auc=TRUE)
-pROC::plot.roc(cougar.conflict.df.scl$cougar_conflict, cougar.full.mod$fitted.values, percent=TRUE, col='#4daf4a', lcd=4, print.auc=TRUE, add=TRUE, print.auc.y=55)
-pROC::plot.roc(cougar.conflict.df.scl$cougar_conflict, cougar.no.conf$fitted.values, percent=TRUE, col='#B090D0', lcd=4, print.auc=TRUE, add=TRUE, print.auc.y=45)
-pROC::plot.roc(cougar.conflict.df.scl$cougar_conflict, cougar.int.only$fitted.values, percent=TRUE, col='#FFAA00', lcd=4, print.auc=TRUE, add=TRUE, print.auc.y=40)
+          col="#377eb8", lcd=4, print.auc=TRUE, print.auc.y=55)
+pROC::plot.roc(cougar.conflict.df.scl$cougar_conflict, cougar.full.mod$fitted.values, percent=TRUE, col='#4daf4a', lcd=4, print.auc=TRUE, add=TRUE, print.auc.y=50)
+pROC::plot.roc(cougar.conflict.df.scl$cougar_conflict, cougar.full.mod.quad$fitted.values, percent=TRUE, col='red', lcd=4, print.auc=TRUE, add=TRUE, print.auc.y=45)
+pROC::plot.roc(cougar.conflict.df.scl$cougar_conflict, cougar.no.conf$fitted.values, percent=TRUE, col='#B090D0', lcd=4, print.auc=TRUE, add=TRUE, print.auc.y=40)
+pROC::plot.roc(cougar.conflict.df.scl$cougar_conflict, cougar.int.only$fitted.values, percent=TRUE, col='#FFAA00', lcd=4, print.auc=TRUE, add=TRUE, print.auc.y=35)
 
-legend("bottomright", legend=c("Quad Model","Full Model",  "No Conflict Model", "Varying Intercept-only Model"),
-       col=c("#4daf4a","#377eb8", "#B090D0", "#FFAA00"), lcd = 4)
+legend("bottomright", legend=c("Expanded Model", "Full Model", "Quad Model",  "No Conflict Model", "Varying Intercept-only Model"),
+       col=c("#377eb8", "#4daf4a","red", "#B090D0", "#FFAA00"), lwd = 4)
 
-# We will use the full quad model, as it has the best AUC, even though LOOIC doesn't look great.
+# We will use the expanded model, as it has the best AUC, even though LOOIC doesn't look great.

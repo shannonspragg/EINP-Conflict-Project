@@ -47,7 +47,7 @@ int_prior <- normal(location = 0, scale = NULL, autoscale = FALSE)
 SEED<-14124869
 
 # Expanded  Model:
-cougar.exp.mod <- stan_glmer(cougar_conflict ~ dist2wetland + humandens + edge_habitat + pipeline_dens + groundcrop_dens + ndvi + ungulatedens + road_dens + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
+cougar.exp.mod <- stan_glmer(cougar_conflict ~ dist2wetland + humandens + edge_habitat + pipeline_dens + groundcrop_dens + livestock_dens + ungulatedens + road_dens + gHM + habsuit + connectivity + conflictprob + (1 | CCSNAME.ps), 
                             data = cougar.conflict.df.scl,
                             family = binomial(link = "logit"), # define our binomial glm
                             prior = t_prior, prior_intercept = int_prior, QR=TRUE,

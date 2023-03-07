@@ -23,8 +23,8 @@ library(ggplot2)
 
 
 # Bring in Data: ----------------------------------------------------------
-cougar.full.mod <- readRDS("data/processed/cougar_full_mod.rds")
-#cougar.no.conflict.mod <- readRDS("data/processed/cougar_no_conf.rds")
+cougar.exp.mod <- readRDS("data/processed/cougar_full_mod.rds")
+cougar.exp.mod <- readRDS("data/processed/cougar_exp_mod.rds")
 
 # Plot Effects of Posterior Coefficients:
 library(bayestestR)
@@ -34,14 +34,14 @@ library(see)
 library(insight)
 library(ggplot2)
 
-cougar.full.result <- p_direction(cougar.full.mod)
+cougar.full.result <- p_direction(cougar.exp.mod)
 cougar.mod.preds.plot <- plot(cougar.full.result, title = "Predictor Effects for Cougar Conflict")
 cougar.mod.preds.plot
 # this is the max probability of effect (MPE), showing the probability of a predictor having a positive or negative effect
 
-cougar.coef.plot <- plot(cougar.full.mod, pars = c("dist2wetland","humandens",
+cougar.coef.plot <- plot(cougar.exp.mod, pars = c("dist2wetland","humandens",
                                               "edge_habitat",
-                                              "pipeline_dens",
+                                              "pipeline_dens", "groundcrop_dens", "livestock_dens",
                                               "ungulatedens","road_dens", "gHM", "habsuit", "connectivity", "conflictprob"), main = "Predictor Effects for Black Cougar Conflict") # "cougarincrease",
 
 saveRDS(cougar.mod.preds.plot, "data/processed/cougar_noconf_predsplot.rds")
@@ -49,8 +49,8 @@ saveRDS(cougar.coef.plot, "data/processed/cougar_coef_plot.rds")
 
 # Plot results ------------------------------------------------------------
 
-posterior <- as.matrix(cougar.full.mod)
-parnames <- names(fixef(cougar.full.mod))[2:9] # change range based on model variables
+posterior <- as.matrix(cougar.exp.mod)
+parnames <- names(fixef(cougar.exp.mod))[2:9] # change range based on model variables
 p <- mcmc_intervals(posterior,
                     pars = parnames,
                     prob = 0.8) +
@@ -58,6 +58,8 @@ p <- mcmc_intervals(posterior,
                               "humandens" = "Human Population Density",
                               "edge_habitat" = "Edge Habitats",
                               "pipeline_dens" = "Pipeline Density",
+                              "groundcrop_dens" = " Row Crop Density",
+                              "livestock_dens" = "Livestock Density",
                               "ungulatedens" = "Ungulate Density",
                               "road_dens" = "Road Density",
                                "gHM" = "Human modification" ,
@@ -74,6 +76,8 @@ simdata <- cougar.conflict.df.scl %>%
                     humandens = mean(humandens),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = mean(ungulatedens),
                     road_dens = mean(road_dens),
                     gHM = mean(gHM),
@@ -82,7 +86,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, # changing to add_elpd_draws from add_fitted_draws
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, # changing to add_elpd_draws from add_fitted_draws
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -117,6 +121,8 @@ simdata <- cougar.conflict.df.scl %>%
                     humandens = seq_range(humandens, n=300),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = mean(ungulatedens),
                     road_dens = mean(road_dens),
                     gHM = mean(gHM),
@@ -125,7 +131,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod,
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod,
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -159,6 +165,8 @@ simdata <- cougar.conflict.df.scl %>%
                     humandens = mean(humandens),
                     edge_habitat = seq_range(edge_habitat, n=300),
                     pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = mean(ungulatedens),
                     road_dens = mean(road_dens),
                     gHM = mean(gHM),
@@ -167,7 +175,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -201,6 +209,8 @@ simdata <- cougar.conflict.df.scl %>%
                     humandens = mean(humandens),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = seq_range(pipeline_dens, n=300),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = mean(ungulatedens),
                     road_dens = mean(road_dens),
                     gHM = mean(gHM),
@@ -209,7 +219,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -237,12 +247,102 @@ pipeline.dens.plot <- ggplot(data=plot.df) +
 saveRDS(pipeline.dens.plot, "data/processed/cougar_pipeline_dens_mixe_plot.rds")
 pipeline.dens.plot
 
+# Prep Rowcrop density Plot: ---------------------------------------------------------
+simdata <- cougar.conflict.df.scl %>%
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
+                    humandens = mean(humandens),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = seq_range(groundcrop_dens, n=300),
+                    livestock_dens = mean(livestock_dens),
+                    ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
+                    gHM = mean(gHM),
+                    habsuit = mean(habsuit),
+                    #   cougarincrease = mean(cougarincrease),
+                    connectivity = mean(connectivity),
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
+                                        newdata=simdata,
+                                        ndraws=1000,
+                                        re_formula=NA)
+
+postdraws$groundcrop_dens <- (postdraws$groundcrop_dens * attributes(cougar.conflict.df.scl$groundcrop_dens)[[3]]) + attributes(cougar.conflict.df.scl$groundcrop_dens)[[2]]
+
+# Plot Crop Density:
+plot.df <- postdraws %>% 
+  mutate_at(., vars(conflictprob), as.factor) %>% 
+  group_by(groundcrop_dens, conflictprob) %>% 
+  summarise(., mean = mean(.epred),
+            lo = quantile(.epred, 0.2),
+            hi = quantile(.epred, 0.8))
+
+levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
+rowcrop.plot.c <- ggplot(data=plot.df) +
+  geom_line(aes(x = groundcrop_dens, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=groundcrop_dens, fill = conflictprob), alpha = 0.2) +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
+  ylab("Probability of Cougar Conflict") + 
+  xlab(expression("Density of Row Crop Operations per"~km^{2}))+
+  # guides(fill=guide_legend(title="Population Density"))+
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(rowcrop.plot.c, "data/processed/cougar_rowcrop_density_mixe_plot.rds")
+rowcrop.plot.c
+
+# Prep Livestock density Plot: ---------------------------------------------------------
+simdata <- cougar.conflict.df.scl %>%
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
+                    humandens = mean(humandens),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = seq_range(livestock_dens, n=300),
+                    ungulatedens = mean(ungulatedens),
+                    road_dens = mean(road_dens),
+                    gHM = mean(gHM),
+                    habsuit = mean(habsuit),
+                    #   cougarincrease = mean(cougarincrease),
+                    connectivity = mean(connectivity),
+                    conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
+                                        newdata=simdata,
+                                        ndraws=1000,
+                                        re_formula=NA)
+
+postdraws$livestock_dens <- (postdraws$livestock_dens * attributes(cougar.conflict.df.scl$livestock_dens)[[3]]) + attributes(cougar.conflict.df.scl$livestock_dens)[[2]]
+
+# Plot Livestock Density:
+plot.df <- postdraws %>% 
+  mutate_at(., vars(conflictprob), as.factor) %>% 
+  group_by(livestock_dens, conflictprob) %>% 
+  summarise(., mean = mean(.epred),
+            lo = quantile(.epred, 0.2),
+            hi = quantile(.epred, 0.8))
+
+levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
+livestock.plot.c <- ggplot(data=plot.df) +
+  geom_line(aes(x = livestock_dens, y = mean, colour =conflictprob), lwd=1.5) +
+  geom_ribbon(aes(ymin=lo, ymax=hi, x=livestock_dens, fill = conflictprob), alpha = 0.2) +
+  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
+  ylab("Probability of Cougar Conflict") + 
+  xlab(expression("Density of Livestock Operations per"~km^{2}))+
+  # guides(fill=guide_legend(title="Population Density"))+
+  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+saveRDS(rowcrop.plot.c, "data/processed/cougar_livestock_density_mixe_plot.rds")
+livestock.plot.c
+
 # Prep Ungulate density Plot: ---------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
   modelr::data_grid(dist2wetland = mean(dist2wetland),
                     humandens = mean(humandens),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = seq_range(ungulatedens, n=300),
                     road_dens = mean(road_dens),
                     gHM = mean(gHM),
@@ -251,7 +351,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -285,6 +385,8 @@ simdata <- cougar.conflict.df.scl %>%
                     humandens = mean(humandens),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = mean(ungulatedens),
                     road_dens = seq_range(road_dens, n = 300),
                     gHM = mean(gHM),
@@ -293,7 +395,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -326,6 +428,8 @@ simdata <- cougar.conflict.df.scl %>%
                     humandens = mean(humandens),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = mean(ungulatedens),
                     road_dens = mean(road_dens),
                     gHM = seq_range(gHM, n=300),
@@ -334,7 +438,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -367,6 +471,8 @@ simdata <- cougar.conflict.df.scl %>%
                     humandens = mean(humandens),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = mean(ungulatedens),
                     road_dens = mean(road_dens),
                     gHM = mean(gHM),
@@ -375,7 +481,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = mean(connectivity),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -409,6 +515,8 @@ simdata <- cougar.conflict.df.scl %>%
                     humandens = mean(humandens),
                     edge_habitat = mean(edge_habitat),
                     pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
                     ungulatedens = mean(ungulatedens),
                     road_dens = mean(road_dens),
                     gHM = mean(gHM),
@@ -417,7 +525,7 @@ simdata <- cougar.conflict.df.scl %>%
                     connectivity = seq_range(connectivity, n=300),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -447,20 +555,20 @@ connectivity.plot.c
 
 # Prep cougar inc Plot -----------------------------------------------------------
 simdata <- cougar.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
+  modelr::data_grid(dist2wetland = mean(dist2wetland),
                     humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
-                    connectivity = mean(connectivity),
-                    ungulate_dens = mean(ungulate_dens),
+                    edge_habitat = mean(edge_habitat),
+                    pipeline_dens = mean(pipeline_dens),
+                    groundcrop_dens = mean(groundcrop_dens),
+                    livestock_dens = mean(livestock_dens),
+                    ungulatedens = mean(ungulatedens),
                     road_dens = mean(road_dens),
-                    habsuit = mean(habsuit),
                     gHM = mean(gHM),
+                    habsuit = mean(habsuit),
                     cougarincrease = seq_range(cougarincrease, n=300),
-                    roaddens = mean(roaddens),
                     conflictprob = quantile(cougar.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
 
-postdraws <- tidybayes::add_epred_draws(cougar.full.mod, 
+postdraws <- tidybayes::add_epred_draws(cougar.exp.mod, 
                                         newdata=simdata,
                                         ndraws=1000,
                                         re_formula=NA)
@@ -490,9 +598,9 @@ saveRDS(cougar.increase.plot, "data/processed/cougar_increase_mixe_plot.rds")
 # Add Plots together:
 biophys.p.c <-  dist2wetland.plot + edge.hab.plot + habsuit.plot.c + ungulate.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect')         
 
-social.p.c <-  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + road.dens.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
+social.p.c <-  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + road.dens.plot.c + livestock.plot.c + rowcrop.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
 
-cougar.plot.all <- dist2wetland.plot + edge.hab.plot + habsuit.plot.c + ungulate.plot.c +  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + road.dens.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
+cougar.plot.all <- dist2wetland.plot + edge.hab.plot + habsuit.plot.c + ungulate.plot.c +  human.mod.plot.c + pop.dens.plot.c + pipeline.dens.plot + road.dens.plot.c + livestock.plot.c + rowcrop.plot.c + plot_annotation(tag_levels = 'a', tag_suffix = ")") +  plot_layout(guides = 'collect') # + cougar.increase.plot
 
 saveRDS(biophys.p.c, "data/processed/biophys_cougar_conf_plots.rds")
 saveRDS(social.p.c, "data/processed/social_cougar_conf_plots.rds")
