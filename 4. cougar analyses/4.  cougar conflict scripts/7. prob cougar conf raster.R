@@ -10,7 +10,7 @@ library(terra)
 
 
 # Bring in Data: ----------------------------------------------------------
-cougar.full.mod.quad <- readRDS("Data/processed/cougar_quad_reg.rds")
+cougar.exp.mod <- readRDS("Data/processed/cougar_exp_mod.rds")
 # cougar.int.only <- readRDS("Data/processed/cougar_int_only.rds")
 cougar.full.mod <- readRDS("Data/processed/cougar_full_mod.rds")
 #cougar.no.conf <- readRDS("Data/processed/cougar_no_conf.rds") # try this and see..
@@ -18,8 +18,8 @@ bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bhw.v <- vect(bhw)
 
 # generate spatial pred ---------------------------------------------------
-fixed.effects <- fixef(cougar.full.mod)
-var.int <- ranef(cougar.full.mod)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
+fixed.effects <- fixef(cougar.exp.mod)
+var.int <- ranef(cougar.exp.mod)$CCSNAME.ps %>% tibble::rownames_to_column(., "CCSNAME")
 
 ccs.sf <- st_read("Data/processed/AB_CCS.shp")
 ccs.reproj <- st_transform(ccs.sf, st_crs(bhw))
@@ -32,6 +32,8 @@ hum.dens.r <- rast("data/processed/human_dens_bhb.tif")
 edge.hab <- rast("data/processed/forest_edge_habitats.tif")
 pipeline.dens <- rast("data/processed/bhb_pipeline_density_250m.tif")
 ungulate.r <- rast("data/processed/total_ungulate_density.tif")
+ground.crop.rast <- rast("data/processed/ground_crop_density_raster.tif")
+animal.prod.rast <- rast("data/processed/animal_production_density_raster.tif")
 ghm.r <- rast("data/processed/bhw_ghm.tif")
 chs <- rast("data/processed/cougar_habitat_suitability.tif")
 biophys <- rast("data/processed/cougar_biophys_cum_currmap.tif")
@@ -39,7 +41,7 @@ biophys <- rast("data/processed/cougar_biophys_cum_currmap.tif")
 road.dens.r <- rast("data/processed/bhb_road_density_250m.tif")
 conflict <- rast("Data/processed/prob_conflict_all.tif") # Only need this if using model with conflict
 
-cougar.conf.pred.stack <- c(dist.2.wetland, hum.dens.r, edge.hab, pipeline.dens, ungulate.r, ghm.r, chs, road.dens.r  ,biophys, conflict) # , cougar.inc.r
+cougar.conf.pred.stack <- c(dist.2.wetland, hum.dens.r, edge.hab, pipeline.dens,ground.crop.rast, animal.prod.rast, ungulate.r, ghm.r, chs, road.dens.r  ,biophys, conflict) # , cougar.inc.r
 
 
 #Create global intercept raster
@@ -62,6 +64,10 @@ edge.hab.scl <- (edge.hab - attributes(cougar.conflict.df.scl$edge_habitat)[[2]]
 
 pipeline.dens.scl <- (pipeline.dens - attributes(cougar.conflict.df.scl$pipeline_dens)[[2]])/attributes(cougar.conflict.df.scl$pipeline_dens)[[3]]
 
+rowcrop.dens.scl <- (ground.crop.rast - attributes(cougar.conflict.df.scl$groundcrop_dens)[[2]])/attributes(cougar.conflict.df.scl$groundcrop_dens)[[3]]
+
+livestock.dens.scl <- (animal.prod.rast - attributes(cougar.conflict.df.scl$livestock_dens)[[2]])/attributes(cougar.conflict.df.scl$livestock_dens)[[3]]
+
 ungulate.scl <- (ungulate.r - attributes(cougar.conflict.df.scl$ungulatedens)[[2]])/attributes(cougar.conflict.df.scl$ungulatedens)[[3]]
 
 chs.scl <- (chs - attributes(cougar.conflict.df.scl$habsuit)[[2]])/attributes(cougar.conflict.df.scl$habsuit)[[3]]
@@ -81,9 +87,11 @@ dist2wetland.pred <- dist.2.wetland.scl * fixed.effects[['dist2wetland']]
 pop.dens.pred <- pop.dens.scl * fixed.effects[['humandens']]
 edge.hab.pred <- edge.hab.scl * fixed.effects[['edge_habitat']]
 pipeline.dens.pred <- pipeline.dens.scl * fixed.effects[['pipeline_dens']]
+rowcrop.dens.pred <- rowcrop.dens.scl * fixed.effects[['groundcrop_dens']]
+livestock.dens.pred <- livestock.dens.scl * fixed.effects[['livestock_dens']]
 ungulate.pred <- ungulate.scl * fixed.effects[['ungulatedens']]
-#chs.pred <- chs.scl * fixed.effects[['habsuit']]
-chs.pred <- chs.scl * 4.0 # what if we reduce coefficients by half..
+chs.pred <- chs.scl * fixed.effects[['habsuit']]
+#chs.pred <- chs.scl * 4.0 # what if we reduce coefficients by half..
 ghm.pred <- gHM.scl * fixed.effects[['gHM']]
 biophys.pred <- biophys.scl * fixed.effects[['connectivity']]
 road.dens.pred <- road.dens.scl * fixed.effects[['road_dens']]
@@ -92,10 +100,10 @@ conflict.pred <- conflict.scl * fixed.effects[['conflictprob']]
 # conflict.quad.prd <- (conflict.scl)^2 * fixed.effects[['I(conflictprob^2)']]
 
 # Add our Rasters: #NOTE : also issues with including intercept -  CHS / connectivity are quite large
-cougar.pred.stack <- c(global.int, ccs.int, dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
+cougar.pred.stack <- c(global.int, ccs.int, dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred,livestock.dens.pred, rowcrop.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
 
 # Try without global int: helps, but main issue is with how large CHS is
-cougar.pred.stack <- c( ccs.int, dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
+#cougar.pred.stack <- c( ccs.int, dist2wetland.pred, pop.dens.pred, edge.hab.pred, pipeline.dens.pred, ungulate.pred, chs.pred, ghm.pred, biophys.pred, road.dens.pred, conflict.pred) # cougarinc.pred, 
 
 cougar.linpred.rst <- sum(cougar.pred.stack)
 cougar.prob.rast <- (exp(cougar.linpred.rst))/(1 + exp(cougar.linpred.rst))
@@ -108,8 +116,8 @@ plot(cougar.prob.smooth)
 
 # Crop to BHW Boundary:
 cougar.prob.rast.bhw <- mask(cougar.prob.rast, bhw.v)
-cougar.prob.rast.smooth.bhw <- mask(cougar.prob.smooth, bhw.v)
-plot(cougar.prob.rast.smooth.bhw)
+#cougar.prob.rast.smooth.bhw <- mask(cougar.prob.smooth, bhw.v)
+plot(cougar.prob.rast.bhw)
 
 writeRaster(cougar.prob.rast, "Data/processed/prob_conflict_cougar.tif", overwrite=TRUE)
 writeRaster(cougar.prob.rast.bhw, "Data/processed/prob_conflict_cougar_bhw.tif", overwrite=TRUE)
