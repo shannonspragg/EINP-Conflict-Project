@@ -61,6 +61,7 @@ conf.humdens.ext <- terra::extract(hum.dens.rast, cougar.con.buf.v, mean, na.rm 
 conf.edge.hab.ext <- terra::extract(edge.hab.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.pipeline.dens.ext <- terra::extract(pipeline.dens.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.ground.dens.ext <- terra::extract(ground.crop.rast, cougar.con.buf.v, mean, na.rm = TRUE)
+conf.animal.dens.ext <- terra::extract(animal.prod.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.ndvi.ext <- terra::extract(ndvi.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.ungulate.dens.ext <- terra::extract(ungulate.dens.rast, cougar.con.buf.v, mean, na.rm = TRUE)
 conf.road.dens.ext <- terra::extract(road.dens, cougar.con.buf.v, mean, na.rm = TRUE)
@@ -75,6 +76,7 @@ c.conflict.reproj$hum_dens <- conf.humdens.ext[,2]
 c.conflict.reproj$edge_habitats <- conf.edge.hab.ext[,2]
 c.conflict.reproj$pipeline_dens <- conf.pipeline.dens.ext[,2]
 c.conflict.reproj$groundcrop_dens <- conf.ground.dens.ext[,2]
+c.conflict.reproj$livestock_dens <- conf.animal.dens.ext[,2]
 c.conflict.reproj$ndvi <- conf.ndvi.ext[,2]
 c.conflict.reproj$ungulate_dens <- conf.ungulate.dens.ext[,2]
 c.conflict.reproj$road_dens <- conf.road.dens.ext[,2]
@@ -85,21 +87,23 @@ c.conflict.reproj$cougar_biophys <- conf.bio.ext[,2]
 
 
 # Check for NA's:
-which(is.na(c.conflict.reproj$dist2water_km)) #one
-which(is.na(c.conflict.reproj$hum_dens)) #one
-which(is.na(c.conflict.reproj$edge_habitats)) #one
-which(is.na(c.conflict.reproj$pipeline_dens)) #one
-which(is.na(c.conflict.reproj$groundcrop_dens)) #one
-which(is.na(c.conflict.reproj$ndvi)) #one
-which(is.na(c.conflict.reproj$ungulate_dens)) #one
-which(is.na(c.conflict.reproj$road_dens)) #one
-which(is.na(c.conflict.reproj$gHM)) #one
-which(is.na(c.conflict.reproj$chs)) #one
-which(is.na(c.conflict.reproj$cougar_biophys)) #one
-#which(is.na(c.conflict.reproj$cougar_inc)) #one
+which(is.na(c.conflict.reproj$dist2water_km)) #none
+which(is.na(c.conflict.reproj$hum_dens)) #none
+which(is.na(c.conflict.reproj$edge_habitats)) #none
+which(is.na(c.conflict.reproj$pipeline_dens)) #none
+which(is.na(c.conflict.reproj$groundcrop_dens)) #none
+which(is.na(c.conflict.reproj$livestockp_dens)) #none
+which(is.na(c.conflict.reproj$ndvi)) #none
+which(is.na(c.conflict.reproj$ungulate_dens)) #none
+which(is.na(c.conflict.reproj$road_dens)) #none
+which(is.na(c.conflict.reproj$gHM)) #none
+which(is.na(c.conflict.reproj$chs)) #none
+which(is.na(c.conflict.reproj$cougar_biophys)) #none
+#which(is.na(c.conflict.reproj$cougar_inc)) #none
 
 # Remove 1130th row
 #c.conflict.reproj <- c.conflict.reproj[-c(1130), ]
+c.conflict.reproj
 
 # Save this as new file ---------------------------------------------------
 

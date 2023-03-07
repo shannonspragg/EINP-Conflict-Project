@@ -733,3 +733,17 @@ gen conf ndvi plot.jpeg
 gen conf rowcrop dens plot.jpeg
 bear biophys mixed effects plots.jpeg
 bear social mixed effects plots.jpeg
+wolf biophys mixed effects plots.jpeg
+wolf conf mixed effects plots.jpeg
+wolf conf preds plots.jpeg
+wolf conf roc curves.jpeg
+wolf connectivity plot.jpeg
+wolf dist2pa plot.jpeg
+wolf ghm plot.jpeg
+wolf habsuit plot.jpeg
+wolf livestock plot.jpeg
+wolf popdens plot.jpeg
+wolf road dens plot.jpeg
+wolf rowcrop plot.jpeg
+wolf social mixed effects plots.jpeg
+wolf ungluate dens plot.jpeg

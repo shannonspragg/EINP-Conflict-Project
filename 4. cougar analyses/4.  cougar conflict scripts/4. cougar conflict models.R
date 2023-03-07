@@ -30,14 +30,14 @@ cougar.conflict$genconflictprob <- gen.prob.conflict[,2]
 
 cougar.conflict.df <- cougar.conflict %>% 
   st_drop_geometry() %>% 
-  dplyr::select(., cougars, CCSNAME, dst2wt_, hum_dns, edg_hbt, ppln_dn, grndcr_, ndvi, unglt_d, rod_dns, gHM, chs, cgr_bph, genconflictprob) # cougar_inc,
+  dplyr::select(., cougars, CCSNAME, dst2wt_, hum_dns, edg_hbt, ppln_dn, grndcr_, lvstck_, ndvi, unglt_d, rod_dns, gHM, chs, cgr_bph, genconflictprob) # cougar_inc,
 
-colnames(cougar.conflict.df) <- c("cougar_conflict", "CCSNAME.ps", "dist2wetland", "humandens", "edge_habitat", "pipeline_dens","groundcrop_dens", "ndvi", 
+colnames(cougar.conflict.df) <- c("cougar_conflict", "CCSNAME.ps", "dist2wetland", "humandens", "edge_habitat", "pipeline_dens","groundcrop_dens", "livestock_dens", "ndvi", 
                                   "ungulatedens", "road_dens", "gHM", "habsuit", "connectivity", "conflictprob") #"cougarincrease",
 
 # Scale Data:
 cougar.conflict.df.scl <- cougar.conflict.df %>% 
-  mutate_at(c("dist2wetland", "humandens", "edge_habitat", "pipeline_dens","groundcrop_dens", "ndvi", "ungulatedens", "road_dens", "gHM", "habsuit", "connectivity", "conflictprob"), scale) # "cougarincrease",
+  mutate_at(c("dist2wetland", "humandens", "edge_habitat", "pipeline_dens","groundcrop_dens", "livestock_dens","ndvi", "ungulatedens", "road_dens", "gHM", "habsuit", "connectivity", "conflictprob"), scale) # "cougarincrease",
 saveRDS(cougar.conflict.df.scl, "data/processed/cougar_conf_df_scl.rds")
 
 # Run Bear Conflict Models: -----------------------------------------------
