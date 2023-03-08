@@ -8,6 +8,7 @@ library(raster)
 library(terra)
 library(sf)
 library(tidyverse)
+library(spatialEco)
 
 # Bring in data -----------------------------------------------------------
 bbear.conf.cumcurr <- rast("data/processed/bbear_conf_collar_validated_cum_currmap.tif") # trying this with smoothed models
@@ -16,8 +17,8 @@ bbear.conf.norm <- rast("data/processed/bbear_conf_collar_validated_normalized_c
 wolf.conf.cumcurr <- rast("data/processed/wolf_conf_cum_currmap.tif")
 wolf.conf.norm <- rast("data/processed/wolf_conf_normalized_cum_currmap.tif")
 
-# cougar.conf.cumcurr <- rast("data/processed/smoothed_cougar_conflict_cum_currmap.tif")
-# cougar.conf.norm <- rast("data/processed/smoothed_cougar_conflict_normalized_cum_currmap.tif")
+cougar.conf.cumcurr <- rast("data/processed/cougar_conflict_cum_currmap.tif")
+cougar.conf.norm <- rast("data/processed/cougar_conflict_normalized_cum_currmap.tif")
 
 all.conflict.df <- st_read("data/processed/conflict_conf_comp_dataframe.shp")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
@@ -44,7 +45,12 @@ bbear.cum.adj <- 0.907 * bbear.conf.cumcurr
 
 wolf.cum.adj <- 0.0926 * wolf.conf.cumcurr
 
-# cougar.cum.adj <- 0.0421 * cougar.conf.cumcurr
+# Adjust seperately if including cougar:
+bbear.cum.adj2 <- 0.691 * bbear.conf.cumcurr
+
+wolf.cum.adj2 <- 0.071 * wolf.conf.cumcurr
+
+cougar.cum.adj <- 0.2385 * cougar.conf.cumcurr
 
 ## Stack to make our two carnivore connectivity models:
 # NOTE: we can't weight and stack the normalized outputs because they're already "weighted", so it would mess these up
@@ -52,6 +58,12 @@ carnivore.cumcurr <- c(bbear.cum.adj, wolf.cum.adj) #, cougar.cum.adj)
 carnivore.cumcurr.sum <- sum(carnivore.cumcurr)
 
 plot(carnivore.cumcurr.sum)
+
+# Add in cougars (for final report)
+all.carnivore.cumcurr <- c(bbear.cum.adj2, wolf.cum.adj2, cougar.cum.adj) #, cougar.cum.adj)
+all.carnivore.cumcurr.sum <- sum(all.carnivore.cumcurr)
+
+plot(all.carnivore.cumcurr.sum)
 
 # Try to calculate % correlation for norm outputs -------------------------
 carnivore.normalized.corr <- rasterCorrelation(bbear.conf.norm, wolf.conf.norm, s = 3, type = "spearman")
@@ -66,9 +78,16 @@ carnivore.norm.corr.bhw <- terra::mask(carnivore.normalized.corr, bhw.v)
 plot(carnivore.cumcurr.bhw)
 plot(carnivore.norm.corr.bhw)
 
+# including cougar:
+all.carnivore.cumcurr.bhw <- terra::mask(all.carnivore.cumcurr.sum, bhw.v)
+plot(all.carnivore.cumcurr.bhw)
+
 # Save files: -------------------------------------------------------------
 writeRaster(carnivore.cumcurr.sum, "data/processed/carnivore_summarized_cumcurr.tif", overwrite = TRUE)
+writeRaster(all.carnivore.cumcurr.sum, "data/processed/carnivore_all_summarized_cumcurr.tif", overwrite = TRUE)
 
 writeRaster(carnivore.cumcurr.bhw, "data/processed/bhw_carnivore_summarized_cumcurr.tif", overwrite = TRUE)
+writeRaster(all.carnivore.cumcurr.bhw, "data/processed/bhw_all_carnivore_summarized_cumcurr.tif", overwrite = TRUE)
+
 writeRaster(carnivore.norm.corr.bhw, "data/processed/bhw_carnivore_normalized_correlation.tif", overwrite = TRUE)
 
