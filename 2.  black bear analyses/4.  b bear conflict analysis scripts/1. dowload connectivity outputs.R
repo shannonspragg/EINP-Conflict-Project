@@ -45,8 +45,8 @@ bbear_collar_biophys_cumcurr <- rast("data/processed/bbear_collar_validated_cum_
 bbear_collar_biophys_norm <- rast("data/processed/bbear_collar_validated_normalized_cum_currmap.tif")
 
 # Conflict connectivity outputs: (you won't have these until after conflict analysis)
-bbear_conflict_cumcurr <- rast("data/processed/smoothed_bbear_conf_collar_validated_cum_currmap.tif") # trying with smoothed ones
-bbear_conflict_norm <- rast("data/processed/smoothed_bbear_conf_collar_validated_normalized_cum_currmap.tif")
+bbear_conflict_cumcurr <- rast("data/processed/bbear_conf_collar_validated_cum_currmap.tif") 
+bbear_conflict_norm <- rast("data/processed/bbear_conf_collar_validated_normalized_cum_currmap.tif")
 
 # Make these vectors:
 bhw.v <- vect(bhb.watershed)
@@ -60,12 +60,12 @@ bbear_biophys_norm.bhw <- terra::mask(bbear_collar_biophys_norm, bhw.v)
 bbear_conflict_cumcurr.bhw <- terra::mask(bbear_conflict_cumcurr, bhw.v)
 bbear_conflict_norm.bhw <- terra::mask(bbear_conflict_norm, bhw.v)
 
-bbear_conflict_cumcurr.smooth.bhw <- terra::mask(bbear_conflict_cumcurr, bhw.v)
-bbear_conflict_norm.smooth.bhw <- terra::mask(bbear_conflict_norm, bhw.v)
+# bbear_conflict_cumcurr.smooth.bhw <- terra::mask(bbear_conflict_cumcurr, bhw.v)
+# bbear_conflict_norm.smooth.bhw <- terra::mask(bbear_conflict_norm, bhw.v)
 
 # Plot
-plot(bbear_conflict_cumcurr.smooth.bhw)
-plot(bbear_conflict_norm.smooth.bhw)
+plot(bbear_conflict_cumcurr.bhw)
+plot(bbear_conflict_norm.bhw)
 
 # Variables with boundary of BHW:
 writeRaster(bbear_biophys_cumcurr.bhw, "data/processed/bhw_bbear_collar_biophys_cumcurr.tif", overwrite=TRUE)
@@ -74,5 +74,5 @@ writeRaster(bbear_biophys_norm.bhw, "data/processed/bhw_bbear_collar_biophys_nor
 writeRaster(bbear_conflict_cumcurr.bhw, "data/processed/bhw_bbear_conflict_cumcurr.tif", overwrite=TRUE)
 writeRaster(bbear_conflict_norm.bhw, "data/processed/bhw_bbear_conflict_norm.tif", overwrite=TRUE)
 
-writeRaster(bbear_conflict_cumcurr.smooth.bhw, "data/processed/bhw_smooth_bbear_conflict_cumcurr.tif", overwrite=TRUE)
-writeRaster(bbear_conflict_norm.smooth.bhw, "data/processed/bhw_smooth_bbear_conflict_norm.tif", overwrite=TRUE)
+# writeRaster(bbear_conflict_cumcurr.smooth.bhw, "data/processed/bhw_smooth_bbear_conflict_cumcurr.tif", overwrite=TRUE)
+# writeRaster(bbear_conflict_norm.smooth.bhw, "data/processed/bhw_smooth_bbear_conflict_norm.tif", overwrite=TRUE)
