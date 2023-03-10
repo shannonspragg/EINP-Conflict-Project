@@ -14,18 +14,18 @@ Resistance input: agnostic_biophys_resist.tif
 
 .ini file format: we use a text editor to produce an .ini file with the information below:
 
-NOTE: Block size and radius must be selected. Typically, radius is roughly the home range of an individual in the species of interest. Block size must be an odd number, but is typically selected to be about 1/10 of the radius (Phillips et al., 2021; McClure et al., 2016).
+NOTE: Block size and radius must be selected. Typically, radius is derived from the home range area of an individual in the species of interest. Block size must be an odd number, but is typically selected to be about 1/10 of the radius (Phillips et al., 2021; McClure et al., 2016).
 
-Because male and female black bears have such different home range sizes, we will run 2 different models in omniscape, and will adjust the radius and block size for gender below. Home range estimates taken from Karelus et al., 2016.
+We use an "average" home range size across gender for black bears to inform our models.
 
 ##MALE black bear .ini inputs:
 [Required]
-resistance_file = agnostic_biophys_resist.tif
-project_name = Biophysical BBear Male
+resistance_file = forest_sp_biophys_resist.tif
+project_name = Black Bear Biophys
 
 [Options]
-radius = 230 # home range for black bear males is typically around 220 km^2, +/- 28 km
-block_size = 23 # this is 1/10 the block size
+radius = 6.3 # average home range for black bears is typically around 125 km^2, +/- 30 km
+block_size = 0.6 # this is 1/10 the block size
 source_threshold = 0
 source_from_resistance = false
 source_file = bbear_habitat_suitability.tif
@@ -42,32 +42,4 @@ parallel_batch_size = 20
 [Output options]
 write_raw_currmap = true
 write_as_tif = true
-
-
-## FEMALE black bear .ini inputs:
-[Required]
-resistance_file = agnostic_biophys_resist.tif
-project_name = Biophysical BBear Male
-
-[Options]
-radius = 35 # home range for black bear males is typically around 31 km^2, +/- 8 km
-block_size = 3 # this is close to 1/10 the block size, remaining an odd number
-source_threshold = 0
-source_from_resistance = false
-source_file = bbear_habitat_suitability.tif
-
-r_cutoff = 50
-precision = double
-solver = cholmod
-calc_normalized_current = true
-calc_flow_potential = true
-mask_nodata = true
-parallelize = true
-parallel_batch_size = 20
-
-[Output options]
-write_raw_currmap = true
-write_as_tif = true
-
-
 
