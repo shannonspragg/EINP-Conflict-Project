@@ -1,7 +1,8 @@
 
-# Dowload Biophysical Connectivity Models: --------------------------------
+# Download Biophysical Connectivity Models: --------------------------------
 
-### Here we download our biophysical connectivity outputs for the conflict analysis
+### Here we download our biophysical connectivity outputs (as produced in Omniscape, then uploaded to Google Drive)
+## for the conflict analysis
 
 # Load Packages -------------------------------------------------------
 library(googledrive)
@@ -24,6 +25,8 @@ lapply(gdrive_files$id, function(x) drive_download(as_id(x),
                                                    path = paste0(here::here("data/processed/"), gdrive_files[gdrive_files$id==x,]$name), overwrite = TRUE))
 
 # Conflict Connectivity Models: (completed after conflict analysis)
+# NOTE: these connectivity models are produced AFTER the entire conflict analysis is completed, and the probability of
+# conflict surface is translated to a resistance surface, then run in Omniscape
 folder_url <- "https://drive.google.com/drive/u/0/folders/1Fisu1zjzUn9KamlSxvtSef10ge0qRAor" # conflict outputs cougars
 folder <- drive_get(as_id(folder_url))
 gdrive_files <- drive_ls(folder)

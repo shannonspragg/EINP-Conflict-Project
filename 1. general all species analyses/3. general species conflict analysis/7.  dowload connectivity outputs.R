@@ -1,7 +1,8 @@
 
-# Dowload Biophysical Connectivity Models: --------------------------------
+# Download Biophysical Connectivity Models: --------------------------------
 
-### Here we download our biophysical connectivity outputs for the general conflict analysis
+### Here we download our biophysical connectivity outputs (that resulted from our Omniscape models) 
+## for the general conflict analysis
 
 # Load Packages -------------------------------------------------------
 library(googledrive)

@@ -64,6 +64,8 @@ cougar_biophys_resistance <- (1+cougar_biophys_fuzsum)^10
 writeRaster(cougar_biophys_resistance, "data/processed/cougar_biophys_resist.tif", overwrite=TRUE)
 
 # Add prob conflict for biophys + social surface (after running conflict models)--------------------------
+# NOTE - you can not make the biosocial resistance until AFTER you produce the probability of conflict surface, by completing all
+# of the conflict analysis scripts. Once that is done, return here and create the biosocial resistance for your next Omniscape model
 
 prob.cougar.conf <- rast("Data/processed/prob_conflict_cougar.tif") # try this with smoothed one
 
