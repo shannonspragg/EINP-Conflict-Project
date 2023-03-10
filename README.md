@@ -1,5 +1,5 @@
 # EINP-Conflict-Project
-This is a repository for the conflict and connectivity analysis of Elk Island National Park for black bears, wolves, and cougar.
+This is a repository for the conflict and connectivity analysis of the Beaver Hills Watershed surrounding Elk Island National Park for black bears, wolves, and cougar.
 
 ##################
 The following scripts include the steps for compiling conflict report data, producing habitat suitability models, creating connectivity resistance surfaces, running connectivity models, and validating model results. These scripts function in progression as listed below. As such, running the general wildlife scripts is important before running the carnivore models, since these are designed hierarchically.
