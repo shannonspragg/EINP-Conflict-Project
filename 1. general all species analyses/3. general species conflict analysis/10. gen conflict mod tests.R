@@ -54,11 +54,11 @@ ploo2 <- E_loo(preds2, loo2$psis_object, type="mean", log_ratios = -log_lik(post
 ploo3 <- E_loo(preds3, loo3$psis_object, type="mean", log_ratios = -log_lik(post.pa.partial))$value
 ploo0 <- E_loo(preds0, loo0$psis_object, type="mean", log_ratios = -log_lik(post.int.only))$value
 
-saveRDS(loo1, "Data/processed/post_pa_full_loo.rds")
-saveRDS(loo2, "Data/processed/post_pa_full_quad_loo.rds")
-saveRDS(loo3, "Data/processed/post_pa_partial_loo.rds")
-saveRDS(loo0, "Data/processed/post_int_only_loo.rds")
-saveRDS(post_pa_loo_comp, "Data/processed/post_pa_loo_comp.rds")
+saveRDS(loo1, "data/processed/post_pa_full_loo.rds")
+saveRDS(loo2, "data/processed/post_pa_full_quad_loo.rds")
+saveRDS(loo3, "data/processed/post_pa_partial_loo.rds")
+saveRDS(loo0, "data/processed/post_int_only_loo.rds")
+saveRDS(post_pa_loo_comp, "data/processed/post_pa_loo_comp.rds")
 
 # LOO classification accuracy
 round(mean(xor(ploo>0.5,as.integer(pres.abs.scl$conflict_presence_ps==0))),2) #0.8

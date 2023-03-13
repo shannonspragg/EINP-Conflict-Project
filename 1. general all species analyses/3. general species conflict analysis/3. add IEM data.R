@@ -4,7 +4,7 @@
     # province conflict records in order to rule out and possible duplicate reports.
 
 
-# Loadport Packages -------------------------------------------------------
+# Load Packages -------------------------------------------------------
 library(tidyverse)
 library(sf)
 library(sp)
@@ -99,7 +99,7 @@ IEM.filt['OCC_POS'] <- NA
 IEM.filt['OCC_WMU'] <- NA
 IEM.filt['OCC_NUM'] <- 1
 IEM.filt['OCC_PRI'] <- NA
-IEM.filt['OCC_VAL'] <- "PROBABLE"
+IEM.filt['OCC_VAL'] <- "CONFIRMED"
 IEM.filt['bears'] <- 1
 IEM.filt['wolves'] <- 0
 IEM.filt['cougars'] <- 0  
@@ -146,11 +146,15 @@ comp.ccs.join <- comp.ccs.join %>%
   dplyr::select(., -c(22,21,19))
 
 # Join our reports together:
-conf.conflict.all <- rbind(prov.conflict, iem.ccs.join, comp.ccs.join) # now we have 1130 obs!
+conf.conflict.all <- rbind(prov.conflict, iem.ccs.join, comp.ccs.join) # now we have 4861 obs!
 head(conf.conflict.all) # now 4861 total reports
 
 # Add a column for conflict presence:
 conf.conflict.all$conflict_pres <- 1
+
+# Plot
+plot(st_geometry(bhw))
+plot(st_geometry(conf.conflict.all), add=TRUE)
 
 # Update our file
 st_write(conf.conflict.all, "data/processed/conflict_conf_iem_dataframe.shp", append = FALSE)

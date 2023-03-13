@@ -93,24 +93,30 @@ head(upd.conflict)
 # Join our reports together:
 conf.conflict.comp <- rbind(upd.conflict, sight.ccs.join) # now 4909 reports
 
+# Reassign ID numbers now that everything is merged!!
+conf.conflict.comp <- mutate(conf.conflict.comp, id = row_number())
+conf.conflict.comp <- conf.conflict.comp %>%           
+  dplyr::select("id", everything())
+conf.conflict.comp$id <- as.numeric(conf.conflict.comp$id)
+
 # Crop reports down to BHB watershed:
 st_crs(conf.conflict.comp) == st_crs(bhb.50k.buf) #FALSE
 conflict.r <- st_transform(conf.conflict.comp, st_crs(bhb.50k.buf))
 st_crs(conflict.r) == st_crs(bhb.50k.buf) #TRUE
 
 conf.bhb.50k.buf <- st_intersection(conflict.r, bhb.50k.buf) # This gives 8k total reports
-conf.bhb.50k.buf <- conf.bhb.50k.buf %>% distinct(OCC_FIL, .keep_all = TRUE) #rid of duplicates - now 4827
+conf.bhb.50k.buf <- conf.bhb.50k.buf %>% distinct(id, .keep_all = TRUE) #rid of duplicates - now 4908
 
 conf.bhb.50k.buf <- conf.bhb.50k.buf %>% 
   dplyr::select(., -c(28:20))
 
 # Let's look at our counts:
 table(conf.bhb.50k.buf$OCC_SPE)
-sum(conf.bhb.50k.buf$bears) # 588 bbear
-sum(conf.bhb.50k.buf$wolves) # 60 wolf
-sum(conf.bhb.50k.buf$cougars) # 203 cougar
+sum(conf.bhb.50k.buf$bears) # 627 bbear
+sum(conf.bhb.50k.buf$wolves) # 89 wolf
+sum(conf.bhb.50k.buf$cougars) # 216 cougar
 
-plot(st_geometry(bhb.50k.buf))
+plot(st_geometry(bhw))
 plot(st_geometry(conf.bhb.50k.buf), add=TRUE)
 
 # Update our file
@@ -122,6 +128,10 @@ st_write(conf.bhb.50k.buf, "data/processed/conflict_conf_comp_dataframe.shp", ap
 conf.reproj <- st_transform(conf.conflict.comp, st_crs(bhw))
 conf.reports.bhw <- st_intersection(conf.reproj, bhw) 
 conf.reports.bhw <- conf.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
+
+plot(st_geometry(bhw))
+plot(st_geometry(conf.reports.bhw), add=TRUE)
+
 st_write(conf.reports.bhw, "data/processed/conflict_conf_comp_bhw.shp", append = FALSE)
 
 

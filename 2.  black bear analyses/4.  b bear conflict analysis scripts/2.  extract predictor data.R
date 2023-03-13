@@ -29,7 +29,7 @@ bbear_bio_cumcurrmap <- rast("data/processed/bbear_collar_validated_cum_currmap.
 
 # Pull out just bear reports (for mapping purposes):
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
-bear.reports <- conflict.conf.df %>% filter(conflict.reproj$bears == "1")
+bear.reports <- conflict.conf.df %>% filter(conflict.conf.df$bears == "1")
 br.reproj <- st_transform(bear.reports, st_crs(bhw))
 bear.reports.bhw <- st_intersection(br.reproj, bhw) # This gives 2057 total reports
 bear.reports.bhw <- bear.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates

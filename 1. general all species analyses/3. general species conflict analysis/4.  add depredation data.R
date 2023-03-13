@@ -98,6 +98,9 @@ head(conflict.filt)
 depred.reproj <- st_transform(depred.ccs.join, st_crs(updated.conflict))
 conf.conflict.full <- rbind(conflict.filt, depred.ccs.join) # now 4867 reports
 
+plot(st_geometry(bhw))
+plot(st_geometry(conf.conflict.all), add=TRUE)
+
 # Update our file
 st_write(conf.conflict.full, "data/processed/conflict_conf_full_dataframe.shp", append = FALSE)
 # NOTE: this df now has provincial conflict reports, IEM bear reports, roadkill bears, predator compensations, and wolf depred claims 
