@@ -35,11 +35,11 @@ loo3c <- loo(cougar.exp.mod, save_psis = TRUE, k_threshold = 0.7)
 loo4c <- loo(cougar.no.conf, save_psis = TRUE, k_threshold = 0.7)
 loo0c <- loo(cougar.int.only, save_psis = TRUE, k_threshold = 0.7)
 
-saveRDS(loo1c, "Data/processed/cougar_full_loo.rds")
-saveRDS(loo2c, "Data/processed/cougar_full_quad_loo.rds")
-saveRDS(loo3c, "Data/processed/cougar_exp_loo.rds")
-saveRDS(loo4c, "Data/processed/cougar_no_conf_loo.rds")
-saveRDS(loo0c, "Data/processed/cougar_int_only_loo.rds")
+saveRDS(loo1c, "data/processed/cougar_full_loo.rds")
+saveRDS(loo2c, "data/processed/cougar_full_quad_loo.rds")
+saveRDS(loo3c, "data/processed/cougar_exp_loo.rds")
+saveRDS(loo4c, "data/processed/cougar_no_conf_loo.rds")
+saveRDS(loo0c, "data/processed/cougar_int_only_loo.rds")
 
 # Bring back in later:
 # loo1c <- readRDS("Data/processed/cougar_full_loo.rds")
@@ -112,7 +112,7 @@ yrep0 <- posterior_predict(cougar.int.only, dracs=round(0.55*4827)) #
 
 yrep <- c(yrep1, yrep2, yrep3, yrep0)
 
-# Based on the above, it looks like the best model is #0: cougar.int.only, followed by the cougar.no.conflict , cougar.full.mod, and cougar.full.mod.quad  (respectively)
+# Based on the above, it looks like the best model is #0: cougar.exp.mod, followed by the cougar.int.only , cougar.full.mod, and cougar.full.mod.quad  (respectively)
 
 # Building plots of results -----------------------------------------------
 

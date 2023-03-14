@@ -108,5 +108,5 @@ plot(wolf.prob.rast.bhw)
 writeRaster(wolf.prob.rast, "Data/processed/prob_conflict_wolf.tif", overwrite=TRUE)
 writeRaster(wolf.prob.rast.bhw, "Data/processed/prob_conflict_wolf_bhw.tif", overwrite=TRUE)
 
-writeRaster(wolf.prob.smooth, "Data/processed/prob_conflict_wolf_smoothed.tif", overwrite=TRUE)
-writeRaster(wolf.prob.rast.smooth.bhw, "Data/processed/prob_conflict_wolf_smooth_bhw.tif", overwrite=TRUE)
+# writeRaster(wolf.prob.smooth, "Data/processed/prob_conflict_wolf_smoothed.tif", overwrite=TRUE)
+# writeRaster(wolf.prob.rast.smooth.bhw, "Data/processed/prob_conflict_wolf_smooth_bhw.tif", overwrite=TRUE)

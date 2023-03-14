@@ -36,8 +36,8 @@ cougar_bio_cumcurrmap <- rast("data/processed/cougar_biophys_cum_currmap.tif")
 bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 cougar.reports <- conflict.cougar.df %>% filter(conflict.cougar.df$cougars == "1")
 cr.reproj <- st_transform(cougar.reports, st_crs(bhw))
-cougar.reports.bhw <- st_intersection(cr.reproj, bhw) # This gives 2057 total reports
-cougar.reports.bhw <- cougar.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
+cougar.reports.bhw <- st_intersection(cr.reproj, bhw) # This gives 308 total reports
+cougar.reports.bhw <- cougar.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates - now 160
 st_write(cougar.reports.bhw, "Data/processed/confirmed_cougar_reports.shp", append = FALSE)
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------

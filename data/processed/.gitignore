@@ -769,3 +769,14 @@ bhw_all_carnivore_summarized_cumcurr.tif
 carnivore_all_summarized_cumcurr.tif
 gen conf biophys plot.jpeg
 gen conf connectivity plot.jpeg
+bear conf mixed effects plots.jpeg
+bear connectivity plot.jpeg
+bear dist2pa plot.jpeg
+bear ghm plot.jpeg
+bear habsuit plot.jpeg
+bear livestock plot.jpeg
+bear ndvi plot.jpeg
+bear popdens plot.jpeg
+bear rowcrop plot.jpeg
+wolf conf preds plot.jpeg
+wolf ungulate dens plot.jpeg

@@ -27,18 +27,50 @@ wolf.full.mod <- readRDS("data/processed/wolf_full_mod.rds")
 wolf.no.conf <- readRDS("data/processed/wolf_no_conf.rds")
 wolf.conflict.df.scl <- readRDS("data/processed/wolf_conf_df_scl.rds")
 
-# Use shinystan::launch_shinystan(yourmod) to check posterior preformance
 
 # Model Comparison: -------------------------------------------------------
-loo1w <- loo(wolf.full.mod, save_psis = TRUE, k_threshold = 0.7) # there is one point that has a poor loo value
-loo2w <- loo(wolf.full.mod.quad, save_psis = TRUE, k_threshold = 0.7)
-loo3w <- loo(wolf.no.conf, save_psis = TRUE, k_threshold = 0.7)
+loo1w <- loo(wolf.full.mod, save_psis = TRUE, k_threshold = 0.7) # there are 70 points that have poor loo values
+loo2w <- loo(wolf.full.mod.quad, save_psis = TRUE, k_threshold = 0.7) # 101 problematic obs 
+loo3w <- loo(wolf.no.conf, save_psis = TRUE, k_threshold = 0.7) # 22 problematic obs
 loo0w <- loo(wolf.int.only, save_psis = TRUE, k_threshold = 0.7)
 
 saveRDS(loo1w, "Data/processed/wolf_full_loo.rds")
 saveRDS(loo2w, "Data/processed/wolf_full_quad_loo.rds")
 saveRDS(loo3w, "Data/processed/wolf_no_conf_loo.rds")
 saveRDS(loo0w, "Data/processed/wolf_int_only_loo.rds")
+
+# LOO suggests k-fold cross val due to problematic observations
+library(caret)
+
+#specify the cross-validation method
+ctrl <- trainControl(method = "cv", number = 10, savePredictions="all",
+                     classProbs=TRUE)
+
+#fit a regression model and use k-fold CV to evaluate performance
+wolf.kfold.full <- train(wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ungulatedens + gHM + habsuit + 
+                           connectivity + roaddens +  conflictprob, data = wolf.conflict.df.scl, method = "glm", trControl = ctrl)
+
+wolf.kfold.quad <- train(wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + ungulatedens + gHM + habsuit + 
+                           connectivity + roaddens +  conflictprob + I(conflictprob^2), data = wolf.conflict.df.scl, method = "glm", trControl = ctrl)
+
+wolf.kfold.no.conf <- train(wolf_conflict ~ dist2pa + humandens + livestockOps + rowcropOps + + ungulatedens + gHM + habsuit + connectivity + roaddens, data = wolf.conflict.df.scl, method = "glm", trControl = ctrl)
+#wolf.kfold.int <- train(wolf_conflict ~ 1, data = wolf.conflict.df.scl, method = "glm", trControl = ctrl)
+
+#view summary of k-fold CV               
+print(wolf.kfold.full) # This shows RMSE of 0.1244 (a difference of 12% between the observed outcome and the models predictions (0 is perfect))
+# Rsq of 0.1067 (11% shows small correlation between real samples and model predictions)
+# MAE of 0.0456 (low mean squared error is decent)
+
+print(wolf.kfold.quad) # This shows RMSE of 0.1253 (a difference of 13% between the observed outcome and the models predictions (0 is perfect))
+# Rsq of 0.11 (11% shows small correlation between real samples and model predictions)
+# MAE of 0.0463 (low mean squared error is decent)
+
+print(wolf.kfold.no.conf) # This shows RMSE of 0.1253 (a difference of 13% between the observed outcome and the models predictions (0 is perfect))
+
+# Estimate the importance of different predictors
+varImp(wolf.kfold.full)
+varImp(wolf.kfold.quad)
+varImp(wolf.kfold.no.conf)
 
 # Bring back in later:
 # loo1w <- readRDS("Data/processed/wolf_full_loo.rds")
@@ -107,7 +139,7 @@ yrep2 <- posterior_predict(wolf.full.mod.quad, draws=round(0.09*7500)) # only 67
 
 yrep <- c(yrep1, yrep2)
 
-# Based on the above, it looks like the best model is #3: wolf.no.conflict , followed by the wolf.full.mod, wolf.full.mod.quad, and wolf.int.only (respectively)
+# Based on the above, it looks like the best model is wolf.full.mod or wolf.full.mod.quad, and wolf.int.only (respectively)
 
 # Building plots of results -----------------------------------------------
 

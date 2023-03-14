@@ -411,44 +411,44 @@ human.mod.plot.w
 
 # Prep wolf inc Plot -----------------------------------------------------------
 
-simdata <- wolf.conflict.df.scl %>%
-  modelr::data_grid(dist2pa = mean(dist2pa),
-                    humandens = mean(humandens),
-                    livestockOps = mean(livestockOps),
-                    rowcropOps = mean(rowcropOps),
-                    connectivity = mean(connectivity),
-                    ungulatedens = mean(ungulatedens),
-                    habsuit = mean(habsuit),
-                    gHM = mean(gHM),
-                    wolfincrease = seq_range(wolfincrease, n=300),
-                    roaddens = mean(roaddens),
-                    conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
-
-postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
-                                        newdata=simdata,
-                                        ndraws=1000,
-                                        re_formula=NA)
-
-postdraws$wolfinc <- (postdraws$wolfinc * attributes(wolf.conflict.df.scl$wolfinc)[[3]])+attributes(wolf.conflict.df.scl$wolfinc)[[2]]
-
-# Plot Wolf inc:
-plot.df <- postdraws %>% 
-  mutate_at(., vars(conflictprob), as.factor) %>% 
-  group_by(wolfinc, conflictprob) %>% 
-  summarise(., mean = mean(.epred),
-            lo = quantile(.epred, 0.2),
-            hi = quantile(.epred, 0.8))
-
-levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
-wolf.increase.plot <- ggplot(data=plot.df) +
-  geom_line(aes(x = wolfinc, y = mean, colour =conflictprob), lwd=1.5) +
-  geom_ribbon(aes(ymin=lo, ymax=hi, x=wolfinc, fill = conflictprob), alpha = 0.2) +
-  scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
-  scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
-  ylab("Probability of Wolf Conflict") + 
-  xlab("Public Support of Wolf Population Increase (%)")+
-  theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
-saveRDS(wolf.increase.plot, "data/processed/wolf_increase_mixe_plot.rds")
+# simdata <- wolf.conflict.df.scl %>%
+#   modelr::data_grid(dist2pa = mean(dist2pa),
+#                     humandens = mean(humandens),
+#                     livestockOps = mean(livestockOps),
+#                     rowcropOps = mean(rowcropOps),
+#                     connectivity = mean(connectivity),
+#                     ungulatedens = mean(ungulatedens),
+#                     habsuit = mean(habsuit),
+#                     gHM = mean(gHM),
+#                     wolfincrease = seq_range(wolfincrease, n=300),
+#                     roaddens = mean(roaddens),
+#                     conflictprob = quantile(wolf.conflict.df.scl$conflictprob, probs = c(0.1, 0.5, 0.9)))
+# 
+# postdraws <- tidybayes::add_epred_draws(wolf.full.mod, 
+#                                         newdata=simdata,
+#                                         ndraws=1000,
+#                                         re_formula=NA)
+# 
+# postdraws$wolfinc <- (postdraws$wolfinc * attributes(wolf.conflict.df.scl$wolfinc)[[3]])+attributes(wolf.conflict.df.scl$wolfinc)[[2]]
+# 
+# # Plot Wolf inc:
+# plot.df <- postdraws %>% 
+#   mutate_at(., vars(conflictprob), as.factor) %>% 
+#   group_by(wolfinc, conflictprob) %>% 
+#   summarise(., mean = mean(.epred),
+#             lo = quantile(.epred, 0.2),
+#             hi = quantile(.epred, 0.8))
+# 
+# levels(plot.df$conflictprob) <-  c("Lower 10%", "Mean", "Upper 10%")
+# wolf.increase.plot <- ggplot(data=plot.df) +
+#   geom_line(aes(x = wolfinc, y = mean, colour =conflictprob), lwd=1.5) +
+#   geom_ribbon(aes(ymin=lo, ymax=hi, x=wolfinc, fill = conflictprob), alpha = 0.2) +
+#   scale_colour_viridis(discrete = "TRUE", option="C","General Conflict Prob.")+
+#   scale_fill_viridis(discrete = "TRUE", option="C", "General Conflict Prob.") +
+#   ylab("Probability of Wolf Conflict") + 
+#   xlab("Public Support of Wolf Population Increase (%)")+
+#   theme(text=element_text(size=12,  family="Times New Roman"), legend.text = element_text(size=10),panel.background = element_rect(fill = "white", colour = "grey50"))
+# saveRDS(wolf.increase.plot, "data/processed/wolf_increase_mixe_plot.rds")
 
 # Prep road dens Plot -----------------------------------------------------------
 
