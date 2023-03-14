@@ -32,7 +32,7 @@ bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
 bear.reports <- conflict.conf.df %>% filter(conflict.conf.df$bears == "1")
 br.reproj <- st_transform(bear.reports, st_crs(bhw))
 bear.reports.bhw <- st_intersection(br.reproj, bhw) # This gives 2057 total reports
-bear.reports.bhw <- bear.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates
+bear.reports.bhw <- bear.reports.bhw %>% distinct(id, .keep_all = TRUE) #rid of duplicates - now 379
 st_write(bear.reports.bhw, "Data/processed/confirmed_bear_reports.shp", append = FALSE)
 
 # Buffer Conflict Points Before Attributing Predictor Values -----------------------

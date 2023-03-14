@@ -33,10 +33,10 @@ loo2b <- loo(bear.full.mod.quad, save_psis = TRUE ) #, k_threshold = 0.7)
 loo3b <- loo(bear.no.conf, save_psis = TRUE) #, k_threshold = 0.7)
 loo0b <- loo(bear.int.only, save_psis = TRUE) #, k_threshold = 0.7)
 
-saveRDS(loo1b, "Data/processed/bear_full_loo.rds")
-saveRDS(loo2b, "Data/processed/bear_full_quad_loo.rds")
-saveRDS(loo3b, "Data/processed/bear_no_conf_loo.rds")
-saveRDS(loo0b, "Data/processed/bear_int_only_loo.rds")
+saveRDS(loo1b, "data/processed/bear_full_loo.rds")
+saveRDS(loo2b, "data/processed/bear_full_quad_loo.rds")
+saveRDS(loo3b, "data/processed/bear_no_conf_loo.rds")
+saveRDS(loo0b, "data/processed/bear_int_only_loo.rds")
 
 # Bring back in later:
 # loo1b <- readRDS("Data/processed/bear_full_loo.rds")
