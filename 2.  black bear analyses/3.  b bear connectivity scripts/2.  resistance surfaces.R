@@ -48,7 +48,7 @@ writeRaster(forest_specialist_biophys_resistance, "Data/processed/forest_special
 # Add prob conflict for biophys + social surface (after running conflict models)--------------------------
 # NOTE - you can not make the biosocial resistance until AFTER you produce the probability of conflict surface, by completing all
 # of the conflict analysis scripts. Once that is done, return here and create the biosocial resistance for your next Omniscape model
-prob.bear.conf <- rast("Data/processed/prob_conflict_bear_smoothed.tif") # switching to smoothed out, trying to correct harsh lines
+prob.bear.conf <- rast("Data/processed/prob_conflict_bear.tif") # switching to smoothed out, trying to correct harsh lines
 
 # fuzzysum3 <- function(r1, r2, r3) {
 #   rc1.1m <- (1-r1)

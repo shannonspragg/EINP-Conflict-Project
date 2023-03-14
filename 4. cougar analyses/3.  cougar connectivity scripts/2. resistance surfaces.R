@@ -87,5 +87,5 @@ plot(biosocial_resistance)
 writeRaster(bio_social_fuzzysum, "data/processed/cougar_biosocial_fuzsum.tif",overwrite=TRUE)
 writeRaster(biosocial_resistance, "data/processed/cougar_biosocial_resist.tif", overwrite=TRUE)
 
-writeRaster(bio_social_fuzzysum, "data/processed/cougar_biosocial_fuzsum_smoothed.tif",overwrite=TRUE)
-writeRaster(biosocial_resistance, "data/processed/cougar_biosocial_resist_smoothed.tif", overwrite=TRUE)
+# writeRaster(bio_social_fuzzysum, "data/processed/cougar_biosocial_fuzsum_smoothed.tif",overwrite=TRUE)
+# writeRaster(biosocial_resistance, "data/processed/cougar_biosocial_resist_smoothed.tif", overwrite=TRUE)

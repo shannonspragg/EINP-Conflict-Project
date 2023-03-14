@@ -82,5 +82,5 @@ writeRaster(bio_social_fuzzysum, "data/processed/wolf_biosocial_fuzsum.tif",over
 writeRaster(biosocial_resistance, "data/processed/wolf_biosocial_resist.tif", overwrite=TRUE)
 
 # If using smoothed prob conf:
-writeRaster(bio_social_fuzzysum, "data/processed/wolf_biosocial_fuzsum_smoothed.tif",overwrite=TRUE)
-writeRaster(biosocial_resistance, "data/processed/wolf_biosocial_resist_smoothed.tif", overwrite=TRUE)
+# writeRaster(bio_social_fuzzysum, "data/processed/wolf_biosocial_fuzsum_smoothed.tif",overwrite=TRUE)
+# writeRaster(biosocial_resistance, "data/processed/wolf_biosocial_resist_smoothed.tif", overwrite=TRUE)
