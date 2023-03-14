@@ -23,8 +23,8 @@ library(ggplot2)
 
 
 # Bring in Data: ----------------------------------------------------------
-cougar.exp.mod <- readRDS("data/processed/cougar_full_mod.rds")
 cougar.exp.mod <- readRDS("data/processed/cougar_exp_mod.rds")
+cougar.conflict.df.scl <- readRDS("data/processed/cougar_conf_df_scl.rds")
 
 # Plot Effects of Posterior Coefficients:
 library(bayestestR)
