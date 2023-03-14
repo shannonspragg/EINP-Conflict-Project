@@ -49,8 +49,8 @@ cougar_biophys_norm <- rast("data/processed/cougar_biophys_normalized_cum_currma
 cougar_conflict_cumcurr <- rast("data/processed/cougar_conflict_cum_currmap.tif") 
 cougar_conflict_norm <- rast("data/processed/cougar_conflict_normalized_cum_currmap.tif")
 
-cougar_conflict_smoothed_cumcurr <- rast("data/processed/smoothed_cougar_conflict_cum_currmap.tif") 
-cougar_conflict_smoothed_norm <- rast("data/processed/smoothed_cougar_conflict_normalized_cum_currmap.tif")
+# cougar_conflict_smoothed_cumcurr <- rast("data/processed/smoothed_cougar_conflict_cum_currmap.tif") 
+# cougar_conflict_smoothed_norm <- rast("data/processed/smoothed_cougar_conflict_normalized_cum_currmap.tif")
 
 # Make these vectors:
 bhb.50km.v <- vect(bhb.50km.boundary)
@@ -65,8 +65,11 @@ cougar_bio_norm.bhw <- terra::mask(cougar_biophys_norm, bhw.v)
 cougar_conflict_cumcurr.bhw <- terra::mask(cougar_conflict_cumcurr, bhw.v)
 cougar_conflict_norm.bhw <- terra::mask(cougar_conflict_norm, bhw.v)
 
-cougar_conflict_smooth_cumcurr.bhw <- terra::mask(cougar_conflict_smoothed_cumcurr, bhw.v)
-cougar_conflict_smooth_norm.bhw <- terra::mask(cougar_conflict_smoothed_norm, bhw.v)
+plot(cougar_conflict_cumcurr.bhw)
+plot(cougar_conflict_norm.bhw)
+
+# cougar_conflict_smooth_cumcurr.bhw <- terra::mask(cougar_conflict_smoothed_cumcurr, bhw.v)
+# cougar_conflict_smooth_norm.bhw <- terra::mask(cougar_conflict_smoothed_norm, bhw.v)
 
 
 # Variables with boundary of BHW:
@@ -76,6 +79,6 @@ writeRaster(cougar_bio_norm.bhw, "data/processed/bhw_cougar_biophys_norm.tif", o
 writeRaster(cougar_conflict_cumcurr.bhw, "data/processed/bhw_cougar_conflict_cumcurr.tif", overwrite=TRUE)
 writeRaster(cougar_conflict_norm.bhw, "data/processed/bhw_cougar_conflict_norm.tif", overwrite=TRUE)
 
-writeRaster(cougar_conflict_smooth_cumcurr.bhw, "data/processed/bhw_smoothed_cougar_conflict_cumcurr.tif", overwrite=TRUE)
-writeRaster(cougar_conflict_smooth_norm.bhw, "data/processed/bhw_smoothed_cougar_conflict_norm.tif", overwrite=TRUE)
+# writeRaster(cougar_conflict_smooth_cumcurr.bhw, "data/processed/bhw_smoothed_cougar_conflict_cumcurr.tif", overwrite=TRUE)
+# writeRaster(cougar_conflict_smooth_norm.bhw, "data/processed/bhw_smoothed_cougar_conflict_norm.tif", overwrite=TRUE)
 

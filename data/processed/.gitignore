@@ -780,3 +780,6 @@ bear popdens plot.jpeg
 bear rowcrop plot.jpeg
 wolf conf preds plot.jpeg
 wolf ungulate dens plot.jpeg
+bbear_conf_collar_val.ini
+cougar_conflict.ini
+wolf_conflict.ini

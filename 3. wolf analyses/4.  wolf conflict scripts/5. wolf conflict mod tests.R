@@ -34,10 +34,10 @@ loo2w <- loo(wolf.full.mod.quad, save_psis = TRUE, k_threshold = 0.7) # 101 prob
 loo3w <- loo(wolf.no.conf, save_psis = TRUE, k_threshold = 0.7) # 22 problematic obs
 loo0w <- loo(wolf.int.only, save_psis = TRUE, k_threshold = 0.7)
 
-saveRDS(loo1w, "Data/processed/wolf_full_loo.rds")
-saveRDS(loo2w, "Data/processed/wolf_full_quad_loo.rds")
-saveRDS(loo3w, "Data/processed/wolf_no_conf_loo.rds")
-saveRDS(loo0w, "Data/processed/wolf_int_only_loo.rds")
+saveRDS(loo1w, "data/processed/wolf_full_loo.rds")
+saveRDS(loo2w, "data/processed/wolf_full_quad_loo.rds")
+saveRDS(loo3w, "data/processed/wolf_no_conf_loo.rds")
+saveRDS(loo0w, "data/processed/wolf_int_only_loo.rds")
 
 # LOO suggests k-fold cross val due to problematic observations
 library(caret)
