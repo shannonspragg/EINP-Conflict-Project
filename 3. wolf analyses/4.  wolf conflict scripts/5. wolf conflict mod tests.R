@@ -79,6 +79,8 @@ varImp(wolf.kfold.no.conf)
 # loo0w <- readRDS("Data/processed/wolf_int_only_loo.rds")
 
 wolf.loo.comp <- loo_compare(loo1w, loo2w, loo3w, loo0w)
+wolf.loo.comp <- loo_compare(loo1w, loo3w, loo0w)
+
 saveRDS(wolf.loo.comp, "data/processed/wolf_loo_comp.rds")
 
 plot(

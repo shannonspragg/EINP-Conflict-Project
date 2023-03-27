@@ -28,29 +28,29 @@ bhw <- st_read("data/original/BHB_Subwatershed_Boundary.shp")
     # together into one 
 
   # Look at counts of each species - this will determine weight:
-sum(all.conflict.df$bears) # 588
-sum(all.conflict.df$wolves) # 60
-sum(all.conflict.df$cougars) # 203
+sum(all.conflict.df$bears) # 627
+sum(all.conflict.df$wolves) # 89
+sum(all.conflict.df$cougars) # 216
 
   # Total carnivore reports is 851, so proportions are as follows:
-  #     black bear - 0.691 (588/851) OR 0.907 (588/648 WITHOUT COUGAR)
-  #     wolf - 0.071 (60/851) OR 0.0926 (60/648 WITHOUT COUGAR)
-  #     cougar - 0.2385 (203/851)
+  #     black bear - 0.6727 (627/932) OR 0.907 (627/716 WITHOUT COUGAR)
+  #     wolf - 0.0955 (89/932) OR 0.0926 (89/716 WITHOUT COUGAR)
+  #     cougar - 0.2318 (216/932)
 
 ## Multiply weights to each species connectivity model:
   ## IMPORTANT NOTE: multiplying weights will mess up the "normalized" value range (indicating diffuse = 0, restricted <0, etc.)
   ## We can't weight and stack the normalized outputs because they're already "weighted", so it would mess these up
 
-bbear.cum.adj <- 0.907 * bbear.conf.cumcurr
+bbear.cum.adj <- 0.8757 * bbear.conf.cumcurr
 
-wolf.cum.adj <- 0.0926 * wolf.conf.cumcurr
+wolf.cum.adj <- 0.1243 * wolf.conf.cumcurr
 
 # Adjust seperately if including cougar:
-bbear.cum.adj2 <- 0.691 * bbear.conf.cumcurr
+bbear.cum.adj2 <- 0.6727 * bbear.conf.cumcurr
 
-wolf.cum.adj2 <- 0.071 * wolf.conf.cumcurr
+wolf.cum.adj2 <- 0.0955 * wolf.conf.cumcurr
 
-cougar.cum.adj <- 0.2385 * cougar.conf.cumcurr
+cougar.cum.adj <- 0.2318 * cougar.conf.cumcurr
 
 ## Stack to make our two carnivore connectivity models:
 # NOTE: we can't weight and stack the normalized outputs because they're already "weighted", so it would mess these up
